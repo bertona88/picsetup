@@ -1,10 +1,14 @@
 {
   "name": "picsetup",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Preliminary Setup Universe wrapper for PicSetup.",
+  "type": "module",
+  "description": "Mobile-first integrated photonics sketchpad and detector component lab.",
   "homepage": "https://picsetup.com/",
   "scripts": {
+    "test": "node --test",
+    "check": "node --check app/main.js && node --check src/detectors/catalog.js && node --check src/detectors/measure.js",
+    "dev": "python3 -m http.server 4173",
     "prototype:test": "npm --prefix prototype test",
     "prototype:check": "npm --prefix prototype run check",
     "prototype:serve": "npm --prefix prototype run serve"
