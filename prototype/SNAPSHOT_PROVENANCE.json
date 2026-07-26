@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "projectId": "pic",
+  "role": "reference-snapshot",
+  "immutable": true,
+  "productionRelease": "20260726T002235Z-478235af2650",
+  "productionVerifiedAt": "2026-07-26",
+  "deployedSourceSha256": "478235af26508aa70aa2af5f0196c9868b92ded1bed88106a9aa1a1cd86f8ba5",
+  "digestAlgorithm": "sha256",
+  "digestScope": "deployed production source tree recorded for the release",
+  "sharedRuntime": true,
+  "futureArchitecture": false
+}

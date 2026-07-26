@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0d12" />
+    <meta
+      name="description"
+      content="A live browser-based scientific setup from the Setup Universe."
+    />
+    <title>Setup Universe — loading instrument</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body data-setup-id="loading">
+    <header class="topbar">
+      <a class="instrument-brand" href="/" aria-label="Reload this setup">
+        <span class="instrument-mark" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+        <span>
+          <strong id="setupName">Setup</strong>
+          <small id="setupField">loading instrument</small>
+        </span>
+      </a>
+
+      <div class="toolbar-center" aria-label="Experiment controls">
+        <label class="scenario-picker">
+          <span>Scenario</span>
+          <select id="scenarioSelect" aria-label="Experiment scenario"></select>
+        </label>
+        <button class="tool-button primary" id="playToggle" data-testid="play-toggle" type="button">
+          <span class="play-icon" aria-hidden="true">Ⅱ</span>
+          <span class="play-label">Pause</span>
+        </button>
+        <button class="tool-button" id="resetButton" data-testid="reset" type="button">Reset</button>
+        <button class="tool-button" id="shareButton" type="button">Share</button>
+      </div>
+
+      <button class="universe-trigger" id="universeOpen" type="button" aria-expanded="false">
+        <span>Setup Universe</span>
+        <span class="orbit-icon" aria-hidden="true">◎</span>
+      </button>
+    </header>
+
+    <main class="studio">
+      <aside class="experiment-rail" id="experimentRail" aria-label="Experiment guide">
+        <div class="rail-section identity-section">
+          <p class="eyebrow">LIVE MODEL</p>
+          <h1 id="experimentTitle">Loading…</h1>
+          <p id="experimentSummary"></p>
+        </div>
+
+        <div class="rail-section">
+          <p class="section-label">Try this</p>
+          <p class="interaction-copy" id="interactionCopy"></p>
+        </div>
+
+        <div class="rail-section preset-section">
+          <p class="section-label">Experiments</p>
+          <div id="presetList" class="preset-list"></div>
+        </div>
+
+        <div class="rail-section scope-section">
+          <p class="section-label">Model contract</p>
+          <p id="modelScope"></p>
+          <ul id="modelLimits"></ul>
+        </div>
+      </aside>
+
+      <section class="workspace" aria-label="Live simulation workspace">
+        <canvas
+          id="simulationCanvas"
+          data-testid="simulation-canvas"
+          tabindex="0"
+          aria-label="Interactive simulation canvas"
+        ></canvas>
+        <div class="workspace-hud top-left" aria-live="polite">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span id="simulationStatus">initializing</span>
+        </div>
+        <div class="workspace-hud top-right">
+          <span>tick</span>
+          <strong id="simulationTick" data-testid="simulation-tick">0</strong>
+        </div>
+        <div class="workspace-hud bottom-left" id="canvasHint"></div>
+        <div class="workspace-signature" aria-hidden="true">
+          <span id="signatureCode">SYS–00</span>
+        </div>
+      </section>
+
+      <aside class="inspector" id="simulationInspector" aria-label="Simulation inspector">
+        <div class="inspector-head">
+          <p class="eyebrow">INSPECTOR</p>
+          <h2>Parameters</h2>
+        </div>
+        <div id="controlsRoot" class="controls-root"></div>
+        <div class="readout-head">
+          <p class="section-label">Live measurements</p>
+        </div>
+        <div id="metricsRoot" class="metrics-root"></div>
+      </aside>
+    </main>
+
+    <div class="mobile-actions" aria-label="Mobile experiment actions">
+      <button
+        class="mobile-guide"
+        id="mobileGuideButton"
+        type="button"
+        aria-controls="experimentRail"
+        aria-expanded="false"
+      >
+        Guide
+      </button>
+      <button class="mobile-share" id="mobileShareButton" type="button">Share</button>
+      <button class="mobile-reset" id="mobileResetButton" type="button">Reset</button>
+      <button
+        class="mobile-panel-toggle"
+        id="mobilePanelToggle"
+        type="button"
+        aria-controls="simulationInspector"
+        aria-expanded="false"
+      >
+        Controls
+      </button>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="universe-backdrop" id="universeBackdrop" hidden></div>
+    <aside class="universe-drawer" id="universeDrawer" aria-label="Setup Universe" hidden>
+      <div class="universe-head">
+        <div>
+          <p class="eyebrow">TWELVE WORKBENCHES</p>
+          <h2>Setup Universe</h2>
+        </div>
+        <button id="universeClose" type="button" aria-label="Close Setup Universe">×</button>
+      </div>
+      <p class="universe-intro">
+        Move between systems without leaving the bench. Every destination opens
+        directly into a live instrument.
+      </p>
+      <nav id="universeList" class="universe-list"></nav>
+      <p class="universe-foot">One universe. Different laws.</p>
+    </aside>
+
+    <noscript>This setup needs JavaScript to run its live model.</noscript>
+    <script type="module" src="/assets/app.js"></script>
+  </body>
+</html>

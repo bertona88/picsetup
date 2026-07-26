@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "universe": "Setup Universe",
+  "id": "pic",
+  "name": "PicSetup",
+  "domain": "picsetup.com",
+  "url": "https://picsetup.com/",
+  "field": "Integrated photonics",
+  "status": "preliminary-wrapper",
+  "rebuild": "from-scratch",
+  "plannedInteroperability": true,
+  "interfaceContract": null,
+  "greenfieldContracts": {
+    "vision": "VISION.md",
+    "domainModel": "PHOTONICS_MODEL_CONTRACT.md",
+    "interface": "INTERFACE_CONTRACT.md",
+    "claimsAndValidation": "CLAIMS_AND_VALIDATION.md",
+    "acceptance": "ACCEPTANCE_TESTS.md"
+  },
+  "firstAcceptedSlice": "Build one connectable Mach–Zehnder interferometer whose two output powers respond to wavelength and phase through a documented scattering model, with conservation and reference-plane tests.",
+  "ownershipBoundary": "PicSetup owns guided photonic networks; OpticalSetup owns free-space instrument propagation and geometry; ElectricalSetup owns electronic drive and readout dynamics.",
+  "claimGate": "No fabrication-ready, layout-signoff, or calibrated-device claim is allowed until modes, polarization, wavelength domain, loss model, and port reference planes are validated.",
+  "currentPrototype": {
+    "status": "temporary-live-demo",
+    "role": "reference-snapshot",
+    "immutable": true,
+    "sharedRuntime": true,
+    "path": "prototype/",
+    "productionRelease": "20260726T002235Z-478235af2650",
+    "verifiedAt": "2026-07-26",
+    "deployedSourceSha256": "478235af26508aa70aa2af5f0196c9868b92ded1bed88106a9aa1a1cd86f8ba5",
+    "entryModel": "assets/simulations/pic.js",
+    "modelBoundary": {
+      "scope": "A coherent, single-mode 2 × 2 scattering-matrix model with wavelength-dependent phase and lumped arm loss.",
+      "limits": [
+        "It does not solve waveguide modes, bends, reflections, or polarization.",
+        "Dispersion is reduced to fixed effective/group indices; thermal crosstalk and detector noise are omitted."
+      ]
+    },
+    "productionManagedSeparately": true,
+    "keepLiveUntilReplacementAuthorized": true
+  },
+  "repository": "https://github.com/bertona88/picsetup",
+  "siblings": [
+    {
+      "id": "electrical",
+      "name": "ElectricalSetup",
+      "domain": "electricalsetup.com",
+      "repository": "https://github.com/bertona88/electricalsetup"
+    },
+    {
+      "id": "biological",
+      "name": "BiologicalSetup",
+      "domain": "biologicalsetup.com",
+      "repository": "https://github.com/bertona88/biologicalsetup"
+    },
+    {
+      "id": "gravity",
+      "name": "GravitySetup",
+      "domain": "gravitysetup.com",
+      "repository": "https://github.com/bertona88/gravitysetup"
+    },
+    {
+      "id": "two-photon",
+      "name": "TwoPhotonLithography",
+      "domain": "twophotonlithography.com",
+      "repository": "https://github.com/bertona88/twophotonlithography"
+    },
+    {
+      "id": "ego",
+      "name": "EgoSetup",
+      "domain": "egosetup.com",
+      "repository": "https://github.com/bertona88/egosetup"
+    },
+    {
+      "id": "quantum",
+      "name": "QuantumSetup",
+      "domain": "quantumsetup.ai",
+      "repository": "https://github.com/bertona88/quantumsetup"
+    },
+    {
+      "id": "noetic",
+      "name": "NoeticSetup",
+      "domain": "noeticsetup.com",
+      "repository": "https://github.com/bertona88/noeticsetup"
+    },
+    {
+      "id": "computation",
+      "name": "ComputationSetup",
+      "domain": "computationsetup.com",
+      "repository": "https://github.com/bertona88/computationsetup"
+    },
+    {
+      "id": "logistic",
+      "name": "LogisticSetup",
+      "domain": "logisticsetup.com",
+      "repository": "https://github.com/bertona88/logisticsetup"
+    },
+    {
+      "id": "molecular",
+      "name": "MolecularSetup",
+      "domain": "molecularsetup.com",
+      "repository": "https://github.com/bertona88/molecularsetup"
+    }
+  ],
+  "opticalSetup": {
+    "repositoryOwner": "LucaGenchi",
+    "external": true,
+    "changesVia": "focused-pull-request",
+    "repository": "https://github.com/LucaGenchi/optics-sketch",
+    "url": "https://opticalsetup.com/sketch/"
+  }
+}

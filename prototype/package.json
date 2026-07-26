@@ -1,0 +1,11 @@
+{
+  "name": "setup-universe",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check assets/app.js && node --check assets/registry.js && node --check assets/state.js && node --check assets/ui.js"
+  }
+}
