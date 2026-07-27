@@ -2,9 +2,15 @@
   "name": "picsetup",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "Preliminary Setup Universe wrapper for PicSetup.",
   "homepage": "https://picsetup.com/",
   "scripts": {
+    "app:test": "node --test app/tests/*.test.mjs",
+    "app:check": "for file in app/src/*.js app/integrations/opticalsetup/*.js; do node --check \"$file\" || exit 1; done",
+    "app:build": "python3 app/build_single.py",
+    "app:validate": "npm run app:check && npm run app:test && npm run app:build",
+    "app:serve": "python3 -m http.server 4174 --directory app",
     "prototype:test": "npm --prefix prototype test",
     "prototype:check": "npm --prefix prototype run check",
     "prototype:serve": "npm --prefix prototype run serve"

@@ -1,0 +1,20 @@
+{
+  "name": "PicSetup Lab — Integrated Photonics Workbench",
+  "short_name": "PicSetup",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#030607",
+  "theme_color": "#05090a",
+  "description": "Think through, inspect, tune, explain, share, and hand off compact-model integrated photonic circuits.",
+  "categories": ["education", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

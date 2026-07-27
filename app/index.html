@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#05090a" />
+  <meta name="description" content="PicSetup Lab — think through, inspect, tune, explain, share, and hand off integrated photonic circuits." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>PicSetup Lab — Integrated Photonics Workbench</title>
+</head>
+<body>
+  <div id="app" class="app-shell" data-tool="select">
+    <header class="topbar glass">
+      <button class="icon-button brand-button" id="menuButton" aria-label="Open project menu">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+      </button>
+      <div class="brand-copy">
+        <strong><span>Pic</span>Setup</strong>
+        <small id="projectName">Untitled experiment</small>
+      </div>
+      <div class="topbar-actions">
+        <button class="lab-launch" id="labButton" aria-label="Open PicSetup Lab" title="Sweep, tune, and test robustness">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V7m0 11h16M6 15l4-5 3 2 5-7"/><circle cx="18" cy="5" r="1.5"/></svg><span>Lab</span><i id="labPinCount">0</i>
+        </button>
+        <button class="icon-button" id="undoButton" aria-label="Undo" title="Undo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M5 12h9a5 5 0 0 1 5 5"/></svg>
+        </button>
+        <button class="icon-button" id="redoButton" aria-label="Redo" title="Redo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5m4-5h-9a5 5 0 0 0-5 5"/></svg>
+        </button>
+        <button class="icon-button" id="shareButton" aria-label="Copy shareable experiment link" title="Share exact circuit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 13.5 15.5 6.5M14 5h3a2 2 0 0 1 2 2v3M10 19H7a2 2 0 0 1-2-2v-3M15.5 10.5l-7 7"/></svg>
+        </button>
+        <button class="icon-button" id="moreButton" aria-label="Open actions" title="Actions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="canvas-panel" aria-label="Photonic circuit canvas">
+        <div class="model-strip glass">
+          <button class="model-badge" id="modelBadge" aria-label="Open model information">
+            <span class="model-icon" aria-hidden="true"></span>
+            <span><b>Scalar TE₀</b><small>coherent · bidirectional · λ-dependent</small></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"/></svg>
+          </button>
+          <button class="routing-badge" id="routingButton" aria-label="Change routing model" title="Choose schematic or physical routing">
+            <span id="routingBadge">Physical</span><small id="routingDetail">curve = optical length</small>
+          </button>
+          <button class="routing-badge figure-badge" id="figureButton" aria-label="Open paper figure tools" title="Paper figure preview and vector export">
+            <span>Paper</span><small>SVG · PNG · panels</small>
+          </button>
+          <div class="solver-health" id="solverHealth" data-state="ok">
+            <span></span><b>Converged</b><small id="solverMeta">0.0 ms</small>
+          </div>
+        </div>
+
+        <div class="viewport" id="viewport">
+          <svg id="circuitSvg" class="circuit-svg" viewBox="0 0 1100 720" role="img" aria-label="Editable photonic circuit">
+            <defs>
+              <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="5" result="blur" />
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="strongGlow" x="-120%" y="-120%" width="340%" height="340%">
+                <feGaussianBlur stdDeviation="10" result="blur1" />
+                <feGaussianBlur stdDeviation="3" result="blur2" />
+                <feMerge><feMergeNode in="blur1"/><feMergeNode in="blur2"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <linearGradient id="flowGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#8eff42" />
+                <stop offset="1" stop-color="#8eff42" />
+              </linearGradient>
+              <linearGradient id="packetGreen" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#8eff42" stop-opacity="0" />
+                <stop offset="0.2" stop-color="#8eff42" stop-opacity="0.5" />
+                <stop offset="0.5" stop-color="#c8ff9f" stop-opacity="0.98" />
+                <stop offset="0.8" stop-color="#8eff42" stop-opacity="0.5" />
+                <stop offset="1" stop-color="#8eff42" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="packetCyan" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#25e8ff" stop-opacity="0" />
+                <stop offset="0.2" stop-color="#25e8ff" stop-opacity="0.45" />
+                <stop offset="0.5" stop-color="#b8f8ff" stop-opacity="0.95" />
+                <stop offset="0.8" stop-color="#25e8ff" stop-opacity="0.45" />
+                <stop offset="1" stop-color="#25e8ff" stop-opacity="0" />
+              </linearGradient>
+              <radialGradient id="sourceGradient">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset="0.25" stop-color="#d8ff92"/>
+                <stop offset="1" stop-color="#76ff2b" stop-opacity="0"/>
+              </radialGradient>
+              <marker id="arrowOptical" viewBox="0 0 6 6" refX="5.5" refY="3" markerWidth="4" markerHeight="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0 0L6 3L0 6Z" fill="#168a72"/></marker>
+              <marker id="arrowElectrical" viewBox="0 0 6 6" refX="5.5" refY="3" markerWidth="4" markerHeight="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0 0L6 3L0 6Z" fill="#b06b00"/></marker>
+              <marker id="arrowRf" viewBox="0 0 6 6" refX="5.5" refY="3" markerWidth="4" markerHeight="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0 0L6 3L0 6Z" fill="#a22b80"/></marker>
+              <marker id="arrowControl" viewBox="0 0 6 6" refX="5.5" refY="3" markerWidth="4" markerHeight="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0 0L6 3L0 6Z" fill="#315ca8"/></marker>
+              <marker id="arrowAnnotation" viewBox="0 0 6 6" refX="5.5" refY="3" markerWidth="4" markerHeight="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0 0L6 3L0 6Z" fill="#6f7b79"/></marker>
+              <pattern id="dotGrid" width="28" height="28" patternUnits="userSpaceOnUse">
+                <circle cx="1.5" cy="1.5" r="1.1" fill="#416064" opacity="0.26"/>
+              </pattern>
+              <pattern id="physicalGrid" width="25" height="25" patternUnits="userSpaceOnUse">
+                <circle cx="0" cy="0" r="0.9" fill="#77bfb7" opacity="0.5"/>
+              </pattern>
+            </defs>
+            <rect class="canvas-bg" width="1100" height="720" fill="url(#dotGrid)" />
+            <g id="gridLayer" pointer-events="none"><rect class="physical-grid" x="-5000" y="-5000" width="10000" height="10000" fill="url(#physicalGrid)" /></g>
+            <g id="backgroundLayer"></g>
+            <g id="connectionLayer"></g>
+            <g id="pulseLayer" pointer-events="none"></g>
+            <g id="componentLayer"></g>
+            <g id="interactionLayer"></g>
+          </svg>
+
+          <div class="empty-hint glass" id="emptyHint" hidden>
+            <span class="hint-gesture" aria-hidden="true"></span>
+            <div><b>Begin with a source</b><small>Place components, then draw between compatible ports.</small></div>
+            <button id="loadDemoInline">Load MZI example</button>
+          </div>
+
+          <div class="canvas-readout glass" id="canvasReadout">
+            <span><small>Launched</small><b id="sourceReadout">1.000 mW</b></span>
+            <span><small>Detected</small><b id="detectedReadout">1.000 mW</b></span>
+            <button id="powerBudgetButton" title="Open the optical power budget"><small>Accounted</small><b id="powerBudgetReadout">100.0%</b></button>
+            <span><small>Solver residual</small><b id="balanceReadout">1.0e−12</b></span>
+          </div>
+
+          <button class="scale-ruler glass" id="scaleRuler" title="Physical canvas scale">
+            <span></span><b id="scaleReadout">20 µm</b><small>physical scale</small>
+          </button>
+
+          <div class="zoom-controls glass" aria-label="Canvas zoom controls">
+            <button id="zoomOut" aria-label="Zoom out">−</button>
+            <button id="zoomReset" aria-label="Reset zoom"><span id="zoomReadout">100%</span></button>
+            <button id="zoomIn" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+
+        <nav class="tool-rail glass" aria-label="Circuit tools">
+          <button data-tool="select" class="active" aria-label="Select and move">
+            <svg viewBox="0 0 24 24"><path d="m5 3 12 9-5 1 3 6-2.5 1L10 14l-3 4z"/></svg><span>Select</span>
+          </button>
+          <button data-tool="draw" aria-label="Draw a waveguide">
+            <svg viewBox="0 0 24 24"><path d="M3 18c4-8 7 2 11-7 2-4 5-5 7-5"/><circle cx="3" cy="18" r="1.5"/><circle cx="21" cy="6" r="1.5"/></svg><span>Draw</span>
+          </button>
+          <button data-tool="place" aria-label="Place a component">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg><span>Place</span>
+          </button>
+          <button data-tool="erase" aria-label="Erase a component or waveguide">
+            <svg viewBox="0 0 24 24"><path d="m4 15 8-10 8 7-6 7H8zM14 19h7"/></svg><span>Erase</span>
+          </button>
+        </nav>
+
+        <div class="component-tray glass" id="componentTray" hidden>
+          <div class="tray-heading"><b>Component library</b><small>Analytical, measured, or imported compact models</small></div>
+          <div class="component-catalog" id="componentCatalog" aria-label="Component library"></div>
+        </div>
+      </section>
+
+      <aside class="inspector glass" id="inspector" aria-label="Selected object inspector">
+        <div class="inspector-empty" id="inspectorEmpty">
+          <span class="scope-icon" aria-hidden="true"></span>
+          <b>Select something on the canvas</b>
+          <p>Parameters, measurements, model assumptions, and deeper physics appear here.</p>
+        </div>
+        <div id="inspectorContent" hidden></div>
+      </aside>
+
+      <section class="lab-panel glass" id="labPanel" hidden aria-label="PicSetup Lab">
+        <header class="lab-header">
+          <div class="lab-title"><span class="lab-mark">∿</span><div><b>PicSetup Lab</b><small id="labSubtitle">Measure across the design space</small></div></div>
+          <div class="lab-tabs" id="labTabs" role="tablist">
+            <button data-lab-tab="sweep" class="active" role="tab">Sweep</button>
+            <button data-lab-tab="tune" role="tab">Tune</button>
+            <button data-lab-tab="tolerance" role="tab">Tolerance</button>
+            <button data-lab-tab="pulse" role="tab">Pulse</button>
+          </div>
+          <div class="lab-header-actions"><button class="icon-button" id="labMinimize" aria-label="Minimize Lab to live sparkline"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button><button class="icon-button" id="labClose" aria-label="Close Lab"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+        </header>
+        <div class="lab-body">
+          <section class="lab-plot-wrap">
+            <canvas id="labPlot" aria-label="Interactive analysis plot"></canvas>
+            <div class="lab-plot-toolbar" id="labPlotToolbar"></div>
+          </section>
+          <aside class="lab-controls" id="labControls"></aside>
+        </div>
+        <footer class="lab-footer">
+          <div class="lab-status"><span id="labStatusDot"></span><b id="labStatus">Ready</b><small id="labProgressText">Pin a detector or port to begin.</small></div>
+          <div class="lab-progress" id="labProgress" hidden><span id="labProgressBar"></span></div>
+          <div class="lab-metrics" id="labMetrics"></div>
+        </footer>
+      </section>
+    </main>
+
+    <footer class="transport glass">
+      <div class="time-context">
+        <span class="live-dot"></span>
+        <div><b id="transportModeLabel">CW steady state</b><small id="transportModeDetail">Control changes visualization speed, not optical carrier time.</small></div>
+      </div>
+      <div class="transport-control">
+        <span class="animal" aria-hidden="true">◡</span>
+        <button class="time-knob" id="timeKnob" aria-label="Visualization speed control" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1">
+          <span class="knob-ticks"></span>
+          <span class="knob-center"><svg viewBox="0 0 24 24" id="transportIcon"><path d="M9 7v10M15 7v10"/></svg><b id="speedReadout">1.0×</b></span>
+        </button>
+        <span class="animal rabbit" aria-hidden="true">⌁</span>
+      </div>
+      <div class="transport-actions">
+        <button id="pauseButton"><svg viewBox="0 0 24 24"><path d="M9 7v10M15 7v10"/></svg><span>Pause</span></button>
+        <button id="fitButton"><svg viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg><span>Fit</span></button>
+      </div>
+    </footer>
+  </div>
+
+  <dialog class="physics-dialog" id="physicsDialog">
+    <div class="physics-shell">
+      <header class="physics-header glass">
+        <button class="icon-button" id="closePhysics" aria-label="Close deep physics view"><svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg></button>
+        <div><b>Directional coupler</b><small id="physicsBreadcrumb">Circuit → local component physics</small></div>
+        <div class="physics-header-actions">
+          <span class="depth-badge" id="depthBadge">10× · power flow</span>
+          <button class="icon-button" id="physicsInfoButton" aria-label="Physics model details"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg></button>
+        </div>
+      </header>
+
+      <div class="physics-body">
+        <section class="physics-stage">
+          <div class="physics-tabs glass" role="tablist" aria-label="Directional coupler view layers">
+            <button data-view="circuit" role="tab">Circuit</button>
+            <button data-view="power" role="tab" class="active">Power</button>
+            <button data-view="phase" role="tab">Phase</button>
+            <button data-view="field" role="tab">Field</button>
+            <button data-view="supermodes" role="tab">Supermodes</button>
+          </div>
+          <canvas id="couplerCanvas" aria-label="Directional coupler local physics visualization"></canvas>
+          <div class="coupler-label input-label" id="couplerInputLabel"><small>IN</small><b>1.000 mW</b></div>
+          <div class="coupler-label through-label" id="couplerThroughLabel"><small>THRU</small><b>0.500 mW</b></div>
+          <div class="coupler-label cross-label" id="couplerCrossLabel"><small>CROSS</small><b>0.500 mW</b></div>
+          <div class="field-scale glass" id="fieldScale"><span></span><small id="fieldScaleLabel">Normalized power 0 → 1</small></div>
+          <div class="mini-map glass">
+            <svg id="miniMapSvg" viewBox="0 0 240 130" aria-label="Circuit mini-map"></svg>
+            <span>Current component</span>
+          </div>
+          <div class="zoom-coach glass" id="zoomCoach">
+            <span class="pinch-icon" aria-hidden="true"></span>
+            <div><b>Pinch or scroll to inspect deeper</b><small>Zoom level changes the visible model transparently.</small></div>
+          </div>
+        </section>
+
+        <aside class="coupler-inspector glass">
+          <div class="coupler-inspector-heading">
+            <div><b>Directional coupler</b><small id="couplerModelName">Distributed coupled-mode model</small></div>
+            <span class="live-pill"><i></i>Live</span>
+          </div>
+          <label>
+            <span><b>Gap <i>g</i></b><output id="gapOutput">0.200 µm</output></span>
+            <input id="gapRange" type="range" min="0.08" max="0.8" step="0.005" value="0.2" />
+            <small><span>0.08</span><span>0.80 µm</span></small>
+          </label>
+          <label>
+            <span><b>Interaction length <i>L</i><sub>c</sub></b><output id="lengthOutput">20.00 µm</output></span>
+            <input id="lengthRange" type="range" min="2" max="80" step="0.25" value="20" />
+            <small><span>2</span><span>80 µm</span></small>
+          </label>
+          <label>
+            <span><b>Wavelength <i>λ</i></b><output id="wavelengthOutput">1550 nm</output></span>
+            <input id="wavelengthRange" type="range" min="1450" max="1650" step="1" value="1550" />
+            <small><span>1450</span><span>1650 nm</span></small>
+          </label>
+          <div class="metric-grid">
+            <span><small>Coupling angle</small><b id="couplingAngleMetric">0.785 rad</b></span>
+            <span><small>Cross power</small><b id="crossPowerMetric">50.0%</b></span>
+            <span><small>Through phase</small><b id="throughPhaseMetric">0.00 rad</b></span>
+            <span><small>Cross phase</small><b id="crossPhaseMetric">−1.57 rad</b></span>
+          </div>
+          <button class="equation-card" id="equationCard">
+            <span>Local model</span>
+            <code>d<b>a</b>/dz = −i<b>K</b><b>a</b></code>
+            <small>Tap for assumptions and validity</small>
+          </button>
+          <div class="model-truth">
+            <span><i></i><b>What is literal</b><small>Power exchange, complex phase, geometry response, and detector outputs.</small></span>
+            <span><i></i><b>What is reconstructed</b><small>Transverse fields use compact modal profiles; carrier wavelength is visually magnified.</small></span>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet-dialog" id="sheetDialog">
+    <form method="dialog" class="sheet glass">
+      <div class="sheet-handle"></div>
+      <header><div><b id="sheetTitle">Project</b><small id="sheetSubtitle">Experiment actions</small></div><button value="close" class="icon-button"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+      <div id="sheetContent"></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
