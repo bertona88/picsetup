@@ -5,7 +5,7 @@
 - **Live prototype:** https://picsetup.com/
 - **Prototype release verified:** 2026-07-26 (`20260726T002235Z-478235af2650`); check the URL for current availability
 - **Field:** Integrated photonics
-- **Status:** Greenfield planning wrapper with a preserved prototype snapshot
+- **Status:** Greenfield successor candidate with a preserved production prototype
 
 ## Vision
 
@@ -23,7 +23,26 @@ PicSetup is part of the **Setup Universe**: independently deployed scientific an
 
 Read [AGENTS.md](./AGENTS.md) before planning or implementing work.
 
-The present browser demo should not constrain the next architecture. Before substantial implementation, this repository expects `VISION.md`, `PHOTONICS_MODEL_CONTRACT.md`, `INTERFACE_CONTRACT.md`, `CLAIMS_AND_VALIDATION.md`, and `ACCEPTANCE_TESTS.md`.
+The present browser demo should not constrain the next architecture. The candidate successor is governed by `VISION.md`, `PHOTONICS_MODEL_CONTRACT.md`, `INTERFACE_CONTRACT.md`, `CLAIMS_AND_VALIDATION.md`, and `ACCEPTANCE_TESTS.md`.
+
+## Successor candidate
+
+`app/` contains the dependency-light greenfield workbench candidate. It combines an editable semantic PIC canvas, compact coherent-network analysis, typed cross-domain figure connections, publication SVG/PNG export, and versioned OpticalSetup bridge ports.
+
+Paper Figure Studio can combine simulated photonic objects with diagram-only instruments, RF/electrical/control wiring, plots, image panels, annotations, and chip boundaries without admitting non-optical links into the coherent solve. Its included hybrid template demonstrates the complete figure workflow.
+
+The `setup-port/1` bridge is a deterministic document handoff. PicSetup emits an explicit scalar guided-mode boundary; OpticalSetup retains authority over free-space geometry, beam waist, numerical aperture, wavefront, and receiver-side scene construction. The neutral receiver adapter under `app/integrations/opticalsetup/` is a focused integration proposal, not a deployment to Luca Genchi's repository.
+
+To validate or serve the candidate locally:
+
+```sh
+npm run app:validate
+npm run app:serve
+```
+
+Then open http://127.0.0.1:4174/.
+
+The candidate is not deployed by the current Pages workflow. Acceptance, merge, and replacement of the live prototype remain separate decisions.
 
 ## Prototype model boundary
 
@@ -52,7 +71,7 @@ npm run prototype:serve
 
 Then open http://127.0.0.1:4173/?setup=pic.
 
-These commands validate only the legacy prototype. This wrapper intentionally has no future-product test suite until the greenfield implementation begins.
+These commands validate only the legacy prototype. The successor has its own tests and build under `app/`; neither suite demonstrates a production deployment.
 
 ## Setup Universe
 
