@@ -1,4 +1,4 @@
-name: Deploy prototype to GitHub Pages
+name: Deploy PicSetup to GitHub Pages
 
 on:
   push:
@@ -28,10 +28,18 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload prototype
+      - name: Stage PicSetup app
+        run: |
+          mkdir -p _site/src _site/integrations/opticalsetup
+          cp app/index.html app/styles.css app/icon.svg app/manifest.webmanifest app/sw.js _site/
+          cp app/src/*.js _site/src/
+          cp app/integrations/opticalsetup/receiver-adapter.js _site/integrations/opticalsetup/
+          cp prototype/robots.txt _site/robots.txt
+
+      - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: prototype
+          path: _site
 
       - name: Deploy
         id: deployment
