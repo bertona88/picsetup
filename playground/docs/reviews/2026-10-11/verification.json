@@ -1,0 +1,74 @@
+{
+  "reviewedCheckpoint": "7b79b0ab6bba7a57f50fd955afc1e0f7a4d507f6",
+  "reviewedTree": "106d28c33ff781aa54dddd984104a6fb4dbbc0d2",
+  "date": "2026-10-11",
+  "verification": "Coordinator independently reran three focused built-API probes; no implementation changes or fresh browser run",
+  "cases": [
+    {
+      "id": "interior-critical-ring-notch",
+      "classification": "Declared uniform-grid limitation with reproduced interpretation consequence",
+      "recipe": "playground/examples/recipes/ring.json",
+      "change": "Set ideal coupling to 1 - 10^(-0.1/10)",
+      "lengthM": 0.0001,
+      "neff": 2.4,
+      "lossDbPerM": 1000,
+      "sourcePowerW": 0.001,
+      "resonanceM": 0.0000015483870967741937,
+      "exactTransmission": 3.831020651570647e-24,
+      "sweepStartM": 0.0000015,
+      "sweepStopM": 0.0000016,
+      "measurement": "Minimum normalized transmission within 1 nm of the selected interior resonance; not full-band global minimum",
+      "sampled": [
+        {"points": 101, "transmission": 0.9910958305821387},
+        {"points": 201, "transmission": 0.9048128351389696},
+        {"points": 1001, "transmission": 0.11049640786907834}
+      ]
+    },
+    {
+      "id": "inferior-sampled-best",
+      "classification": "Correct finite-grid result; missing baseline-aware decision state",
+      "circuit": "Balanced ideal MZI, input 1 mW, phase pi, first output selected",
+      "wavelengthM": 0.00000155,
+      "objective": "maximize",
+      "parameter": "phaseRad",
+      "min": 0,
+      "max": 6.283185307179586,
+      "points": 2,
+      "baselinePowerW": 0.0010000000000000005,
+      "bestPowerW": 6.018531076210112e-36,
+      "bestValue": 6.283185307179586,
+      "boundaryHit": true,
+      "failedCount": 0,
+      "uiAvailability": "Apply enabled by source condition when a noncancelled valid best exists; no baseline-improvement gate"
+    },
+    {
+      "id": "extreme-lossless-feedback-goal",
+      "classification": "Admitted extreme-domain numerical robustness defect, detected by power warning but eligible for goal ranking",
+      "topology": "Source -> ideal coupler L0; R0 -> detector; R1 -> L1 with zero length/loss; remaining guides zero length/loss",
+      "sourcePowerW": 0.001,
+      "wavelengthM": 0.00000155,
+      "baselineCoupling": 1e-13,
+      "baselinePowerW": 0.0009943314505260522,
+      "baselineResidual": 0,
+      "baselineOk": true,
+      "baselineDiagnostics": ["POWER_IMBALANCE"],
+      "objective": "maximize",
+      "minCoupling": 1e-13,
+      "maxCoupling": 1e-12,
+      "points": 201,
+      "bestCoupling": 1.315e-13,
+      "bestPowerW": 0.0010015096977403536,
+      "bestDiagnostics": ["POWER_IMBALANCE"],
+      "failedCount": 0,
+      "idealExpectedPowerWForAllCandidates": 0.001
+    }
+  ],
+  "sourceInspection": {
+    "neffCatalogMinimum": 0,
+    "neffValidator": "strictly positive",
+    "weightedEndpointPort1TotalPower": 0.98374157785268,
+    "interpolatedPort1TotalPower": 0.9716000813333332,
+    "auditPath": "playground/models/siepic-dc-200nm-10um/verification.json",
+    "existingProseValue": 0.9834
+  }
+}
