@@ -20,3 +20,17 @@ export const icons: Record<string, string> = {
  arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
 };
 export function icon(name: string, size = 20) { return `<svg width="${size}" height="${size}" viewBox="0 0 ${['source','coupler','phase','attenuator','detector','termination'].includes(name)?32:24} ${['source','coupler','phase','attenuator','detector','termination'].includes(name)?32:24}" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] ?? icons.light}</svg>`; }
+
+/** Schematic device geometry terminates exactly at the editor's optical ports. */
+export function componentShape(model: string): string {
+ const guide=(path:string)=>`<path class="device-guide" d="${path}"/><path class="device-core" d="${path}"/>`;
+ const shapes:Record<string,string>={
+  source: `${guide('M 8 0 H 56')}<circle class="emitter-halo" cx="-10" cy="0" r="25"/><circle class="emitter-body" cx="-10" cy="0" r="16"/><path class="emitter-wave" d="M -21 0 C -17 -10 -14 -10 -10 0 S -3 10 1 0"/><path class="emitter-rays" d="M 16 -9 Q 22 0 16 9 M 23 -13 Q 32 0 23 13"/>`,
+  coupler: `<rect class="coupling-region" x="-25" y="-14" width="50" height="28" rx="12"/>${guide('M -66 -20 H -51 C -34 -20 -35 -5 -17 -5 H 17 C 35 -5 34 -20 51 -20 H 66')}${guide('M -66 20 H -51 C -34 20 -35 5 -17 5 H 17 C 35 5 34 20 51 20 H 66')}<path class="coupling-ticks" d="M -12 -1 V 1 M -4 -1 V 1 M 4 -1 V 1 M 12 -1 V 1"/>`,
+  phase: `<rect class="phase-region" x="-28" y="-14" width="56" height="28" rx="8"/>${guide('M -56 0 H 56')}<path class="phase-electrode" d="M -20 -9 H 20 M -20 9 H 20"/><text class="device-symbol" x="0" y="-18">φ</text>`,
+  attenuator: `<rect class="attenuation-region" x="-24" y="-13" width="48" height="26" rx="6"/>${guide('M -56 0 H 56')}<path class="absorption-hatching" d="m -17 -10 10 20 m -1 -20 10 20 m -1 -20 10 20"/>`,
+  detector: `${guide('M -56 0 H -9')}<path class="detector-body" d="M -9 -17 H 5 Q 26 -17 26 0 Q 26 17 5 17 H -9 Z"/><path class="detector-stripes" d="M -3 -11 V 11 M 3 -11 V 11 M 9 -10 V 10 M 15 -7 V 7"/><path class="detector-lead" d="M 6 -17 V -23 H 25"/>`,
+  termination: `${guide('M -56 0 H -7')}<path class="termination-body" d="M -7 -15 V 15 M 0 -12 V 12 M 7 -8 V 8 M 14 -4 V 4"/>`,
+ };
+ return `<g class="device-structure" aria-hidden="true">${shapes[model]??''}</g>`;
+}

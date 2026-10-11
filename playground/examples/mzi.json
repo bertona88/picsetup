@@ -1,0 +1,205 @@
+{
+  "schema": "picsetup-playground/1",
+  "title": "Balanced Mach–Zehnder interferometer",
+  "circuit": {
+    "components": [
+      {
+        "id": "source-1",
+        "model": "source",
+        "version": "1",
+        "label": "CW source",
+        "params": {
+          "powerW": 0.001,
+          "phaseRad": 0
+        }
+      },
+      {
+        "id": "coupler-1",
+        "model": "coupler",
+        "version": "1",
+        "label": "Input coupler",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "phase-1",
+        "model": "phase",
+        "version": "1",
+        "label": "Upper arm phase",
+        "params": {
+          "phaseRad": 0
+        }
+      },
+      {
+        "id": "coupler-2",
+        "model": "coupler",
+        "version": "1",
+        "label": "Output coupler",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "detector-1",
+        "model": "detector",
+        "version": "1",
+        "label": "Output 0",
+        "params": {}
+      },
+      {
+        "id": "detector-2",
+        "model": "detector",
+        "version": "1",
+        "label": "Output 1",
+        "params": {}
+      }
+    ],
+    "connections": [
+      {
+        "id": "link-1",
+        "from": {
+          "component": "source-1",
+          "port": 0
+        },
+        "to": {
+          "component": "coupler-1",
+          "port": 0
+        },
+        "lengthM": 0,
+        "lossDbPerM": 0,
+        "neff": 2.4
+      },
+      {
+        "id": "link-2",
+        "from": {
+          "component": "coupler-1",
+          "port": 2
+        },
+        "to": {
+          "component": "phase-1",
+          "port": 0
+        },
+        "lengthM": 0.00004,
+        "lossDbPerM": 0,
+        "neff": 2.4
+      },
+      {
+        "id": "link-3",
+        "from": {
+          "component": "phase-1",
+          "port": 1
+        },
+        "to": {
+          "component": "coupler-2",
+          "port": 0
+        },
+        "lengthM": 0.00004,
+        "lossDbPerM": 0,
+        "neff": 2.4
+      },
+      {
+        "id": "link-4",
+        "from": {
+          "component": "coupler-1",
+          "port": 3
+        },
+        "to": {
+          "component": "coupler-2",
+          "port": 1
+        },
+        "lengthM": 0.00008,
+        "lossDbPerM": 0,
+        "neff": 2.4
+      },
+      {
+        "id": "link-5",
+        "from": {
+          "component": "coupler-2",
+          "port": 2
+        },
+        "to": {
+          "component": "detector-1",
+          "port": 0
+        },
+        "lengthM": 0,
+        "lossDbPerM": 0,
+        "neff": 2.4
+      },
+      {
+        "id": "link-6",
+        "from": {
+          "component": "coupler-2",
+          "port": 3
+        },
+        "to": {
+          "component": "detector-2",
+          "port": 0
+        },
+        "lengthM": 0,
+        "lossDbPerM": 0,
+        "neff": 2.4
+      }
+    ],
+    "wavelengthM": 0.00000155
+  },
+  "layout": {
+    "components": {
+      "source-1": {
+        "x": 100,
+        "y": 250,
+        "rotation": 0
+      },
+      "coupler-1": {
+        "x": 280,
+        "y": 250,
+        "rotation": 0
+      },
+      "phase-1": {
+        "x": 490,
+        "y": 140,
+        "rotation": 0
+      },
+      "coupler-2": {
+        "x": 700,
+        "y": 250,
+        "rotation": 0
+      },
+      "detector-1": {
+        "x": 900,
+        "y": 180,
+        "rotation": 0
+      },
+      "detector-2": {
+        "x": 900,
+        "y": 330,
+        "rotation": 0
+      }
+    },
+    "connections": {
+      "link-1": {
+        "bend": 0
+      },
+      "link-2": {
+        "bend": 0
+      },
+      "link-3": {
+        "bend": 0
+      },
+      "link-4": {
+        "bend": 140
+      },
+      "link-5": {
+        "bend": 0
+      },
+      "link-6": {
+        "bend": 0
+      }
+    },
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  }
+}

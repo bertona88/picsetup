@@ -153,15 +153,18 @@ test('build an MZI from blank, edit and undo phase, save/reopen and reject bad f
   await page.getByTestId('import-json').setInputFiles({
     name: 'roundtrip-mzi.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(saved)),
   });
+  await expect(page.getByTestId('toast')).toContainText(/opened|restored/i);
   await expectPower(page, lower, .0005);
   await page.getByTestId(`node-${phase}`).click();
+  await expect(page.getByTestId('toast')).toBeHidden();
   const evidence = path.resolve('evidence');
   await mkdir(evidence, { recursive: true });
   const screenshotPath = path.join(evidence, 'mzi-chromium.png');
   await page.screenshot({ path: screenshotPath, fullPage: true });
   await testInfo.attach('MZI constructed from blank', { path: screenshotPath, contentType: 'image/png' });
   await writeFile(path.join(evidence, 'browser-run.json'), JSON.stringify({
-    capturedAt: new Date().toISOString(), browserName, browserVersion: browser.version(),
+    capturedAt: new Date().toISOString(), commit: process.env.GITHUB_SHA ?? null,
+    workflowRun: process.env.GITHUB_RUN_ID ?? null, browserName, browserVersion: browser.version(),
     viewport: page.viewportSize(), userAgent: await page.evaluate(() => navigator.userAgent),
     sourcePowerW: .001, phaseRad: Math.PI / 2,
     expectedDetectorPowerW: [.0005, .0005],
