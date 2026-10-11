@@ -1,6 +1,18 @@
-# PICSetup playground
+# PICSetup idea workbench
 
-A fresh browser photonic workbench with an open SiEPIC component dataset, coherent circuit editing and wavelength experiments. This workspace is isolated from the older `app/` and `prototype/`.
+Sketch a guided photonic circuit, change an assumption, and compare the result. The canvas, JSON recipe compiler, Node API and experiment workers use the same scalar coherent CW solver.
+
+## Try the workflow
+
+1. Open **Sketch** and choose a SiEPIC MZI, ideal MZI, ring, splitter tree or delay line. Edit its recipe and choose **Build this idea**.
+2. Select components or guides to change phase, coupling, length and loss. **Arrange** redraws the graph without changing any physical parameter.
+3. Open **Compare** and **Pin current circuit**. Change the live circuit and pin another variant. Each snapshot keeps its own complete circuit; compare up to six on one wavelength grid.
+4. Select a phase shifter, ideal coupler or guide and choose **Tune toward a goal**. Search a bounded range, inspect the sampled best and apply it explicitly. Undo restores the previous circuit.
+5. Save a circuit JSON, a complete notebook JSON, or full-precision CSV results. Notebook restore retains the variants and sweep settings; run again to recompute the curves.
+
+For an immediate example, Sketch → **Compare three arm lengths** builds three SiEPIC MZIs with ΔL = 10, 20 and 30 µm. They appear together in the comparison notebook with their exact parameters preserved.
+
+**Add a building block** inserts a source-free MZI, all-pass ring, 1→4 splitter or delay line. Blocks expand into editable primitives with ordinary exposed ports. This is reusable template composition; arbitrary nested custom modules are not implemented.
 
 ## Run
 
@@ -11,45 +23,40 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:4175. `npm run build` produces static `dist/`; `npm run preview` serves it. No account or paid service is required.
+Open http://localhost:4175. Build the static application and headless API with `npm run build`. The application is in `dist/`; the Node ES modules and JSON CLI are in `dist-api/`. `npm run preview` serves the static app. No account, API key or external model service is needed to run it.
 
-## Try the experiments
+## Author with an agent or script
 
-- **Coupler spectrum:** send 1 mW into a real tabulated SiEPIC directional-coupler model, with a 200 nm gap and 10 µm coupling length. Inspect through/cross powers and their wavelength response. The full four-port matrix retains reflections and back-coupling.
-- **SiEPIC MZI:** compose two imported couplers with explicit 80/100 µm arms. Sweep wavelength, move through the spectrum, and adjust the phase shifter.
-- **Ideal MZI:** use the same arm lengths with ideal 50/50 couplers to compare the declared models. The original balanced MZI remains available separately.
+```sh
+npm run build:api
+node dist-api/cli.mjs examples/commands/catalog-te.json
+node dist-api/cli.mjs examples/commands/solve-mzi.json
+node dist-api/cli.mjs examples/commands/compare-arm-lengths.json
+node dist-api/cli.mjs examples/commands/search-phase.json
+```
 
-The spectral explorer runs 2–1001 uniformly spaced wavelengths in a worker, supports stopping a run and exports full-precision CSV with SI units, circuit state, dataset identity, diagnostics and power accounting. Clicking the spectrum or using its arrow keys changes the selected wavelength. Changes to circuit physics invalidate the old sweep.
+The CLI also reads a single JSON command from stdin. [API documentation](docs/API.md) covers strict named-port recipes, catalog queries, solving, sweeps, notebooks and bounded searches. Runnable recipes and commands are in `examples/recipes/` and `examples/commands/`.
 
-Add parts from the palette and click two ports to connect them. Coupler order is `[L0,L1,R0,R1]`, corresponding to source dataset ports `[1,2,3,4]`. Each port has one connection. New links have **L = 0 µm**; set length, effective index and loss explicitly. Moving or bending a link only changes the sketch. Export JSON for a portable experiment; local autosave is also available.
-
-## What the data means
-
-The bundled SiEPIC table contains 101 frequency samples across approximately **1500–1600 nm**, with all sixteen complex S entries at each sample. It is pinned to exact upstream revisions and preserved with MIT notices and reproducible conversion scripts. [Dataset provenance and audit](models/siepic-dc-200nm-10um/README.md) describe the source and conventions.
-
-This is an **experimental interpolated response**, not a calibrated device prediction. Native reference-plane coordinates and uncertainty are unknown. The original table has small passivity violations, preserved and reported. Linear interpolation of real/imaginary coefficients can add apparent attenuation between source samples; it is not measured extra physical loss. Queries outside the source band fail instead of extrapolating.
-
-The network uses single-scalar-mode, linear CW scattering with SI units and `(I − SC)b = s`. Constant effective index is nondispersive. Unconnected ports are ideal matched boundaries; dark detector phase is undefined. There are no implicit interactions at crossings, layout-derived optical lengths, fabrication claims or external service dependencies.
+The browser exposes `window.picsetup` version `1`: `getDocument()`, `loadRecipe(input)`, `loadDocument(input)`, `arrange()`, `catalog(filter)` and async `execute(command)`. Recipe loading compiles and arranges; document loading restores an exact snapshot. Headless `execute` returns data without changing the canvas. These are explicit programming interfaces; the app does not contain a natural-language model.
 
 ## Check
-
-From `playground/`:
 
 ```sh
 npm test
 npm run build
+node scripts/check-api.mjs
 npx playwright install chromium
 npm run test:browser
 ```
 
-From the repository root, reproduce the source conversion and independent NumPy references:
+Linux browser dependencies may require `npx playwright install --with-deps chromium`. The workflow validates and uploads browser evidence, static assets and the Node API without deploying production. [HANDOFF.md](HANDOFF.md) records actual test results, screenshots and remaining boundaries.
 
-```sh
-python scripts/convert_siepic.py --check
-python scripts/verify_siepic.py --check
-python scripts/verify_siepic_mzi.py
-```
+## Model boundaries
 
-The first script needs only Python's standard library; independent verification needs NumPy. Linux browser dependencies may require `npx playwright install --with-deps chromium`. CI validates this workspace without deploying it.
+SI internally: m, W, rad and dB/m. One coherent source, one declared scalar guided mode per port, linear steady state. The network solves `(I − SC)b = s`; guide index is nondispersive. Drawn geometry never supplies optical length. New links default to zero length. Unconnected ports use matched boundaries; crossings do not connect.
 
-See [HANDOFF.md](HANDOFF.md) for actual evidence and remaining work, plus the [model contract](PHOTONICS_MODEL_CONTRACT.md), [document contract](INTERFACE_CONTRACT.md), and [notices](THIRD_PARTY_NOTICES.md). These are early M2/M3 experiments following M1, not completion of the full [11 October brief](https://github.com/bertona88/picsetup/blob/c32f58e102a55ae13cd11c11d312de63ecc8aff5/docs/picsetup-agent-brief-2026-10-11.md). Ring interaction, general external-model import, reusable modules and broader browser/performance qualification remain open.
+The bundled SiEPIC coupler has fixed 200 nm gap and 10 µm coupling length, source TE mode 1, and approximately 1500–1600 nm support. Its native spatial reference planes are unknown. Complex Cartesian interpolation can introduce apparent attenuation; some original matrices show slight apparent gain. Those values are preserved, with visible diagnostics and explicit accounting. No calibrated-device or fabrication claim is made.
+
+Uniform wavelength and parameter grids can miss narrow resonances or optima. Goal search reports the best sampled candidate, failures and boundary hits. Source data, conventions and both MIT notices are preserved in [the dataset](models/siepic-dc-200nm-10um/README.md) and in distributed third-party notices.
+
+See the [workbench contract](WORKBENCH_CONTRACT.md), [physics contract](PHOTONICS_MODEL_CONTRACT.md), [document contract](INTERFACE_CONTRACT.md), and [claims](CLAIMS_AND_VALIDATION.md).

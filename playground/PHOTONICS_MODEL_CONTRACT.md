@@ -29,3 +29,12 @@ Report source emission, escape at unconnected ports, detector absorption, return
 Budget closure is `emittedW + modelSuppliedW − detectedW − escapedW − componentAbsorbedW − returnedToSourceW − propagationLossW`. Internal circulation is not an output. Numerical residual and scale-aware pivot diagnostics remain visible. Invalid/singular networks return diagnostics, never artificial damping. Target `1e−9` unit-scale analytical agreement and normalized residual `<1e−10` for well-conditioned fixtures. These verify equations and conversion, not hardware fidelity.
 
 Detector phase is undefined below power `1e−24 × emittedW` (relative field amplitude `1e−12`), where cancellation roundoff makes its angle meaningless. Calculated complex fields and powers remain unclipped. Sweep failures return unavailable data, not artificial zero power. Uniform wavelength sweeps are finite samples, not adaptive searches or guarantees that narrow resonances are resolved.
+
+
+## Compositional templates and sampled design goals
+
+Reusable blocks expand to the existing version-1 primitives and explicit guide connections. The MZI uses a fixed 80 µm upper arm and an adjustable lower-arm difference; the ideal ring has K=0.2 with explicit default 1000 dB/m feedback loss; ideal splitter trees use K=0.5 in two stages; a delay line combines phase, attenuation and explicit guide propagation. These are source-free network templates, not new device models. Root-level source/detector ports and matched unused boundaries retain the same rules. Ring loss is a declared parameter, never implicit numerical damping.
+
+Catalog mode labels distinguish analytical TE0 declarations from the dataset's native TE mode 1 identifier; the latter does not establish transverse-order TE1. Automatic arrangement and block drawing never infer propagation distance. Model identity, canonical phasor conversion, passivity checks and all source limitations remain unchanged under recipe compilation or snapshot comparison.
+
+Comparison curves use the same wavelength samples and each snapshot's actual source power. Goal searches uniformly sample one permitted scalar parameter within explicit bounds. Failed candidates remain unavailable. The selected best is a grid result, not a continuous/global optimum, sensitivity analysis or fabrication tolerance claim. Finite grids can miss narrow ring resonances; no adaptive-resolution claim is made.

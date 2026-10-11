@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -10,6 +10,29 @@ async function downloadText(page: Page, testId: string): Promise<string> {
   const chunks: Buffer[] = [];
   for await (const chunk of stream) chunks.push(Buffer.from(chunk));
   return Buffer.concat(chunks).toString('utf8');
+}
+
+async function captureDialog(page: Page, testInfo: TestInfo, selector: string, controls: string[], filename: string, description: string) {
+  const dialog = page.locator(selector), bounds = await dialog.boundingBox(), viewport = page.viewportSize();
+  if (!bounds || !viewport) throw new Error('Dialog or viewport is unavailable for visual verification');
+  expect(bounds.x).toBeGreaterThanOrEqual(0);
+  expect(bounds.y).toBeGreaterThanOrEqual(0);
+  expect(bounds.x + bounds.width).toBeLessThanOrEqual(viewport.width + 1);
+  expect(bounds.y + bounds.height).toBeLessThanOrEqual(viewport.height + 1);
+  for (const id of controls) {
+    await expect(page.getByTestId(id)).toBeVisible();
+    const box = await page.getByTestId(id).boundingBox();
+    if (!box) throw new Error(`Dialog control ${id} has no visible bounds`);
+    expect(box.x).toBeGreaterThanOrEqual(bounds.x - 1);
+    expect(box.y).toBeGreaterThanOrEqual(bounds.y - 1);
+    expect(box.x + box.width).toBeLessThanOrEqual(bounds.x + bounds.width + 1);
+    expect(box.y + box.height).toBeLessThanOrEqual(bounds.y + bounds.height + 1);
+  }
+  const evidence = path.resolve('evidence');
+  await mkdir(evidence, { recursive: true });
+  const screenshot = path.join(evidence, filename);
+  await page.screenshot({ path: screenshot, fullPage: true });
+  await testInfo.attach(description, { path: screenshot, contentType: 'image/png' });
 }
 
 function csvTable(text: string): { header: string[]; rows: string[][] } {
@@ -69,6 +92,8 @@ test('sketch a data-backed MZI, fork three tunings and reopen their comparison n
   await page.getByTestId('open-sketch').click();
   await page.getByTestId('sketch-recipes-tab').click();
   await page.getByTestId('sketch-recipe').fill(JSON.stringify(experiment, null, 2));
+  await page.getByTestId('sketch-recipe').evaluate(element => { element.scrollTop = 0; });
+  await captureDialog(page, testInfo, '.sketch-window', ['sketch-recipe', 'sketch-apply'], 'sketch-chromium.png', 'SiEPIC MZI recipe ready to build');
   await page.getByTestId('sketch-apply').click();
   await expect(page.locator('[data-component-id][data-model="siepic-coupler"]')).toHaveCount(2);
   await expect(page.locator('[data-component-id]')).toHaveCount(6);
@@ -195,7 +220,7 @@ test('sketch a data-backed MZI, fork three tunings and reopen their comparison n
   expect(remoteRequests).toEqual([]);
 });
 
-test('a bounded design goal applies a real phase solution and remains undoable', async ({ page }) => {
+test('a bounded design goal applies a real phase solution and remains undoable', async ({ page }, testInfo) => {
   const runtimeErrors: string[] = [];
   page.on('pageerror', error => runtimeErrors.push(error.message));
   await page.goto('/');
@@ -223,6 +248,7 @@ test('a bounded design goal applies a real phase solution and remains undoable',
   await page.getByTestId('goal-run').click();
   await expect(page.getByTestId('goal-status')).toHaveAttribute('data-state', 'complete');
   await expect(page.getByTestId('goal-boundary')).toBeVisible();
+  await captureDialog(page, testInfo, '.goal-window', ['goal-chart', 'goal-status', 'goal-current-power', 'goal-best-power', 'goal-apply'], 'goal-chromium.png', 'Completed bounded phase search before applying the best setting');
   await page.getByTestId('goal-apply').click();
   if (await page.getByTestId('goal-close').isVisible()) await page.getByTestId('goal-close').click();
   // A hidden/unavailable detector must not masquerade as a successful zero.

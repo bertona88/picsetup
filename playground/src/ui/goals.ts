@@ -170,6 +170,11 @@ export class GoalPanel {
     parameter: this.parameter(), min: read('goal-min') * this.scale, max: read('goal-max') * this.scale, points: read('goal-points'),
    };
    validateGoalRequest(request);
+   const parameter = request.parameter;
+   const currentValue = parameter.kind === 'component'
+    ? document.circuit.components.find(component => component.id === parameter.componentId)!.params[parameter.name]
+    : document.circuit.connections.find(connection => connection.id === parameter.connectionId)!.lengthM;
+   this.query('[data-goal-current]').textContent = `Current setting: ${fmt(currentValue / this.scale)} ${this.unit}`;
    this.sourceFingerprint = fingerprint(document); this.stale = false; this.request = request; this.result = null; this.samples = [];
    const baseline = solveCircuit({ ...document.circuit, wavelengthM: request.wavelengthM });
    this.baselinePower = baseline.ok ? baseline.detectors[request.detectorId]?.powerW ?? null : null;
