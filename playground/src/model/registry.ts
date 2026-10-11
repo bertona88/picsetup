@@ -1,13 +1,14 @@
 import { complex, polar } from './complex';
+import { evaluateDataset } from './dataset';
 import type { Complex, Component, ModelId } from './types';
 
-/** Exact bundled analytical model versions. No runtime model or data loading. */
-export const MODEL_IDS: readonly ModelId[] = ['source', 'coupler', 'phase', 'attenuator', 'detector', 'termination'];
+/** Exact bundled model versions. No runtime model or data loading. */
+export const MODEL_IDS: readonly ModelId[] = ['source', 'coupler', 'siepic-coupler', 'phase', 'attenuator', 'detector', 'termination'];
 
 export function portNames(model: ModelId): string[] {
   switch (model) {
     case 'source': return ['out'];
-    case 'coupler': return ['L0', 'L1', 'R0', 'R1'];
+    case 'coupler': case 'siepic-coupler': return ['L0', 'L1', 'R0', 'R1'];
     case 'phase': case 'attenuator': return ['L', 'R'];
     case 'detector': case 'termination': return ['in'];
     default: throw new RangeError(`Unknown model: ${String(model)}`);
@@ -20,14 +21,14 @@ export function defaultParams(model: ModelId): Record<string, number> {
     case 'coupler': return { coupling: 0.5 };
     case 'phase': return { phaseRad: 0 };
     case 'attenuator': return { attenuationDb: 3 };
-    case 'detector': case 'termination': return {};
+    case 'siepic-coupler': case 'detector': case 'termination': return {};
     default: throw new RangeError(`Unknown model: ${String(model)}`);
   }
 }
 
 /** S[output][input], scalar power-normalized ports, time convention exp(+iωt). */
 export function evaluate(component: Component, wavelengthM: number): Complex[][] {
-  if (component.version !== '1') throw new RangeError('Unsupported analytical model version');
+  if (component.version !== '1') throw new RangeError('Unsupported model version');
   if (!Number.isFinite(wavelengthM) || wavelengthM <= 0) throw new RangeError('Wavelength must be finite and positive');
   const expected = Object.keys(defaultParams(component.model));
   if (Object.keys(component.params).length !== expected.length || expected.some(key => !Number.isFinite(component.params[key]))) {
@@ -36,6 +37,7 @@ export function evaluate(component: Component, wavelengthM: number): Complex[][]
   const n = portNames(component.model).length;
   const s = Array.from({ length: n }, () => Array.from({ length: n }, () => complex()));
   switch (component.model) {
+    case 'siepic-coupler': return evaluateDataset(wavelengthM);
     case 'source':
       if (component.params.powerW < 0) throw new RangeError('Source power must be nonnegative');
       break;

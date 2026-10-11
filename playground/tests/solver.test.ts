@@ -17,7 +17,7 @@ const mzi = (phaseRad: number): Circuit => circuit([
 
 describe('bundled scattering models', () => {
   it('declares supported ports and independent default parameter objects', () => {
-    expect(MODEL_IDS).toEqual(['source', 'coupler', 'phase', 'attenuator', 'detector', 'termination']);
+    expect(MODEL_IDS).toEqual(['source', 'coupler', 'siepic-coupler', 'phase', 'attenuator', 'detector', 'termination']);
     expect(portNames('coupler')).toEqual(['L0', 'L1', 'R0', 'R1']);
     const params = defaultParams('source'); params.powerW = 8;
     expect(defaultParams('source').powerW).toBe(0.001);

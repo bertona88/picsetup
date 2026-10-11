@@ -2,7 +2,7 @@ import { defaultParams } from '../model/registry';
 import type { CircuitDocument, Connection, Endpoint, ModelId } from '../model/types';
 import { validateDocument } from '../io/document';
 
-const LABELS: Record<ModelId, string> = { source: 'CW source', coupler: 'Coupler', phase: 'Phase shifter', attenuator: 'Attenuator', detector: 'Detector', termination: 'Termination' };
+const LABELS: Record<ModelId, string> = { source: 'CW source', coupler: 'Coupler', 'siepic-coupler': 'SiEPIC coupler', phase: 'Phase shifter', attenuator: 'Attenuator', detector: 'Detector', termination: 'Termination' };
 
 function nextId(doc: CircuitDocument, prefix: string): string {
   const ids = new Set([...doc.circuit.components, ...doc.circuit.connections].map(item => item.id));

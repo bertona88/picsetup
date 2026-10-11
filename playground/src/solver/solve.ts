@@ -1,5 +1,6 @@
 import { add, complex, div, finite, magnitude, mul, polar, power, sub } from '../model/complex';
 import { defaultParams, evaluate, MODEL_IDS, portNames } from '../model/registry';
+import { datasetMetadata, datasetSigmaMax } from '../model/dataset';
 import type { Circuit, Complex, Component, Diagnostic, Endpoint, ModelId, PowerBudget, SolveResult } from '../model/types';
 
 export const MAX_COMPONENTS = 100;
@@ -10,7 +11,7 @@ const record = (value: unknown): value is Record<string, unknown> => typeof valu
 const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 const idValid = (value: unknown): value is string => typeof value === 'string' && value.length > 0 && value.length <= 256;
 const endpointKey = (endpoint: Endpoint): string => JSON.stringify([endpoint.component, endpoint.port]);
-const emptyBudget = (): PowerBudget => ({ emittedW: 0, detectedW: 0, escapedW: 0, componentAbsorbedW: 0, returnedToSourceW: 0, propagationLossW: 0, imbalanceW: 0 });
+const emptyBudget = (): PowerBudget => ({ emittedW: 0, modelSuppliedW: 0, detectedW: 0, escapedW: 0, componentAbsorbedW: 0, returnedToSourceW: 0, propagationLossW: 0, imbalanceW: 0 });
 const failure = (diagnostics: Diagnostic[], residual = 0): SolveResult => ({ ok: false, ports: [], detectors: {}, budget: emptyBudget(), residual, diagnostics });
 
 /** Structural and model-domain validation only: a valid document may still be singular. */
@@ -37,7 +38,7 @@ export function validateCircuit(circuit: Circuit): Diagnostic[] {
     const extra = { componentId: item.id };
     if (components.has(item.id)) error('DUPLICATE_COMPONENT', `Duplicate component ID: ${item.id}.`, extra);
     if (!MODEL_IDS.includes(item.model as ModelId)) { error('UNSUPPORTED_MODEL', `Unsupported model: ${String(item.model)}.`, extra); continue; }
-    if (item.version !== '1') error('UNSUPPORTED_MODEL_VERSION', 'Only analytical model version 1 is supported.', extra);
+    if (item.version !== '1') error('UNSUPPORTED_MODEL_VERSION', 'Only bundled model version 1 is supported.', extra);
     const model = item.model as ModelId;
     totalPorts += portNames(model).length;
     if (model === 'source') sources++;
@@ -51,7 +52,14 @@ export function validateCircuit(circuit: Circuit): Diagnostic[] {
     if (model === 'source' && (params.powerW as number) < 0) error('INVALID_POWER', 'Source power must be nonnegative watts.', extra);
     if (model === 'coupler' && ((params.coupling as number) < 0 || (params.coupling as number) > 1)) error('INVALID_COUPLING', 'Power coupling must be between zero and one.', extra);
     if (model === 'attenuator' && (params.attenuationDb as number) < 0) error('INVALID_ATTENUATION', 'Attenuation must be nonnegative dB.', extra);
+    if (model === 'siepic-coupler' && isNumber(circuit.wavelengthM) && circuit.wavelengthM > 0) {
+      try {
+        const sigma = datasetSigmaMax(circuit.wavelengthM);
+        if (sigma > 1 + 1e-6) diagnostics.push({ severity: 'warning', code: 'DATASET_PASSIVITY', message: `Interpolated dataset is not passive at this wavelength (σmax=${sigma.toFixed(6)}). Apparent gain is retained and accounted for.`, ...extra });
+      } catch (err) { error('DATASET_OUT_OF_BAND', (err as Error).message, extra); }
+    }
   }
+  if (circuit.components.some(component => component?.model === 'siepic-coupler')) diagnostics.push({ severity: 'warning', code: 'EXPERIMENTAL_DATASET', message: `${datasetMetadata.title}: experimental interpolated response. Raw data has slight passivity violations; native port-plane locations are unknown. Cartesian interpolation may add apparent loss. No calibrated-device claim.` });
   if (totalPorts > MAX_PORTS) error('CIRCUIT_TOO_LARGE', `Interactive limit is ${MAX_PORTS} optical ports.`);
   if (sources > 1) error('MULTIPLE_SOURCES', 'M1 supports at most one coherent source per circuit.');
   const occupied = new Set<string>();
@@ -191,6 +199,14 @@ export function solveCircuit(circuit: Circuit): SolveResult {
     }
     if (component.model === 'termination') budget.componentAbsorbedW += absorbed;
     if (component.model === 'attenuator') budget.componentAbsorbedW += -Math.expm1(-component.params.attenuationDb * Math.LN10 / 10) * absorbed;
+    if (component.model === 'siepic-coupler') {
+      const exchange = absorbed - names.reduce((sum, _, port) => sum + power(outgoing[offset + port]), 0);
+      if (exchange >= 0) budget.componentAbsorbedW += exchange;
+      else {
+        budget.modelSuppliedW -= exchange;
+        diagnostics.push({ severity: 'warning', code: 'MODEL_SUPPLIED_POWER', componentId: component.id, message: `Dataset supplies ${(-exchange).toExponential(3)} W for this excitation; the original apparent gain has not been clipped.` });
+      }
+    }
     return names.map((_, port) => ({ componentId: component.id, port, incoming: incoming[offset + port], outgoing: outgoing[offset + port] }));
   });
   for (let i = 0; i < n; i++) if (!neighbors[i]) budget.escapedW += power(outgoing[i]);
@@ -200,7 +216,7 @@ export function solveCircuit(circuit: Circuit): SolveResult {
     const lostFraction = -Math.expm1(-line.lossDbPerM * line.lengthM * Math.LN10 / 10);
     budget.propagationLossW += lostFraction * (power(outgoing[from]) + power(outgoing[to]));
   }
-  budget.imbalanceW = budget.emittedW - budget.detectedW - budget.escapedW - budget.componentAbsorbedW - budget.returnedToSourceW - budget.propagationLossW;
+  budget.imbalanceW = budget.emittedW + budget.modelSuppliedW - budget.detectedW - budget.escapedW - budget.componentAbsorbedW - budget.returnedToSourceW - budget.propagationLossW;
   if (!Object.values(budget).every(Number.isFinite) || [...incoming, ...outgoing].some(value => !finite(value) || !Number.isFinite(power(value)))) return failure([...diagnostics, { severity: 'error', code: 'POWER_OVERFLOW', message: 'Field power exceeded the finite numerical range; no power result is reported.' }], residual);
   if (Math.abs(budget.imbalanceW) > Math.max(Number.MIN_VALUE, budget.emittedW * 1e-9)) diagnostics.push({ severity: 'warning', code: 'POWER_IMBALANCE', message: 'The power budget fails the relative 1e−9 accounting tolerance; interpret this result cautiously.' });
   return { ok: true, ports, detectors: Object.fromEntries(detectorEntries), budget, residual, diagnostics };

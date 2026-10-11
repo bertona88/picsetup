@@ -1,0 +1,140 @@
+{
+  "schema": "picsetup.dataset-audit.v1",
+  "sourceSha256": "945ddee41a7b46d7288a862ac9ad3c4802336810cf5c7b6d3716b848c00f1371",
+  "gitBlobSha1": "2b56aff1c525be81eb1ea374f9e0107cdb59e356",
+  "independentParser": "regex block extraction + numpy.loadtxt + numpy.exp; no converter imports",
+  "samples": 101,
+  "complexEntriesPerSample": 16,
+  "frequencyHzMin": 187370000000000.0,
+  "frequencyHzMax": 199862000000000.0,
+  "frequencyStepHzMin": 124000000000.0,
+  "frequencyStepHzMax": 125000000000.0,
+  "wavelengthMMin": 1.4999972881288089e-06,
+  "wavelengthMMax": 1.600002444361424e-06,
+  "sourceToCanonicalMaxAbsError": 0.0,
+  "passivity": {
+    "method": "largest singular value of full complex 4×4 S at each source sample, numpy.linalg.svd",
+    "sigmaMaxMin": 0.985297818035848,
+    "sigmaMaxMax": 1.0022352696478516,
+    "maxCoherentPowerGain": 1.0044755357261017,
+    "tolerance": 1e-06,
+    "samplesAboveOnePlusTolerance": 17,
+    "sampleIndicesAboveOnePlusTolerance": [
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73
+    ],
+    "action": "preserve original data and warn; no passivity enforcement"
+  },
+  "reciprocityMaxAbsError": 0.0,
+  "maxSingleInputPowerSum": 0.9881431422455003,
+  "phaseConversion": "S_canonical = conjugate(S_source)",
+  "referenceAt1550nm": {
+    "frequencyHz": 193414489032258.06,
+    "method": "numpy.interp separately for every complex S element on source frequency grid",
+    "s": [
+      [
+        {
+          "re": 0.0031957118447735987,
+          "im": -0.01220802041694108
+        },
+        {
+          "re": -0.008289143165790975,
+          "im": -0.007730153968906153
+        },
+        {
+          "re": -0.825045008545929,
+          "im": -0.27923851371996544
+        },
+        {
+          "re": -0.14714448648828254,
+          "im": 0.43702111418882744
+        }
+      ],
+      [
+        {
+          "re": -0.008289143165790975,
+          "im": -0.007730153968906153
+        },
+        {
+          "re": 0.0031957118447735987,
+          "im": -0.01220802041694108
+        },
+        {
+          "re": -0.14714448648828254,
+          "im": 0.43702111418882744
+        },
+        {
+          "re": -0.825045008545929,
+          "im": -0.27923851371996544
+        }
+      ],
+      [
+        {
+          "re": -0.825045008545929,
+          "im": -0.27923851371996544
+        },
+        {
+          "re": -0.14714448648828254,
+          "im": 0.43702111418882744
+        },
+        {
+          "re": 0.0031957118447735987,
+          "im": -0.01220802041694108
+        },
+        {
+          "re": -0.008289143165790975,
+          "im": -0.007730153968906153
+        }
+      ],
+      [
+        {
+          "re": -0.14714448648828254,
+          "im": 0.43702111418882744
+        },
+        {
+          "re": -0.825045008545929,
+          "im": -0.27923851371996544
+        },
+        {
+          "re": -0.008289143165790975,
+          "im": -0.007730153968906153
+        },
+        {
+          "re": 0.0031957118447735987,
+          "im": -0.01220802041694108
+        }
+      ]
+    ],
+    "port1OutputPowerFractions": [
+      0.00015924833669527652,
+      0.00012846517480597481,
+      0.7586734136710874,
+      0.2126389541507445
+    ],
+    "interpolationAudit": {
+      "bracketingSampleIndices": [
+        48,
+        49
+      ],
+      "fraction": 0.3879122580645,
+      "weightedEndpointPort1TotalPower": 0.98374157785268,
+      "interpolatedPort1TotalPower": 0.9716000813333332,
+      "note": "Cartesian complex interpolation can reduce power between phase-rotating samples; this difference is interpolation error, not measured extra physical loss."
+    }
+  }
+}

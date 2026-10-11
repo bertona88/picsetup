@@ -1,0 +1,188 @@
+{
+  "schema": "picsetup.independent-mzi-reference.v1",
+  "sourceSha256": "945ddee41a7b46d7288a862ac9ad3c4802336810cf5c7b6d3716b848c00f1371",
+  "method": "Independent raw regex/NumPy parser, Cartesian frequency interpolation, reduced 8-port incident-wave solve via numpy.linalg.solve; no production TypeScript evaluator or solver",
+  "experiment": {
+    "factory": "createDatasetMziExperiment",
+    "upperArmM": 8e-05,
+    "lowerArmM": 0.0001,
+    "neff": 2.4,
+    "sourcePowerW": 0.001,
+    "sourcePhaseRad": 0,
+    "phaseShiftRad": 0,
+    "lossDbPerM": 0,
+    "timeConvention": "exp(+iωt)"
+  },
+  "samples": [
+    {
+      "wavelengthM": 1.5e-06,
+      "detectors": {
+        "detector-1": {
+          "incoming": {
+            "re": -0.01273940496851512,
+            "im": 0.01837147823487511
+          },
+          "powerW": 0.0004998036514863176
+        },
+        "detector-2": {
+          "incoming": {
+            "re": 0.01770366032692306,
+            "im": 0.012033921460410785
+          },
+          "powerW": 0.00045823485468640473
+        }
+      },
+      "budget": {
+        "emittedW": 0.001,
+        "modelSuppliedW": 0,
+        "detectedW": 0.0009580385061727225,
+        "escapedW": 1.0647025388589084e-07,
+        "componentAbsorbedW": 4.177724797976867e-05,
+        "returnedToSourceW": 7.777559362262977e-08,
+        "propagationLossW": 0.0,
+        "imbalanceW": 4.336808689942018e-19
+      },
+      "deviceNetAbsorbedW": [
+        2.114734202132533e-05,
+        2.0629905958443337e-05
+      ],
+      "absoluteEquationResidual": 3.701015850201348e-18
+    },
+    {
+      "wavelengthM": 1.525e-06,
+      "detectors": {
+        "detector-1": {
+          "incoming": {
+            "re": -0.019686338292880898,
+            "im": 0.023711554361770762
+          },
+          "powerW": 0.0009497897256329588
+        },
+        "detector-2": {
+          "incoming": {
+            "re": 0.0012250354928965371,
+            "im": -0.0013305053180592483
+          },
+          "powerW": 3.270956360240203e-06
+        }
+      },
+      "budget": {
+        "emittedW": 0.001,
+        "modelSuppliedW": 0,
+        "detectedW": 0.000953060681993199,
+        "escapedW": 2.1975666022516606e-07,
+        "componentAbsorbedW": 4.668868794256828e-05,
+        "returnedToSourceW": 3.087340400700962e-08,
+        "propagationLossW": 0.0,
+        "imbalanceW": 4.336808689942018e-19
+      },
+      "deviceNetAbsorbedW": [
+        2.3572561729349366e-05,
+        2.3116126213218913e-05
+      ],
+      "absoluteEquationResidual": 1.7381083054899885e-18
+    },
+    {
+      "wavelengthM": 1.5500000000000002e-06,
+      "detectors": {
+        "detector-1": {
+          "incoming": {
+            "re": 0.0031903598881075643,
+            "im": 0.01714917246694651
+          },
+          "powerW": 0.00030427251251672195
+        },
+        "detector-2": {
+          "incoming": {
+            "re": 0.02527570303802651,
+            "im": -0.00019681243342126523
+          },
+          "powerW": 0.0006388998992004517
+        }
+      },
+      "budget": {
+        "emittedW": 0.001,
+        "modelSuppliedW": 0,
+        "detectedW": 0.0009431724117171739,
+        "escapedW": 1.7317161373845384e-07,
+        "componentAbsorbedW": 5.631699771845131e-05,
+        "returnedToSourceW": 3.374189506363041e-07,
+        "propagationLossW": 0.0,
+        "imbalanceW": 0.0
+      },
+      "deviceNetAbsorbedW": [
+        2.8552909674308476e-05,
+        2.7764088044142832e-05
+      ],
+      "absoluteEquationResidual": 7.661605866681143e-18
+    },
+    {
+      "wavelengthM": 1.5750000000000002e-06,
+      "detectors": {
+        "detector-1": {
+          "incoming": {
+            "re": 0.029941908187913813,
+            "im": -0.0011668168268685287
+          },
+          "powerW": 0.0008978793274409236
+        },
+        "detector-2": {
+          "incoming": {
+            "re": -0.0019896836217221563,
+            "im": 2.2847821787488204e-05
+          },
+          "powerW": 3.959362937509829e-06
+        }
+      },
+      "budget": {
+        "emittedW": 0.001,
+        "modelSuppliedW": 0,
+        "detectedW": 0.0009018386903784336,
+        "escapedW": 1.8479323158274858e-07,
+        "componentAbsorbedW": 9.753969338287217e-05,
+        "returnedToSourceW": 4.36823007111326e-07,
+        "propagationLossW": 0.0,
+        "imbalanceW": 2.168404344971009e-19
+      },
+      "deviceNetAbsorbedW": [
+        5.083008574037831e-05,
+        4.670960764249386e-05
+      ],
+      "absoluteEquationResidual": 6.056367656394259e-18
+    },
+    {
+      "wavelengthM": 1.6000000000000001e-06,
+      "detectors": {
+        "detector-1": {
+          "incoming": {
+            "re": -0.006886949526467894,
+            "im": -0.008343972597805843
+          },
+          "powerW": 0.00011705195249305115
+        },
+        "detector-2": {
+          "incoming": {
+            "re": -0.01986084460227677,
+            "im": 0.019662627263395543
+          },
+          "powerW": 0.0007810720592150121
+        }
+      },
+      "budget": {
+        "emittedW": 0.001,
+        "modelSuppliedW": 0,
+        "detectedW": 0.0008981240117080633,
+        "escapedW": 2.970362835377636e-07,
+        "componentAbsorbedW": 0.00010115295504248278,
+        "returnedToSourceW": 4.259969659160396e-07,
+        "propagationLossW": 0.0,
+        "imbalanceW": 2.168404344971009e-19
+      },
+      "deviceNetAbsorbedW": [
+        5.232826021306456e-05,
+        4.8824694829418223e-05
+      ],
+      "absoluteEquationResidual": 4.336808689942018e-18
+    }
+  ]
+}

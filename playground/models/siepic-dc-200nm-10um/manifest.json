@@ -1,0 +1,90 @@
+{
+  "schema": "picsetup.dataset-manifest.v1",
+  "id": "siepic-dc-200nm-10um",
+  "version": "1.0.0",
+  "title": "SiEPIC directional coupler, TE mode 1, 200 nm gap, 10 µm coupling length",
+  "auditDate": "2026-10-11",
+  "source": {
+    "repository": "https://github.com/BYUCamachoLab/simphony",
+    "commit": "5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c",
+    "path": "simphony/libraries/siepic/source_data/ebeam_dc_te1550/dc_gap=200nm_Lc=10um.sparam",
+    "gitBlobSha1": "2b56aff1c525be81eb1ea374f9e0107cdb59e356",
+    "sha256": "945ddee41a7b46d7288a862ac9ad3c4802336810cf5c7b6d3716b848c00f1371",
+    "localPath": "source.sparam",
+    "preservation": "exact original bytes",
+    "license": "MIT",
+    "licenseNotice": "LICENSE-SIMPHONY.txt"
+  },
+  "upstream": {
+    "repository": "https://github.com/SiEPIC/SiEPIC_EBeam_PDK",
+    "commit": "363fbb52eefa8669100499ab531d3fe7befc4867",
+    "path": "klayout/EBeam/CML/EBeam/source_data/ebeam_dc_te1550/dc_gap=200nm_Lc=10um.sparam",
+    "gitBlobSha1": "2b56aff1c525be81eb1ea374f9e0107cdb59e356",
+    "byteIdenticalToSimphony": true,
+    "license": "MIT",
+    "licenseNotice": "LICENSE-SIEPIC.txt"
+  },
+  "physicalMetadata": {
+    "couplingGapM": 2e-7,
+    "couplingLengthM": 1e-5,
+    "polarization": "TE",
+    "sourceModeId": 1,
+    "spatialModeFields": "not supplied",
+    "normalization": "source modal power normalization retained; |a|² represents W",
+    "normalizationBasis": "Ansys optical port definition plus SiEPIC documented FDTD/MODE methodology; not a separate calibration of this extraction",
+    "timeConventionSource": "exp(-iωt)",
+    "timeConventionCanonical": "exp(+iωt)",
+    "sourceConventionBasis": "Ansys FDTD convention and Simphony source waveguide transmission exp(+iβL)",
+    "matrixConvention": "S[output][input]",
+    "sourcePortOrder": ["port 1", "port 2", "port 3", "port 4"],
+    "schematicPortMap": ["L0", "L1", "R0", "R1"],
+    "schematicMapBasis": "SiEPIC component CML screenshot opt1/opt2 on left and opt3/opt4 on right; port numbers retained",
+    "referencePlanes": {
+      "representation": "opaque native source port planes",
+      "preserved": true,
+      "spatialCoordinatesM": null,
+      "deembeddingOffsetsM": null,
+      "geometricPathLengthInferenceAllowed": false
+    },
+    "temperatureK": null,
+    "fabricationProcessCorner": null,
+    "quantifiedUncertainty": null
+  },
+  "conversion": {
+    "script": "../../../scripts/convert_siepic.py",
+    "canonicalFile": "data.json",
+    "sourceColumns": ["frequencyHz", "dimensionless magnitude", "phaseRad"],
+    "operation": "S_canonical = magnitude * exp(-i * sourcePhaseRad)",
+    "allEntriesExplicit": true,
+    "samples": 101,
+    "entriesPerSample": 16,
+    "frequencyHzRange": [187370000000000, 199862000000000],
+    "interpolation": "Cartesian linear in frequency; every real/imaginary coefficient separately",
+    "outOfBand": "reject; never clamp, zero-fill or extrapolate",
+    "modificationsNotPerformed": ["gain clipping", "passivity enforcement", "renormalization", "reciprocity forcing", "reference plane shift", "smoothing", "group delay removal"]
+  },
+  "eligibility": {
+    "status": "experimental",
+    "powerAndTimeConventions": "documented for source ecosystem and cross-checked against Simphony implementation",
+    "allowed": ["inspect full original complex response", "frequency interpolation within sampled band", "exploratory coherent circuits at unchanged native port planes with warnings"],
+    "notQualifiedFor": ["passive certified networks", "calibrated device prediction", "layout path length inference", "fabrication signoff", "matching real spatial modal fields"],
+    "passivity": "17 of 101 raw samples exceed sigma_max = 1 + 1e-6; worst sigma_max 1.0022352696478516, squared 1.004475535726103",
+    "unknownMetadataPolicy": "retain unknown coordinates and uncertainty explicitly; never invent de-embedding or calibration"
+  },
+  "verification": {
+    "script": "../../../scripts/verify_siepic.py",
+    "report": "verification.json",
+    "method": "independent regex + NumPy parser; all 1616 source complex values; spectral norm of complete 4×4 matrices",
+    "sourceToCanonicalMaxAbsError": 0
+  },
+  "references": [
+    {"purpose": "source format, radians and group delay options", "url": "https://optics.ansys.com/hc/en-us/articles/360036618513-S-parameter-file-formats-and-usage"},
+    {"purpose": "source time convention", "url": "https://optics.ansys.com/hc/en-us/articles/1500006150981-Circular-polarization-and-phase-convention"},
+    {"purpose": "optical port modal power normalization", "url": "https://optics.ansys.com/hc/en-us/articles/360034382554-Ports-FDTD-Simulation-Object"},
+    {"purpose": "source matrix output/input order and mag*exp(i*phase)", "url": "https://github.com/BYUCamachoLab/simphony/blob/5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c/simphony/plugins/lumerical.py"},
+    {"purpose": "frequency in Hz, wavelength conversion and waveguide phase convention", "url": "https://github.com/BYUCamachoLab/simphony/blob/5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c/simphony/libraries/siepic/models.py"},
+    {"purpose": "SiEPIC component geometry defaults and FDTD/MODE methodology", "url": "https://github.com/SiEPIC/SiEPIC_EBeam_PDK/blob/363fbb52eefa8669100499ab531d3fe7befc4867/docs/components/ebeam/directional_coupler/directional_coupler.md"},
+    {"purpose": "CML schematic port numbering", "url": "https://github.com/SiEPIC/SiEPIC_EBeam_PDK/blob/363fbb52eefa8669100499ab531d3fe7befc4867/docs/components/ebeam/directional_coupler/imgs/cml.png"},
+    {"purpose": "spectral norm criterion for passivity", "url": "https://optics.ansys.com/hc/en-us/articles/360059772393-S-parameter-passive-workflow-guide"}
+  ]
+}
