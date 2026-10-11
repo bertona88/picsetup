@@ -1,0 +1,737 @@
+{
+  "schema": "picsetup-notebook/2",
+  "title": "Does the design survive dispersion?",
+  "sweep": {
+    "startM": 0.000001545,
+    "stopM": 0.000001555,
+    "points": 101
+  },
+  "variants": [
+    {
+      "id": "variant-1",
+      "name": "A · Constant index · ΔL 20 µm",
+      "document": {
+        "schema": "picsetup-playground/1",
+        "title": "A · Constant index · ΔL 20 µm",
+        "circuit": {
+          "wavelengthM": 0.00000155,
+          "components": [
+            {
+              "id": "laser",
+              "model": "source",
+              "version": "1",
+              "label": "laser",
+              "params": {
+                "powerW": 0.001,
+                "phaseRad": 0
+              }
+            },
+            {
+              "id": "mzi__split",
+              "model": "siepic-coupler",
+              "version": "1",
+              "label": "mzi · MZI input coupler",
+              "params": {}
+            },
+            {
+              "id": "mzi__phase",
+              "model": "phase",
+              "version": "1",
+              "label": "mzi · MZI upper phase",
+              "params": {
+                "phaseRad": 0.3469939756739109
+              }
+            },
+            {
+              "id": "mzi__combine",
+              "model": "siepic-coupler",
+              "version": "1",
+              "label": "mzi · MZI output coupler",
+              "params": {}
+            },
+            {
+              "id": "desired",
+              "model": "detector",
+              "version": "1",
+              "label": "Desired output",
+              "params": {}
+            },
+            {
+              "id": "unwanted",
+              "model": "detector",
+              "version": "1",
+              "label": "Unwanted output",
+              "params": {}
+            }
+          ],
+          "connections": [
+            {
+              "id": "mzi__upper-start",
+              "from": {
+                "component": "mzi__split",
+                "port": 2
+              },
+              "to": {
+                "component": "mzi__phase",
+                "port": 0
+              },
+              "lengthM": 0.00004,
+              "neff": 2.44553,
+              "lossDbPerM": 100
+            },
+            {
+              "id": "mzi__upper-end",
+              "from": {
+                "component": "mzi__phase",
+                "port": 1
+              },
+              "to": {
+                "component": "mzi__combine",
+                "port": 0
+              },
+              "lengthM": 0.00004,
+              "neff": 2.44553,
+              "lossDbPerM": 100
+            },
+            {
+              "id": "mzi__lower",
+              "from": {
+                "component": "mzi__split",
+                "port": 3
+              },
+              "to": {
+                "component": "mzi__combine",
+                "port": 1
+              },
+              "lengthM": 0.0001,
+              "neff": 2.44553,
+              "lossDbPerM": 100
+            },
+            {
+              "id": "link_1",
+              "from": {
+                "component": "laser",
+                "port": 0
+              },
+              "to": {
+                "component": "mzi__split",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            },
+            {
+              "id": "link_2",
+              "from": {
+                "component": "mzi__combine",
+                "port": 2
+              },
+              "to": {
+                "component": "desired",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            },
+            {
+              "id": "link_3",
+              "from": {
+                "component": "mzi__combine",
+                "port": 3
+              },
+              "to": {
+                "component": "unwanted",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            }
+          ]
+        },
+        "layout": {
+          "components": {
+            "laser": {
+              "x": 150,
+              "y": 230,
+              "rotation": 0
+            },
+            "mzi__split": {
+              "x": 380,
+              "y": 230,
+              "rotation": 0
+            },
+            "mzi__phase": {
+              "x": 610,
+              "y": 140,
+              "rotation": 0
+            },
+            "mzi__combine": {
+              "x": 840,
+              "y": 230,
+              "rotation": 0
+            },
+            "desired": {
+              "x": 1070,
+              "y": 150,
+              "rotation": 0
+            },
+            "unwanted": {
+              "x": 1070,
+              "y": 310,
+              "rotation": 0
+            }
+          },
+          "connections": {
+            "mzi__upper-start": {
+              "bend": 0
+            },
+            "mzi__upper-end": {
+              "bend": 0
+            },
+            "mzi__lower": {
+              "bend": 170
+            },
+            "link_1": {
+              "bend": 0
+            },
+            "link_2": {
+              "bend": 0
+            },
+            "link_3": {
+              "bend": 0
+            }
+          },
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "authoring": {
+          "schema": "picsetup-authoring/1",
+          "recipeJson": "{\"schema\":\"picsetup-recipe/1\",\"title\":\"A · Constant index · ΔL 20 µm\",\"wavelengthM\":0.00000155,\"parts\":[{\"id\":\"laser\",\"model\":\"source\",\"params\":{\"powerW\":0.001}},{\"id\":\"mzi\",\"block\":\"mzi\",\"params\":{\"couplerModel\":\"siepic-coupler\",\"guideModel\":\"constant-index\",\"neff\":2.44553,\"deltaLengthM\":0.00002,\"phaseRad\":0.3469939756739109,\"lossDbPerM\":100}},{\"id\":\"desired\",\"model\":\"detector\",\"label\":\"Desired output\"},{\"id\":\"unwanted\",\"model\":\"detector\",\"label\":\"Unwanted output\"}],\"links\":[{\"from\":\"laser.out\",\"to\":\"mzi.in0\"},{\"from\":\"mzi.out0\",\"to\":\"desired.in\"},{\"from\":\"mzi.out1\",\"to\":\"unwanted.in\"}]}",
+          "semanticKey": "{\"components\":[{\"id\":\"desired\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"},{\"id\":\"laser\",\"model\":\"source\",\"params\":{\"phaseRad\":0,\"powerW\":0.001},\"version\":\"1\"},{\"id\":\"mzi__combine\",\"model\":\"siepic-coupler\",\"params\":{},\"version\":\"1\"},{\"id\":\"mzi__phase\",\"model\":\"phase\",\"params\":{\"phaseRad\":0.3469939756739109},\"version\":\"1\"},{\"id\":\"mzi__split\",\"model\":\"siepic-coupler\",\"params\":{},\"version\":\"1\"},{\"id\":\"unwanted\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"}],\"connections\":[{\"endpoints\":[{\"component\":\"laser\",\"port\":0},{\"component\":\"mzi__split\",\"port\":0}],\"id\":\"link_1\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"desired\",\"port\":0},{\"component\":\"mzi__combine\",\"port\":2}],\"id\":\"link_2\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":3},{\"component\":\"unwanted\",\"port\":0}],\"id\":\"link_3\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":1},{\"component\":\"mzi__split\",\"port\":3}],\"id\":\"mzi__lower\",\"lengthM\":0.0001,\"lossDbPerM\":100,\"neff\":2.44553},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":0},{\"component\":\"mzi__phase\",\"port\":1}],\"id\":\"mzi__upper-end\",\"lengthM\":0.00004,\"lossDbPerM\":100,\"neff\":2.44553},{\"endpoints\":[{\"component\":\"mzi__phase\",\"port\":0},{\"component\":\"mzi__split\",\"port\":2}],\"id\":\"mzi__upper-start\",\"lengthM\":0.00004,\"lossDbPerM\":100,\"neff\":2.44553}],\"wavelengthM\":0.00000155}"
+        }
+      },
+      "detectorId": "desired"
+    },
+    {
+      "id": "variant-2",
+      "name": "B · Dispersive guide · ΔL 20 µm",
+      "document": {
+        "schema": "picsetup-playground/1",
+        "title": "B · Dispersive guide · ΔL 20 µm",
+        "circuit": {
+          "wavelengthM": 0.00000155,
+          "components": [
+            {
+              "id": "laser",
+              "model": "source",
+              "version": "1",
+              "label": "laser",
+              "params": {
+                "powerW": 0.001,
+                "phaseRad": 0
+              }
+            },
+            {
+              "id": "mzi__split",
+              "model": "siepic-coupler",
+              "version": "1",
+              "label": "mzi · MZI input coupler",
+              "params": {}
+            },
+            {
+              "id": "mzi__phase",
+              "model": "phase",
+              "version": "1",
+              "label": "mzi · MZI upper phase",
+              "params": {
+                "phaseRad": 0.3469939756739109
+              }
+            },
+            {
+              "id": "mzi__combine",
+              "model": "siepic-coupler",
+              "version": "1",
+              "label": "mzi · MZI output coupler",
+              "params": {}
+            },
+            {
+              "id": "desired",
+              "model": "detector",
+              "version": "1",
+              "label": "Desired output",
+              "params": {}
+            },
+            {
+              "id": "unwanted",
+              "model": "detector",
+              "version": "1",
+              "label": "Unwanted output",
+              "params": {}
+            }
+          ],
+          "connections": [
+            {
+              "id": "mzi__upper-start",
+              "from": {
+                "component": "mzi__split",
+                "port": 2
+              },
+              "to": {
+                "component": "mzi__phase",
+                "port": 0
+              },
+              "lengthM": 0.00004,
+              "neff": 2.44553,
+              "lossDbPerM": 100,
+              "waveguide": {
+                "model": "siepic-strip-500x220-te",
+                "version": "1"
+              }
+            },
+            {
+              "id": "mzi__upper-end",
+              "from": {
+                "component": "mzi__phase",
+                "port": 1
+              },
+              "to": {
+                "component": "mzi__combine",
+                "port": 0
+              },
+              "lengthM": 0.00004,
+              "neff": 2.44553,
+              "lossDbPerM": 100,
+              "waveguide": {
+                "model": "siepic-strip-500x220-te",
+                "version": "1"
+              }
+            },
+            {
+              "id": "mzi__lower",
+              "from": {
+                "component": "mzi__split",
+                "port": 3
+              },
+              "to": {
+                "component": "mzi__combine",
+                "port": 1
+              },
+              "lengthM": 0.0001,
+              "neff": 2.44553,
+              "lossDbPerM": 100,
+              "waveguide": {
+                "model": "siepic-strip-500x220-te",
+                "version": "1"
+              }
+            },
+            {
+              "id": "link_1",
+              "from": {
+                "component": "laser",
+                "port": 0
+              },
+              "to": {
+                "component": "mzi__split",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            },
+            {
+              "id": "link_2",
+              "from": {
+                "component": "mzi__combine",
+                "port": 2
+              },
+              "to": {
+                "component": "desired",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            },
+            {
+              "id": "link_3",
+              "from": {
+                "component": "mzi__combine",
+                "port": 3
+              },
+              "to": {
+                "component": "unwanted",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            }
+          ]
+        },
+        "layout": {
+          "components": {
+            "laser": {
+              "x": 150,
+              "y": 230,
+              "rotation": 0
+            },
+            "mzi__split": {
+              "x": 380,
+              "y": 230,
+              "rotation": 0
+            },
+            "mzi__phase": {
+              "x": 610,
+              "y": 140,
+              "rotation": 0
+            },
+            "mzi__combine": {
+              "x": 840,
+              "y": 230,
+              "rotation": 0
+            },
+            "desired": {
+              "x": 1070,
+              "y": 150,
+              "rotation": 0
+            },
+            "unwanted": {
+              "x": 1070,
+              "y": 310,
+              "rotation": 0
+            }
+          },
+          "connections": {
+            "mzi__upper-start": {
+              "bend": 0
+            },
+            "mzi__upper-end": {
+              "bend": 0
+            },
+            "mzi__lower": {
+              "bend": 170
+            },
+            "link_1": {
+              "bend": 0
+            },
+            "link_2": {
+              "bend": 0
+            },
+            "link_3": {
+              "bend": 0
+            }
+          },
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "authoring": {
+          "schema": "picsetup-authoring/1",
+          "recipeJson": "{\"schema\":\"picsetup-recipe/1\",\"title\":\"B · Dispersive guide · ΔL 20 µm\",\"wavelengthM\":0.00000155,\"parts\":[{\"id\":\"laser\",\"model\":\"source\",\"params\":{\"powerW\":0.001}},{\"id\":\"mzi\",\"block\":\"mzi\",\"params\":{\"couplerModel\":\"siepic-coupler\",\"guideModel\":\"siepic-strip-500x220-te\",\"neff\":2.44553,\"deltaLengthM\":0.00002,\"phaseRad\":0.3469939756739109,\"lossDbPerM\":100}},{\"id\":\"desired\",\"model\":\"detector\",\"label\":\"Desired output\"},{\"id\":\"unwanted\",\"model\":\"detector\",\"label\":\"Unwanted output\"}],\"links\":[{\"from\":\"laser.out\",\"to\":\"mzi.in0\"},{\"from\":\"mzi.out0\",\"to\":\"desired.in\"},{\"from\":\"mzi.out1\",\"to\":\"unwanted.in\"}]}",
+          "semanticKey": "{\"components\":[{\"id\":\"desired\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"},{\"id\":\"laser\",\"model\":\"source\",\"params\":{\"phaseRad\":0,\"powerW\":0.001},\"version\":\"1\"},{\"id\":\"mzi__combine\",\"model\":\"siepic-coupler\",\"params\":{},\"version\":\"1\"},{\"id\":\"mzi__phase\",\"model\":\"phase\",\"params\":{\"phaseRad\":0.3469939756739109},\"version\":\"1\"},{\"id\":\"mzi__split\",\"model\":\"siepic-coupler\",\"params\":{},\"version\":\"1\"},{\"id\":\"unwanted\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"}],\"connections\":[{\"endpoints\":[{\"component\":\"laser\",\"port\":0},{\"component\":\"mzi__split\",\"port\":0}],\"id\":\"link_1\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"desired\",\"port\":0},{\"component\":\"mzi__combine\",\"port\":2}],\"id\":\"link_2\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":3},{\"component\":\"unwanted\",\"port\":0}],\"id\":\"link_3\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":1},{\"component\":\"mzi__split\",\"port\":3}],\"id\":\"mzi__lower\",\"lengthM\":0.0001,\"lossDbPerM\":100,\"neff\":2.44553,\"waveguide\":{\"model\":\"siepic-strip-500x220-te\",\"version\":\"1\"}},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":0},{\"component\":\"mzi__phase\",\"port\":1}],\"id\":\"mzi__upper-end\",\"lengthM\":0.00004,\"lossDbPerM\":100,\"neff\":2.44553,\"waveguide\":{\"model\":\"siepic-strip-500x220-te\",\"version\":\"1\"}},{\"endpoints\":[{\"component\":\"mzi__phase\",\"port\":0},{\"component\":\"mzi__split\",\"port\":2}],\"id\":\"mzi__upper-start\",\"lengthM\":0.00004,\"lossDbPerM\":100,\"neff\":2.44553,\"waveguide\":{\"model\":\"siepic-strip-500x220-te\",\"version\":\"1\"}}],\"wavelengthM\":0.00000155}"
+        }
+      },
+      "detectorId": "desired"
+    },
+    {
+      "id": "variant-3",
+      "name": "C · Dispersive guide · ΔL 10 µm",
+      "document": {
+        "schema": "picsetup-playground/1",
+        "title": "C · Dispersive guide · ΔL 10 µm",
+        "circuit": {
+          "wavelengthM": 0.00000155,
+          "components": [
+            {
+              "id": "laser",
+              "model": "source",
+              "version": "1",
+              "label": "laser",
+              "params": {
+                "powerW": 0.001,
+                "phaseRad": 0
+              }
+            },
+            {
+              "id": "mzi__split",
+              "model": "siepic-coupler",
+              "version": "1",
+              "label": "mzi · MZI input coupler",
+              "params": {}
+            },
+            {
+              "id": "mzi__phase",
+              "model": "phase",
+              "version": "1",
+              "label": "mzi · MZI upper phase",
+              "params": {
+                "phaseRad": 1.7442933146318609
+              }
+            },
+            {
+              "id": "mzi__combine",
+              "model": "siepic-coupler",
+              "version": "1",
+              "label": "mzi · MZI output coupler",
+              "params": {}
+            },
+            {
+              "id": "desired",
+              "model": "detector",
+              "version": "1",
+              "label": "Desired output",
+              "params": {}
+            },
+            {
+              "id": "unwanted",
+              "model": "detector",
+              "version": "1",
+              "label": "Unwanted output",
+              "params": {}
+            }
+          ],
+          "connections": [
+            {
+              "id": "mzi__upper-start",
+              "from": {
+                "component": "mzi__split",
+                "port": 2
+              },
+              "to": {
+                "component": "mzi__phase",
+                "port": 0
+              },
+              "lengthM": 0.00004,
+              "neff": 2.44553,
+              "lossDbPerM": 100,
+              "waveguide": {
+                "model": "siepic-strip-500x220-te",
+                "version": "1"
+              }
+            },
+            {
+              "id": "mzi__upper-end",
+              "from": {
+                "component": "mzi__phase",
+                "port": 1
+              },
+              "to": {
+                "component": "mzi__combine",
+                "port": 0
+              },
+              "lengthM": 0.00004,
+              "neff": 2.44553,
+              "lossDbPerM": 100,
+              "waveguide": {
+                "model": "siepic-strip-500x220-te",
+                "version": "1"
+              }
+            },
+            {
+              "id": "mzi__lower",
+              "from": {
+                "component": "mzi__split",
+                "port": 3
+              },
+              "to": {
+                "component": "mzi__combine",
+                "port": 1
+              },
+              "lengthM": 0.00009,
+              "neff": 2.44553,
+              "lossDbPerM": 100,
+              "waveguide": {
+                "model": "siepic-strip-500x220-te",
+                "version": "1"
+              }
+            },
+            {
+              "id": "link_1",
+              "from": {
+                "component": "laser",
+                "port": 0
+              },
+              "to": {
+                "component": "mzi__split",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            },
+            {
+              "id": "link_2",
+              "from": {
+                "component": "mzi__combine",
+                "port": 2
+              },
+              "to": {
+                "component": "desired",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            },
+            {
+              "id": "link_3",
+              "from": {
+                "component": "mzi__combine",
+                "port": 3
+              },
+              "to": {
+                "component": "unwanted",
+                "port": 0
+              },
+              "lengthM": 0,
+              "neff": 2.4,
+              "lossDbPerM": 0
+            }
+          ]
+        },
+        "layout": {
+          "components": {
+            "laser": {
+              "x": 150,
+              "y": 230,
+              "rotation": 0
+            },
+            "mzi__split": {
+              "x": 380,
+              "y": 230,
+              "rotation": 0
+            },
+            "mzi__phase": {
+              "x": 610,
+              "y": 140,
+              "rotation": 0
+            },
+            "mzi__combine": {
+              "x": 840,
+              "y": 230,
+              "rotation": 0
+            },
+            "desired": {
+              "x": 1070,
+              "y": 150,
+              "rotation": 0
+            },
+            "unwanted": {
+              "x": 1070,
+              "y": 310,
+              "rotation": 0
+            }
+          },
+          "connections": {
+            "mzi__upper-start": {
+              "bend": 0
+            },
+            "mzi__upper-end": {
+              "bend": 0
+            },
+            "mzi__lower": {
+              "bend": 170
+            },
+            "link_1": {
+              "bend": 0
+            },
+            "link_2": {
+              "bend": 0
+            },
+            "link_3": {
+              "bend": 0
+            }
+          },
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "authoring": {
+          "schema": "picsetup-authoring/1",
+          "recipeJson": "{\"schema\":\"picsetup-recipe/1\",\"title\":\"C · Dispersive guide · ΔL 10 µm\",\"wavelengthM\":0.00000155,\"parts\":[{\"id\":\"laser\",\"model\":\"source\",\"params\":{\"powerW\":0.001}},{\"id\":\"mzi\",\"block\":\"mzi\",\"params\":{\"couplerModel\":\"siepic-coupler\",\"guideModel\":\"siepic-strip-500x220-te\",\"neff\":2.44553,\"deltaLengthM\":0.00001,\"phaseRad\":1.7442933146318609,\"lossDbPerM\":100}},{\"id\":\"desired\",\"model\":\"detector\",\"label\":\"Desired output\"},{\"id\":\"unwanted\",\"model\":\"detector\",\"label\":\"Unwanted output\"}],\"links\":[{\"from\":\"laser.out\",\"to\":\"mzi.in0\"},{\"from\":\"mzi.out0\",\"to\":\"desired.in\"},{\"from\":\"mzi.out1\",\"to\":\"unwanted.in\"}]}",
+          "semanticKey": "{\"components\":[{\"id\":\"desired\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"},{\"id\":\"laser\",\"model\":\"source\",\"params\":{\"phaseRad\":0,\"powerW\":0.001},\"version\":\"1\"},{\"id\":\"mzi__combine\",\"model\":\"siepic-coupler\",\"params\":{},\"version\":\"1\"},{\"id\":\"mzi__phase\",\"model\":\"phase\",\"params\":{\"phaseRad\":1.7442933146318609},\"version\":\"1\"},{\"id\":\"mzi__split\",\"model\":\"siepic-coupler\",\"params\":{},\"version\":\"1\"},{\"id\":\"unwanted\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"}],\"connections\":[{\"endpoints\":[{\"component\":\"laser\",\"port\":0},{\"component\":\"mzi__split\",\"port\":0}],\"id\":\"link_1\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"desired\",\"port\":0},{\"component\":\"mzi__combine\",\"port\":2}],\"id\":\"link_2\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":3},{\"component\":\"unwanted\",\"port\":0}],\"id\":\"link_3\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":1},{\"component\":\"mzi__split\",\"port\":3}],\"id\":\"mzi__lower\",\"lengthM\":0.00009,\"lossDbPerM\":100,\"neff\":2.44553,\"waveguide\":{\"model\":\"siepic-strip-500x220-te\",\"version\":\"1\"}},{\"endpoints\":[{\"component\":\"mzi__combine\",\"port\":0},{\"component\":\"mzi__phase\",\"port\":1}],\"id\":\"mzi__upper-end\",\"lengthM\":0.00004,\"lossDbPerM\":100,\"neff\":2.44553,\"waveguide\":{\"model\":\"siepic-strip-500x220-te\",\"version\":\"1\"}},{\"endpoints\":[{\"component\":\"mzi__phase\",\"port\":0},{\"component\":\"mzi__split\",\"port\":2}],\"id\":\"mzi__upper-start\",\"lengthM\":0.00004,\"lossDbPerM\":100,\"neff\":2.44553,\"waveguide\":{\"model\":\"siepic-strip-500x220-te\",\"version\":\"1\"}}],\"wavelengthM\":0.00000155}"
+        }
+      },
+      "detectorId": "desired"
+    }
+  ],
+  "study": {
+    "schema": "picsetup-study/1",
+    "baselineVariantId": "variant-1",
+    "outputs": [
+      {
+        "variantId": "variant-1",
+        "desiredDetectorId": "desired",
+        "unwantedDetectorId": "unwanted"
+      },
+      {
+        "variantId": "variant-2",
+        "desiredDetectorId": "desired",
+        "unwantedDetectorId": "unwanted"
+      },
+      {
+        "variantId": "variant-3",
+        "desiredDetectorId": "desired",
+        "unwantedDetectorId": "unwanted"
+      }
+    ],
+    "targets": {
+      "maxInsertionLossDb": 1.5,
+      "maxCrosstalkDb": -8
+    },
+    "phaseScenarios": [
+      {
+        "id": "phase-1",
+        "name": "Assumed phase error -0.08 rad",
+        "offsets": [
+          {
+            "variantId": "variant-1",
+            "componentId": "mzi__phase",
+            "phaseOffsetRad": -0.08
+          },
+          {
+            "variantId": "variant-2",
+            "componentId": "mzi__phase",
+            "phaseOffsetRad": -0.08
+          },
+          {
+            "variantId": "variant-3",
+            "componentId": "mzi__phase",
+            "phaseOffsetRad": -0.08
+          }
+        ]
+      },
+      {
+        "id": "phase-2",
+        "name": "Assumed phase error +0.08 rad",
+        "offsets": [
+          {
+            "variantId": "variant-1",
+            "componentId": "mzi__phase",
+            "phaseOffsetRad": 0.08
+          },
+          {
+            "variantId": "variant-2",
+            "componentId": "mzi__phase",
+            "phaseOffsetRad": 0.08
+          },
+          {
+            "variantId": "variant-3",
+            "componentId": "mzi__phase",
+            "phaseOffsetRad": 0.08
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2,6 +2,14 @@
 
 Sketch a guided photonic circuit, change an assumption, and compare the result. The canvas, JSON recipe compiler, Node API and experiment workers use the same scalar coherent CW solver.
 
+## Start with the new design experiments
+
+**Design study** opens a controlled MZI comparison: constant index at ΔL 20 µm, dispersive guide at 20 µm, then a 10 µm redesign. Both outputs, dB views, explicit insertion-loss/crosstalk targets, semantic changes and assumed ±0.08 rad phase errors are visible together. The study runs 101 wavelengths from 1545–1555 nm. Under the declared models and targets, A passes, B fails and C passes all three phase scenarios. These are sampled model decisions, not fabrication predictions.
+
+**Resolve ring** demonstrates a 3.185 pm notch missed by the broad scan. It seeds one known ideal single-bus resonance from optical length, samples and brackets it, and withholds metrics when budget or numerical checks fail. Export retains the actual samples and convergence evidence. The 120 dB extinction cutoff is a reporting policy, not an accuracy bound.
+
+[Studies and replay](docs/STUDIES.md) describe the schemas, target definitions and limitations.
+
 ## Try the workflow
 
 1. Open **Sketch** and choose a SiEPIC MZI, ideal MZI, ring, splitter tree or delay line. Edit its recipe and choose **Build this idea**.
@@ -37,7 +45,7 @@ node dist-api/cli.mjs examples/commands/search-phase.json
 
 The CLI also reads a single JSON command from stdin. [API documentation](docs/API.md) covers strict named-port recipes, catalog queries, solving, sweeps, notebooks and bounded searches. Runnable recipes and commands are in `examples/recipes/` and `examples/commands/`.
 
-The browser exposes `window.picsetup` version `1`: `getDocument()`, `loadRecipe(input)`, `loadDocument(input)`, `arrange()`, `catalog(filter)` and async `execute(command)`. Recipe loading compiles and arranges; document loading restores an exact snapshot. Headless `execute` returns data without changing the canvas. These are explicit programming interfaces; the app does not contain a natural-language model.
+The browser exposes `window.picsetup` version `1`: `getDocument()`, `loadRecipe(input)`, `loadDocument(input)`, `arrange()`, `getNotebook()`, `loadNotebook(input)`, `startDesignStudy()`, `openRing()`, `catalog(filter)` and async `execute(command)`. Recipe loading compiles and arranges; document loading restores an exact snapshot. Headless `execute` returns data without changing the canvas. These are explicit programming interfaces; the app does not contain a natural-language model.
 
 ## Check
 
@@ -53,10 +61,10 @@ Linux browser dependencies may require `npx playwright install --with-deps chrom
 
 ## Model boundaries
 
-SI internally: m, W, rad and dB/m. One coherent source, one declared scalar guided mode per port, linear steady state. The network solves `(I − SC)b = s`; guide index is nondispersive. Drawn geometry never supplies optical length. New links default to zero length. Unconnected ports use matched boundaries; crossings do not connect.
+SI internally: m, W, rad and dB/m. One coherent source, one declared scalar guided mode per port, linear steady state. The network solves `(I − SC)b = s`; guides support declared constant index or the pinned experimental SiEPIC 500 × 220 nm TE dispersion coefficients. Drawn geometry never supplies optical length. New links default to zero length. Unconnected ports use matched boundaries; crossings do not connect.
 
 The bundled SiEPIC coupler has fixed 200 nm gap and 10 µm coupling length, source TE mode 1, and approximately 1500–1600 nm support. Its native spatial reference planes are unknown. Complex Cartesian interpolation can introduce apparent attenuation; some original matrices show slight apparent gain. Those values are preserved, with visible diagnostics and explicit accounting. No calibrated-device or fabrication claim is made.
 
-Uniform wavelength and parameter grids can miss narrow resonances or optima. Goal search reports the best sampled candidate, failures and boundary hits. Source data, conventions and both MIT notices are preserved in [the dataset](models/siepic-dc-200nm-10um/README.md) and in distributed third-party notices.
+Uniform wavelength and parameter grids can miss narrow resonances or optima. Goal search evaluates the starting circuit, excludes numerically suspect candidates, and only enables Apply for a meaningful improvement. It retains rejected raw values and boundary hits. Source data, conventions and both MIT notices are preserved in [the dataset](models/siepic-dc-200nm-10um/README.md) and in distributed third-party notices.
 
 See the [workbench contract](WORKBENCH_CONTRACT.md), [physics contract](PHOTONICS_MODEL_CONTRACT.md), [document contract](INTERFACE_CONTRACT.md), and [claims](CLAIMS_AND_VALIDATION.md).

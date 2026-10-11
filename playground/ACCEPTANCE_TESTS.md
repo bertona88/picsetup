@@ -2,6 +2,15 @@
 
 From `playground/`: `npm ci`, `npm test`, `npm run build`, `node scripts/check-api.mjs`, `npm run test:browser`. Development: `npm run dev -- --host 0.0.0.0`. The build generates both the static application and distributed Node API/CLI. From the repository root, reproduce source/reference evidence with `python scripts/convert_siepic.py --check`, `python scripts/verify_siepic.py --check` and `python scripts/verify_siepic_mzi.py` (NumPy required for the latter two).
 
+## Review-response gates
+
+- Independently check pinned waveguide hashes, equation, complex propagation, delay and MZI fringe roots; reject unknown model versions, mismatched reference index and out-of-window evaluation.
+- Prevent a coarse sampled goal from replacing a better baseline; reject the reproduced power-imbalance winner while preserving raw values and diagnostics.
+- Verify current/stale source by recompilation, including forged records, layout-only changes and JSON replay.
+- Check explicit desired/unwanted mappings, IL/XT, exact-zero states, complete eligible-grid decisions, bounded phase scenarios and semantic diffs against independent numerical oracles.
+- Resolve both reviewed known-model rings against independent complex transfer/half-depth references; withhold metrics on inadequate budget/quality and keep extinction cutoff language separate from accuracy.
+- In Chromium, launch the shipped A/B/C study, inspect targets/differences, export/reload and reproduce metrics; test rejected goals; run unresolved→resolved ring and load its exact circuit. Capture fresh screenshots and metadata.
+
 ## Idea workbench gates
 
 - **Named-port recipes:** exact versioned data schema, explicit SI/defaults, unique safe IDs, exposed ports, single connection per port and deterministic block namespaces. Reject unknown keys/models/versions, expressions, nonfinite values, invalid domains, ambiguous endpoints and over-cap expansion before replacing a scene. Preserve editable out-of-band documents and exact bundled dataset identity.
@@ -41,4 +50,4 @@ The three Python conversion/reference commands passed in the retained dataset ev
 
 Historical M1: 87 unit/model/editor tests and one Chromium journey passed at implementation commit `0ddecde64e030d93f4bb854ab6dcca2157d5d722`, with no failures/skips. Historical links are retained in the handoff.
 
-Full M2–M5 gates remain open: a dedicated interactive ring spectral journey, broader external-library metadata qualification/import, arbitrary nested-module interfaces/equivalence, cross-browser/accessibility and performance evidence. A ring starter and four flat source-free templates are implemented and tested; those do not close the broader milestones. Preserve `app/`, `prototype/` and production Pages configuration. This workbench iteration does not perform a production replacement.
+Full M2–M5 gates remain open: general adaptive resonance discovery, broader external-library metadata qualification/import, arbitrary nested-module interfaces/equivalence, cross-browser/accessibility and performance evidence. A ring starter and four flat source-free templates are implemented and tested; those do not close the broader milestones. Preserve `app/`, `prototype/` and production Pages configuration. This workbench iteration does not perform a production replacement.

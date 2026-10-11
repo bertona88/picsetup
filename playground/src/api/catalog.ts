@@ -3,8 +3,9 @@ import { datasetMetadata } from '../model/dataset';
 import { defaultParams, MODEL_IDS, portNames } from '../model/registry';
 import type { ModelId } from '../model/types';
 import { recipeKeys, recipeObject } from './recipe';
+import { waveguideMetadata } from '../model/propagation';
 
-export interface CatalogFilter { kind?: 'model' | 'block'; modelKind?: 'analytical' | 'dataset' | 'composition'; mode?: 'TE' | 'TE0' | 'TE mode 1'; wavelengthM?: number; query?: string }
+export interface CatalogFilter { kind?: 'model' | 'block' | 'waveguide'; modelKind?: 'analytical' | 'dataset' | 'composition' | 'coefficient-model'; mode?: 'TE' | 'TE0' | 'TE mode 1'; wavelengthM?: number; query?: string }
 const modelDescriptions: Record<ModelId, [string, string]> = {
   source: ['Coherent source', 'One scalar TE0 source. Returning fields are absorbed; power is in W.'],
   coupler: ['Ideal directional coupler', 'Reciprocal lossless four-port analytical coupler with power coupling K.'],
@@ -21,12 +22,23 @@ const limits: Record<string, { min?: number; max?: number }> = { powerW: { min: 
 export function queryCatalog(filter: CatalogFilter = {}) {
   const value = recipeObject(filter, 'catalog filter');
   recipeKeys(value, [], ['kind', 'modelKind', 'mode', 'wavelengthM', 'query'], 'catalog filter');
-  if (filter.kind !== undefined && filter.kind !== 'model' && filter.kind !== 'block') throw new Error('Catalog kind must be model or block.');
-  if (filter.modelKind !== undefined && !['analytical', 'dataset', 'composition'].includes(filter.modelKind)) throw new Error('Catalog modelKind must be analytical, dataset or composition.');
+  if (filter.kind !== undefined && !['model', 'block', 'waveguide'].includes(filter.kind)) throw new Error('Catalog kind must be model, block or waveguide.');
+  if (filter.modelKind !== undefined && !['analytical', 'dataset', 'composition', 'coefficient-model'].includes(filter.modelKind)) throw new Error('Catalog modelKind must be analytical, dataset, composition or coefficient-model.');
   if (filter.mode !== undefined && !['TE', 'TE0', 'TE mode 1'].includes(filter.mode)) throw new Error('Catalog mode must be TE, TE0 or the native label TE mode 1.');
   if (filter.wavelengthM !== undefined && (!Number.isFinite(filter.wavelengthM) || filter.wavelengthM <= 0)) throw new Error('Catalog wavelengthM must be positive finite metres.');
   if (filter.query !== undefined && (typeof filter.query !== 'string' || filter.query.length > 200)) throw new Error('Catalog query must be text of at most 200 characters.');
   const entries = [
+    { kind: 'waveguide' as const, id: waveguideMetadata.id, version: waveguideMetadata.version,
+      title: waveguideMetadata.title, description: 'Pinned frequency-quadratic TE strip propagation. Select on a connection; length and loss remain explicit.',
+      placement: 'connection.waveguide', reference: { model: waveguideMetadata.id, version: waveguideMetadata.version },
+      ports: ['L', 'R'], mode: 'TE', polarization: 'TE', sourceModeId: null,
+      defaultParams: { lengthM: 100e-6, lossDbPerM: 0, neff: waveguideMetadata.neff },
+      parameters: { lengthM: { type: 'number', default: 100e-6, unit: 'm', min: 0 }, lossDbPerM: { type: 'number', default: 0, unit: 'dB/m', min: 0 }, neff: { type: 'number', default: waveguideMetadata.neff, unit: '1', fixed: true } },
+      wavelengthRangeM: [...waveguideMetadata.evaluationWindowM], wavelengthRangeBasis: waveguideMetadata.evaluationWindowBasis,
+      coefficients: { referenceWavelengthM: waveguideMetadata.referenceWavelengthM, neff: waveguideMetadata.neff, groupIndex: waveguideMetadata.groupIndex, dispersionCoefficient: waveguideMetadata.dispersionCoefficient, dispersionCoefficientUnit: waveguideMetadata.dispersionCoefficientUnit },
+      geometry: { widthM: waveguideMetadata.widthM, heightM: waveguideMetadata.heightM },
+      provenance: { kind: 'coefficient-model', source: waveguideMetadata.source, limits: [...waveguideMetadata.limitations] },
+    },
     ...MODEL_IDS.map(model => ({
       kind: 'model' as const, id: model, version: '1' as const,
       title: modelDescriptions[model][0], description: modelDescriptions[model][1],

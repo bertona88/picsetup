@@ -56,3 +56,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+SiEPIC strip waveguide coefficients and adapted propagation equation
+Model: siepic-strip-500x220-te, version 1; 500 x 220 nm, TE
+Simphony: 5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c
+SiEPIC EBeam PDK: 363fbb52eefa8669100499ab531d3fe7befc4867
+Coefficient Git blob: d7a94d16c611c28a4dfb7eeb5141b1f81750b758
+Coefficient SHA-256: 337eb53881a39a03741cee40f277b5e9f0997dc186915c074c97bbb975198edc
+The MIT notices above also apply to these coefficients and adapted equation.
+Copies and full provenance are in models/siepic-strip-500x220-te/.
+1500-1600 nm is an application evaluation assumption, not a source-validated fit band.

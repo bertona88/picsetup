@@ -1,6 +1,6 @@
 # Notices — playground
 
-New application implementation is authored for this rebuild; no implementation was copied from `app/`, `prototype/`, SAX or Simphony. This iteration includes one openly licensed tabulated SiEPIC component dataset. Simphony, SiPANN and SAX Python implementations are not included in the browser runtime.
+New application implementation is authored for this rebuild; no implementation was copied from `app/`, `prototype/`, SAX or Simphony. This iteration includes an openly licensed tabulated SiEPIC coupler and a pinned SiEPIC straight-guide coefficient model. Simphony, SiPANN and SAX Python implementations are not included in the browser runtime.
 
 ## SiEPIC directional-coupler data
 
@@ -12,6 +12,12 @@ The exact raw `.sparam` file and converted complex values are distributed in [mo
 Source blob SHA-1: `2b56aff1c525be81eb1ea374f9e0107cdb59e356`. Raw SHA-256: `945ddee41a7b46d7288a862ac9ad3c4802336810cf5c7b6d3716b848c00f1371`. The [manifest](models/siepic-dc-200nm-10um/manifest.json) records provenance, primary convention references and exact conversion. New conversion scripts preserve every coefficient, changing only the declared phasor representation from `exp(−iωt)` to `exp(+iωt)` through complex conjugation. Source bytes are unchanged.
 
 `public/THIRD_PARTY_NOTICES.txt` includes both full license notices and pinned source attribution. Vite copies it into every static `dist/` build alongside the bundled dataset.
+
+## SiEPIC dispersive straight guide
+
+[models/siepic-strip-500x220-te/](models/siepic-strip-500x220-te/) preserves the exact seven-coefficient source, pinned Simphony equation for audit, both MIT notices, manifest and independent references. The browser adapts the scalar equation to the declared phasor convention; it does not execute upstream Python. Coefficient Git blob: `d7a94d16c611c28a4dfb7eeb5141b1f81750b758`; SHA-256: `337eb53881a39a03741cee40f277b5e9f0997dc186915c074c97bbb975198edc`.
+
+Both `dist/` and `dist-api/` carry the manifest, coefficients and full license copies under `models/siepic-strip-500x220-te/`, plus `THIRD_PARTY_NOTICES.txt`. The independent waveguide verifier uses Python's standard library only. Source fit bandwidth, temperature, process corner, measured loss and uncertainty are unknown; the application's 1500–1600 nm evaluation window is explicitly assumed.
 
 ## Development dependencies
 

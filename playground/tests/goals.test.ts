@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { createMziExample } from '../src/model/examples';
 import { createDatasetMziExperiment } from '../src/model/experiments';
 import { runGoalSearch, createGoalRunner, type GoalRequest, type GoalResponse } from '../src/experiments/goals';
+import { solveCircuit } from '../src/solver/solve';
+import { assessSampleQuality } from '../src/solver/quality';
+import { blankDocument } from '../src/io/document';
 
 const request = (overrides: Partial<GoalRequest> = {}): GoalRequest => ({ id: 1, document: createMziExample(), wavelengthM: 1550e-9, detectorId: 'detector-1', objective: 'maximize', parameter: { kind: 'component', componentId: 'phase-1', name: 'phaseRad' }, min: 0, max: 2 * Math.PI, points: 101, ...overrides });
 const noYield = async () => {};
@@ -17,6 +20,9 @@ describe('bounded sampled design goals', () => {
     expect(result.boundaryHit).toBe(false);
     expect(result.failedCount).toBe(0);
     expect(result.cancelled).toBe(false);
+    expect(result.baseline).toMatchObject({ value: 0, eligible: true });
+    expect(result.decision).toBe('improved');
+    expect(result.improvementW!).toBeGreaterThan(result.toleranceW!);
     expect(JSON.stringify(input)).toBe(original);
     expect(Object.isFrozen(result.request.document.circuit)).toBe(true);
   });
@@ -25,6 +31,100 @@ describe('bounded sampled design goals', () => {
     expect(result.best!.value).toBe(0);
     expect(result.boundaryHit).toBe(true);
     expect(result.samples).toHaveLength(11);
+    expect(result.decision).toBe('no-improvement');
+  });
+  it('keeps the superior current phase when a coarse grid misses its maximum', async () => {
+    const document = createMziExample();
+    document.circuit.components.find(component => component.id === 'phase-1')!.params.phaseRad = Math.PI;
+    const result = await runGoalSearch(request({ document, points: 2 }), { yieldControl: noYield });
+    expect(result.baseline!.powerW).toBeCloseTo(0.001, 14);
+    expect(result.best!.powerW).toBeLessThan(1e-25);
+    expect(result.samples).toHaveLength(2);
+    expect(result.decision).toBe('no-improvement');
+    expect(result.improvementW).toBeLessThan(-0.00099);
+    expect(result.request.document.circuit.components.find(component => component.id === 'phase-1')!.params.phaseRad).toBe(Math.PI);
+  });
+  it('evaluates the baseline at the requested wavelength, not the displayed wavelength', async () => {
+    const document = createMziExample();
+    document.circuit.connections.find(connection => connection.id === 'link-4')!.lengthM += 20e-6;
+    const target = 1531e-9;
+    const expected = solveCircuit({ ...document.circuit, wavelengthM: target }).detectors['detector-1'].powerW;
+    const originalPower = solveCircuit(document.circuit).detectors['detector-1'].powerW;
+    expect(Math.abs(expected - originalPower)).toBeGreaterThan(1e-5);
+    const result = await runGoalSearch(request({ document, wavelengthM: target, points: 3 }), { yieldControl: noYield });
+    expect(result.baseline!.powerW).toBe(expected);
+    expect(result.request.document.circuit.wavelengthM).toBe(1550e-9);
+  });
+  it('retains extreme lossless-feedback powers but excludes their numerical artifacts from ranking', async () => {
+    const document = blankDocument();
+    document.circuit.components = [
+      { id: 'source', model: 'source', version: '1', label: 'Source', params: { powerW: .001, phaseRad: 0 } },
+      { id: 'coupler', model: 'coupler', version: '1', label: 'Coupler', params: { coupling: 1e-13 } },
+      { id: 'detector', model: 'detector', version: '1', label: 'Detector', params: {} },
+    ];
+    const link = (id: string, from: string, fromPort: number, to: string, toPort: number) => ({ id, from: { component: from, port: fromPort }, to: { component: to, port: toPort }, lengthM: 0, lossDbPerM: 0, neff: 2.4 });
+    document.circuit.connections = [link('input', 'source', 0, 'coupler', 0), link('output', 'coupler', 2, 'detector', 0), link('feedback', 'coupler', 3, 'coupler', 1)];
+    document.layout.components = Object.fromEntries(document.circuit.components.map((component, index) => [component.id, { x: index * 200, y: 0, rotation: 0 }]));
+    document.layout.connections = Object.fromEntries(document.circuit.connections.map(connection => [connection.id, { bend: 0 }]));
+    const result = await runGoalSearch(request({ document, detectorId: 'detector', parameter: { kind: 'component', componentId: 'coupler', name: 'coupling' }, min: 1e-13, max: 1e-12, points: 201 }), { yieldControl: noYield });
+    expect(result.baseline).toMatchObject({ ok: true, eligible: false });
+    expect(result.baseline!.rejectionReasons.some(item => item.code === 'POWER_IMBALANCE')).toBe(true);
+    expect(result.samples).toHaveLength(201);
+    const spuriousGain = result.samples.reduce((best, sample) => sample.powerW! > best.powerW! ? sample : best);
+    expect(spuriousGain.powerW).toBeGreaterThan(.001001);
+    expect(spuriousGain.ok).toBe(true);
+    expect(spuriousGain.eligible).toBe(false);
+    expect(spuriousGain.rejectionReasons.some(item => item.code === 'POWER_IMBALANCE')).toBe(true);
+    expect(result.best).toBeNull();
+    expect(result.failedCount).toBe(0);
+    expect(result.rejectedCount).toBe(201);
+    expect(result.decision).toBe('unresolved');
+    expect(result.improvementW).toBeNull();
+  });
+  it('uses a source-relative threshold for equally strong relative improvements', async () => {
+    for (const powerW of [1e-18, 1e3]) {
+      const document = createMziExample();
+      document.circuit.components.find(component => component.model === 'source')!.params.powerW = powerW;
+      const result = await runGoalSearch(request({ document, points: 3 }), { yieldControl: noYield });
+      expect(result.decision).toBe('improved');
+      expect(result.improvementW! / powerW).toBeCloseTo(1, 12);
+      expect(result.toleranceW! / powerW).toBeCloseTo(1e-9, 17);
+    }
+  });
+  it('refuses to call floating-point-scale changes a useful improvement', async () => {
+    const result = await runGoalSearch(request({ points: 3 }), { yieldControl: noYield, solve: circuit => {
+      const solved = solveCircuit(circuit);
+      const phase = circuit.components.find(component => component.id === 'phase-1')!.params.phaseRad;
+      solved.detectors['detector-1'].powerW = .001 + (phase === Math.PI ? 1e-14 : 0);
+      return solved;
+    } });
+    expect(result.improvementW).toBeGreaterThan(0);
+    expect(result.improvementW!).toBeLessThan(result.toleranceW!);
+    expect(result.decision).toBe('no-improvement');
+  });
+  it('keeps an eligible sampled best but makes no recommendation from an unreliable baseline', async () => {
+    let calls = 0;
+    const result = await runGoalSearch(request({ points: 3 }), { yieldControl: noYield, solve: circuit => {
+      const solved = solveCircuit(circuit);
+      if (calls++ === 0) solved.diagnostics.push({ severity: 'warning', code: 'SMALL_PIVOT', message: 'Baseline sensitivity is not bounded.' });
+      return solved;
+    } });
+    expect(result.best!.powerW).toBeCloseTo(.001, 14);
+    expect(result.baseline!.eligible).toBe(false);
+    expect(result.rejectedCount).toBe(0);
+    expect(result.decision).toBe('unresolved');
+    expect(result.improvementW).toBeNull();
+  });
+  it('distinguishes numerical exclusions from explicit model qualifications without clipping either', () => {
+    const qualifications = ['EXPERIMENTAL_DATASET', 'DATASET_PASSIVITY', 'MODEL_SUPPLIED_POWER', 'MATCHED_BOUNDARIES'].map(code => ({ severity: 'warning' as const, code, message: code }));
+    expect(assessSampleQuality({ ok: true, diagnostics: qualifications, values: [1.002] })).toEqual({ eligible: true, reasons: [] });
+    for (const code of ['POWER_IMBALANCE', 'SMALL_PIVOT']) {
+      const diagnostic = { severity: 'warning' as const, code, message: code };
+      expect(assessSampleQuality({ ok: true, diagnostics: [...qualifications, diagnostic] })).toEqual({ eligible: false, reasons: [diagnostic] });
+    }
+    expect(assessSampleQuality({ ok: true, diagnostics: [], values: [NaN] }).eligible).toBe(false);
+    expect(assessSampleQuality({ ok: false, diagnostics: [] }).eligible).toBe(false);
+    expect(assessSampleQuality({ ok: true, diagnostics: [{ severity: 'error', code: 'LARGE_RESIDUAL', message: 'Unreliable.' }] }).eligible).toBe(false);
   });
   it('keeps sampled coordinates finite across large representable phase bounds', async () => {
     const result = await runGoalSearch(request({ min: 1e307, max: 1e308, points: 101 }), { yieldControl: noYield });

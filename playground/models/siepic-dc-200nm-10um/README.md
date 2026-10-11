@@ -18,7 +18,7 @@ Status: **experimental, not passive-certified**. Coherent experiments expose the
 
 At 1550 nm, Cartesian interpolation gives fractions of a unit excitation at port 1 of approximately `0.0001592483, 0.0001284652, 0.7586734137, 0.2126389542` at ports 1–4. This is the table's response under the declared interpolation, not a calibrated hardware measurement.
 
-Cartesian interpolation follows a chord between rotating complex samples, so it can lower the apparent power between source samples. At 1550 nm the interpolated total port-1 output is about **0.9716**, while the weighted neighboring sample powers total about **0.9834**. This difference is an interpolation effect, not measured extra physical loss. The independent audit records both values; exact-grid sampling preserves the original sampled powers. No between-sample uncertainty estimate is available.
+Cartesian interpolation follows a chord between rotating complex samples, so it can lower the apparent power between source samples. At 1550 nm the interpolated total port-1 output is about **0.9716**, while the weighted neighboring sample powers total about **0.9837416**. This difference is an interpolation effect, not measured extra physical loss. The independent audit records both values; exact-grid sampling preserves the original sampled powers. No between-sample uncertainty estimate is available.
 
 ## Reproduce
 

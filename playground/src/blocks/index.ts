@@ -1,5 +1,6 @@
 import { blankDocument, validateDocument } from '../io/document';
 import type { CircuitDocument, Component, Connection, Endpoint, Position } from '../model/types';
+import { waveguideMetadata } from '../model/propagation';
 
 export type BlockId = 'mzi' | 'ring' | 'splitter-tree' | 'delay-line';
 export type BlockParams = Record<string, number | string>;
@@ -9,6 +10,7 @@ export interface BlockParameter {
   description: string;
   unit?: string;
   min?: number;
+  exclusiveMin?: number;
   max?: number;
   options?: string[];
 }
@@ -29,7 +31,8 @@ const number = (value: number, unit: string, description: string, min?: number):
   type: 'number', default: value, unit, description, ...(min === undefined ? {} : { min }),
 });
 const propagation = () => ({
-  neff: number(2.4, '1', 'Constant effective index; must be strictly positive.', 0),
+  guideModel: { type: 'enum' as const, default: 'constant-index', options: ['constant-index', 'siepic-strip-500x220-te'], description: 'Constant index or the pinned dispersive 500 × 220 nm SiEPIC strip coefficient set. The dispersive evaluation window and modal matching remain unqualified.' },
+  neff: { ...number(2.4, '1', 'Constant effective index; strictly positive. Locked to the source reference index for a selected dispersive guide.'), exclusiveMin: 0 },
   lossDbPerM: number(0, 'dB/m', 'Explicit guide power loss per metre.', 0),
 });
 const couplerModel = (): BlockParameter => ({
@@ -115,12 +118,16 @@ function parameters(kind: BlockId, supplied: BlockParams): BlockParams {
     if (spec.type === 'enum') {
       if (typeof value !== 'string' || !spec.options!.includes(value)) throw new RangeError(`${kind}.${key} must be ${spec.options!.join(' or ')}.`);
     } else if (typeof value !== 'number' || !Number.isFinite(value) ||
-      (spec.min !== undefined && value < spec.min) || (spec.max !== undefined && value > spec.max)) {
+      (spec.min !== undefined && value < spec.min) || (spec.exclusiveMin !== undefined && value <= spec.exclusiveMin) || (spec.max !== undefined && value > spec.max)) {
       throw new RangeError(`${kind}.${key} must be a finite number within its declared range.`);
     }
     resolved[key] = value;
   }
   if ((resolved.neff as number) <= 0) throw new RangeError(`${kind}.neff must be strictly positive.`);
+  if (resolved.guideModel === 'siepic-strip-500x220-te') {
+    if (Object.hasOwn(supplied, 'neff') && supplied.neff !== waveguideMetadata.neff) throw new RangeError(`${kind}.neff must equal the selected waveguide reference index ${waveguideMetadata.neff}; omit it to use the source value.`);
+    resolved.neff = waveguideMetadata.neff;
+  }
   return resolved;
 }
 
@@ -138,6 +145,7 @@ export function instantiateBlock(kind: BlockId, params: BlockParams = {}): Block
   const phase = (id: string, label: string) => component(id, 'phase', label, { phaseRad: p.phaseRad as number });
   const link = (id: string, from: Endpoint, to: Endpoint, lengthM: number): Connection => ({
     id, from, to, lengthM, neff: p.neff as number, lossDbPerM: p.lossDbPerM as number,
+    ...(p.guideModel === 'siepic-strip-500x220-te' ? { waveguide: { model: 'siepic-strip-500x220-te' as const, version: '1' as const } } : {}),
   });
   let fragment: BlockFragment;
   switch (kind) {

@@ -1,6 +1,7 @@
 import { add, complex, div, finite, magnitude, mul, polar, power, sub } from '../model/complex';
 import { defaultParams, evaluate, MODEL_IDS, portNames } from '../model/registry';
 import { datasetMetadata, datasetSigmaMax } from '../model/dataset';
+import { evaluatePropagation, validatePropagation, waveguideMetadata } from '../model/propagation';
 import type { Circuit, Complex, Component, Diagnostic, Endpoint, ModelId, PowerBudget, SolveResult } from '../model/types';
 
 export const MAX_COMPONENTS = 100;
@@ -80,12 +81,9 @@ export function validateCircuit(circuit: Circuit): Diagnostic[] {
         occupied.add(key);
       }
     }
-    if (!isNumber(item.lengthM) || item.lengthM < 0 || !isNumber(item.lossDbPerM) || item.lossDbPerM < 0 || !isNumber(item.neff) || item.neff <= 0) {
-      error('INVALID_PROPAGATION', 'Length (m) and loss (dB/m) must be finite and nonnegative; effective index must be finite and positive.', extra);
-    } else if (isNumber(circuit.wavelengthM) && circuit.wavelengthM > 0 && (!Number.isFinite(item.lengthM * item.lossDbPerM) || !Number.isFinite(2 * Math.PI * item.neff * item.lengthM / circuit.wavelengthM))) {
-      error('PROPAGATION_OVERFLOW', 'Propagation phase or attenuation exceeds the numerical range.', extra);
-    }
+    diagnostics.push(...validatePropagation(item, circuit.wavelengthM));
   }
+  if (circuit.connections.some(line => line?.waveguide !== undefined)) diagnostics.push({ severity: 'warning', code: 'EXPERIMENTAL_WAVEGUIDE', message: `${waveguideMetadata.title}: reduced-order dispersion. 1500–1600 nm is a declared evaluation assumption, not a source-validated fit band. Loss is user-declared; physical mode matching and port-plane registration are unqualified.` });
   if (circuit.components.length === 0) diagnostics.push({ severity: 'info', code: 'EMPTY_CIRCUIT', message: 'Place a source and connect components to begin.' });
   else if (sources === 0) diagnostics.push({ severity: 'info', code: 'NO_SOURCE', message: 'No source is present; a uniquely solvable passive circuit has zero fields.' });
   if (!diagnostics.some(d => d.severity === 'error') && totalPorts > occupied.size) diagnostics.push({ severity: 'warning', code: 'MATCHED_BOUNDARIES', message: `${totalPorts - occupied.size} unconnected port(s) use matched boundaries (zero incoming field); outgoing power escapes.` });
@@ -149,7 +147,7 @@ export function solveCircuit(circuit: Circuit): SolveResult {
   for (const line of circuit.connections) {
     const from = indices.get(endpointKey(line.from))!;
     const to = indices.get(endpointKey(line.to))!;
-    const h = polar(10 ** (-line.lossDbPerM * line.lengthM / 20), -2 * Math.PI * line.neff * line.lengthM / circuit.wavelengthM);
+    const { h } = evaluatePropagation(line, circuit.wavelengthM);
     neighbors[from] = { index: to, h }; neighbors[to] = { index: from, h };
   }
   const matrix = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => complex(i === j ? 1 : 0)));

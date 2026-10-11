@@ -7,6 +7,9 @@ import { parseNotebook } from '../experiments/notebook';
 import { compareExperiments } from '../experiments/compare';
 import { runGoalSearch, validateGoalRequest } from '../experiments/goals';
 import type { CircuitDocument } from '../model/types';
+import { evaluateStudy } from '../experiments/study';
+import { runRingExperiment, validateRingRequest } from '../experiments/ring';
+import { createMziDesignStudy } from './design-study';
 
 function documentInput(input: Record<string, unknown>): CircuitDocument {
   if (Object.hasOwn(input, 'recipe') === Object.hasOwn(input, 'document')) throw new Error('Provide exactly one recipe or document.');
@@ -44,6 +47,19 @@ export async function executeCommand(input: unknown): Promise<unknown> {
       recipeKeys(command, ['command', 'request'], [], 'command');
       validateGoalRequest(command.request);
       return runGoalSearch(command.request);
-    default: throw new Error('Unknown command. Expected catalog, compile, solve, sweep, compare or search.');
+    case 'study': {
+      recipeKeys(command, ['command', 'notebook'], [], 'command');
+      const notebook = parseNotebook(JSON.stringify(command.notebook));
+      if (notebook.schema !== 'picsetup-notebook/2') throw new Error('Study requires a picsetup-notebook/2 with explicit output mappings and targets.');
+      return evaluateStudy({ id: 0, notebook });
+    }
+    case 'design-study':
+      recipeKeys(command, ['command'], [], 'command');
+      return createMziDesignStudy();
+    case 'ring':
+      recipeKeys(command, ['command', 'request'], [], 'command');
+      validateRingRequest(command.request);
+      return runRingExperiment(command.request);
+    default: throw new Error('Unknown command. Expected catalog, compile, solve, sweep, compare, search, design-study, study or ring.');
   }
 }

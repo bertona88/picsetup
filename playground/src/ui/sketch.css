@@ -9,3 +9,5 @@
 @media(max-width:440px){.top-actions [data-action=blank]{display:none}.toolbar .experiment-switcher{display:none}.toolbar-group{gap:3px}}
 
 .sketch-global-error{font-size:11px;line-height:1.6;color:#98634e;background:#f6eae1;padding:10px 25px;border-bottom:1px solid #e7d2c5}
+.sketch-featured-study{margin:0 5px 20px;padding:0 0 14px;border-top:0;border-bottom:1px solid #d6dfcc}.sketch-featured-study>span{color:#587055}.sketch-featured-study button{font-size:12px;font-weight:550;color:#355e4e;line-height:1.5}.sketch-featured-study p{font-size:9px;line-height:1.5;color:#7b886f;margin:0 0 6px}.control input:disabled{background:#edf0e6;color:#75836b;cursor:not-allowed}
+@media(max-width:1300px){.toolbar .experiment-switcher{display:none}}

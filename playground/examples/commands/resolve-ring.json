@@ -1,0 +1,16 @@
+{
+  "command": "ring",
+  "request": {
+    "id": 0,
+    "coupling": 0.001,
+    "roundTripLengthM": 0.00010010739583333335,
+    "neff": 2.4,
+    "lossDbPerM": 43.404562709942134,
+    "phaseRad": 0,
+    "centerM": 0.00000155005,
+    "startM": 0.0000015,
+    "stopM": 0.0000016,
+    "coarsePoints": 101,
+    "maxEvaluations": 600
+  }
+}

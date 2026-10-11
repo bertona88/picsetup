@@ -1,13 +1,25 @@
 import { validateDocument } from '../io/document';
 import type { Circuit, CircuitDocument, Diagnostic, SolveResult } from '../model/types';
 import { solveCircuit } from '../solver/solve';
+import { assessSampleQuality } from '../solver/quality';
 import { freezeSnapshot } from './notebook';
 
 export type GoalParameter = { kind: 'component'; componentId: string; name: 'phaseRad' | 'coupling' } | { kind: 'connection'; connectionId: string; name: 'lengthM' };
 export interface GoalRequest { id: number; document: CircuitDocument; wavelengthM: number; detectorId: string; objective: 'minimize' | 'maximize'; parameter: GoalParameter; min: number; max: number; points: number }
-export interface GoalSample { index: number; value: number; ok: boolean; powerW: number | null; diagnostics: Diagnostic[] }
+export interface GoalSample { index: number; value: number; ok: boolean; powerW: number | null; diagnostics: Diagnostic[]; eligible: boolean; rejectionReasons: Diagnostic[] }
+export interface GoalBaseline { value: number; ok: boolean; powerW: number | null; sourcePowerW: number | null; diagnostics: Diagnostic[]; eligible: boolean; rejectionReasons: Diagnostic[] }
 export interface GoalBest { index: number; value: number; powerW: number; document: CircuitDocument }
-export interface GoalResult { request: GoalRequest; samples: GoalSample[]; best: GoalBest | null; cancelled: boolean; failedCount: number; boundaryHit: boolean }
+export type GoalDecision = 'improved' | 'no-improvement' | 'unresolved' | 'cancelled';
+export interface GoalResult {
+  request: GoalRequest; samples: GoalSample[]; best: GoalBest | null;
+  /** Null only when cancelled before the baseline solve. */
+  baseline: GoalBaseline | null;
+  decision: GoalDecision; cancelled: boolean; failedCount: number; rejectedCount: number; boundaryHit: boolean;
+  /** Objective-directed gain; positive is better. Null when either comparison endpoint is ineligible. */
+  improvementW: number | null;
+  /** Numerical comparison threshold, not a physical uncertainty or optimum guarantee. */
+  toleranceW: number | null;
+}
 export type GoalMessage = ({ type: 'run' } & GoalRequest) | { type: 'cancel'; id: number };
 export type GoalResponse =
   | { type: 'progress'; id: number; completed: number; total: number; samples: GoalSample[] }
@@ -58,6 +70,26 @@ function candidateDocument(request: GoalRequest, value: number): CircuitDocument
   else document.circuit.connections.find(connection => connection.id === parameter.connectionId)!.lengthM = value;
   return document;
 }
+function baselineValue(request: GoalRequest): number {
+  const parameter = request.parameter;
+  return parameter.kind === 'component'
+    ? request.document.circuit.components.find(component => component.id === parameter.componentId)!.params[parameter.name]
+    : request.document.circuit.connections.find(connection => connection.id === parameter.connectionId)!.lengthM;
+}
+function evaluate(request: GoalRequest, document: CircuitDocument, solve: (circuit: Circuit) => SolveResult): Omit<GoalBaseline, 'value'> {
+  try {
+    const result = solve(document.circuit);
+    const detector = result.detectors[request.detectorId];
+    const ok = result.ok && detector !== undefined && Number.isFinite(detector.powerW);
+    const diagnostics = [...result.diagnostics];
+    if (!ok && !diagnostics.some(item => item.severity === 'error')) diagnostics.push({ severity: 'error', code: 'GOAL_SAMPLE_FAILED', message: 'No valid detector power was available for this candidate.' });
+    const quality = assessSampleQuality({ ok, diagnostics, values: [detector?.powerW, result.residual, ...Object.values(result.budget)] });
+    return { ok, powerW: ok ? detector.powerW : null, sourcePowerW: Number.isFinite(result.budget.emittedW) ? result.budget.emittedW : null, diagnostics, eligible: quality.eligible, rejectionReasons: quality.reasons };
+  } catch (error) {
+    const diagnostics: Diagnostic[] = [{ severity: 'error', code: 'GOAL_SAMPLE_FAILED', message: error instanceof Error ? error.message : 'Candidate solve failed.' }];
+    return { ok: false, powerW: null, sourcePowerW: null, diagnostics, eligible: false, rejectionReasons: [...diagnostics] };
+  }
+}
 /** Bounded one-dimensional grid sampling. Reports a sampled best, not a global optimum. */
 export async function runGoalSearch(input: GoalRequest, options: GoalOptions = {}): Promise<GoalResult> {
   validateGoalRequest(input);
@@ -67,26 +99,33 @@ export async function runGoalSearch(input: GoalRequest, options: GoalOptions = {
   if (!Number.isInteger(chunkSize) || chunkSize < 1 || chunkSize > MAX_GOAL_POINTS) throw new Error('Goal chunk size must be an integer from 1 to 201.');
   const yieldControl = options.yieldControl ?? nextTask;
   let best: GoalBest | null = null;
+  let baseline: GoalBaseline | null = null;
+  const solve = options.solve ?? solveCircuit;
   await yieldControl();
+  if (!options.isCancelled?.()) {
+    const value = baselineValue(request);
+    baseline = { value, ...evaluate(request, candidateDocument(request, value), solve) };
+  }
   for (let index = 0; index < request.points; index++) {
     if (options.isCancelled?.()) break;
     const value = index === request.points - 1 ? request.max : request.min + (request.max - request.min) * (index / (request.points - 1));
     const document = candidateDocument(request, value);
-    let sample: GoalSample;
-    try {
-      const result = (options.solve ?? solveCircuit)(document.circuit);
-      const detector = result.detectors[request.detectorId];
-      const ok = result.ok && detector !== undefined && Number.isFinite(detector.powerW);
-      sample = { index, value, ok, powerW: ok ? detector.powerW : null, diagnostics: result.diagnostics };
-      if (!ok && !sample.diagnostics.some(item => item.severity === 'error')) sample.diagnostics = [...sample.diagnostics, { severity: 'error', code: 'GOAL_SAMPLE_FAILED', message: 'No valid detector power was available for this candidate.' }];
-      if (ok && (best === null || (request.objective === 'minimize' ? detector.powerW < best.powerW : detector.powerW > best.powerW))) best = freezeSnapshot({ index, value, powerW: detector.powerW, document });
-    } catch (error) {
-      sample = { index, value, ok: false, powerW: null, diagnostics: [{ severity: 'error', code: 'GOAL_SAMPLE_FAILED', message: error instanceof Error ? error.message : 'Candidate solve failed.' }] };
-    }
+    const { sourcePowerW: _, ...measurement } = evaluate(request, document, solve);
+    const sample: GoalSample = { index, value, ...measurement };
+    if (sample.eligible && sample.powerW !== null && (best === null || (request.objective === 'minimize' ? sample.powerW < best.powerW : sample.powerW > best.powerW))) best = freezeSnapshot({ index, value, powerW: sample.powerW, document });
     samples.push(sample);
     if ((index + 1) % chunkSize === 0 && index + 1 < request.points) { options.onProgress?.(structuredClone(samples)); await yieldControl(); }
   }
-  return freezeSnapshot({ request, samples, best, cancelled: samples.length < request.points || Boolean(options.isCancelled?.()), failedCount: samples.filter(sample => !sample.ok).length, boundaryHit: best !== null && (best.index === 0 || best.index === request.points - 1) });
+  const cancelled = samples.length < request.points || Boolean(options.isCancelled?.());
+  let improvementW: number | null = null, toleranceW: number | null = null;
+  // Match the solver's relative accounting scale; a fixed watt threshold would hide
+  // meaningful changes for weak sources and reward noise for strong ones.
+  if (baseline?.eligible && baseline.powerW !== null && best !== null) {
+    improvementW = request.objective === 'maximize' ? best.powerW - baseline.powerW : baseline.powerW - best.powerW;
+    toleranceW = Math.max(Number.MIN_VALUE, 1e-9 * Math.max(Math.abs(baseline.sourcePowerW ?? 0), Math.abs(baseline.powerW), Math.abs(best.powerW)));
+  }
+  const decision: GoalDecision = cancelled ? 'cancelled' : improvementW === null || toleranceW === null ? 'unresolved' : improvementW > toleranceW ? 'improved' : 'no-improvement';
+  return freezeSnapshot({ request, samples, best, baseline, decision, improvementW, toleranceW, cancelled, failedCount: samples.filter(sample => !sample.ok).length, rejectedCount: samples.filter(sample => !sample.eligible).length, boundaryHit: best !== null && (best.index === 0 || best.index === request.points - 1) });
 }
 export function createGoalRunner(emit: (message: GoalResponse) => void, options: Omit<GoalOptions, 'onProgress' | 'isCancelled'> = {}): { handle(message: unknown): void } {
   let active: { id: number; cancelled: boolean; completed: number; total: number } | undefined;

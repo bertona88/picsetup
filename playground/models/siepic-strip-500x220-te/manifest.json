@@ -1,0 +1,116 @@
+{
+  "schema": "picsetup.propagation-manifest/1",
+  "id": "siepic-strip-500x220-te",
+  "version": "1",
+  "title": "SiEPIC strip waveguide, 500 × 220 nm, TE",
+  "auditDate": "2026-10-11",
+  "source": {
+    "repository": "https://github.com/BYUCamachoLab/simphony",
+    "commit": "5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c",
+    "path": "simphony/libraries/siepic/source_data/wg_integral_source/WaveGuideTETMStrip,w=500,h=220.txt",
+    "gitBlobSha1": "d7a94d16c611c28a4dfb7eeb5141b1f81750b758",
+    "sha256": "337eb53881a39a03741cee40f277b5e9f0997dc186915c074c97bbb975198edc",
+    "localPath": "source.txt",
+    "preservation": "exact original 64 bytes; Git blob hash independently matched",
+    "license": "MIT",
+    "licenseNotice": "LICENSE-SIMPHONY.txt"
+  },
+  "upstream": {
+    "repository": "https://github.com/SiEPIC/SiEPIC_EBeam_PDK",
+    "commit": "363fbb52eefa8669100499ab531d3fe7befc4867",
+    "path": "klayout/EBeam/CML/EBeam/source_data/wg_integral_source/WaveGuideTETMStrip,w=500,h=220.txt",
+    "gitBlobSha1": "d7a94d16c611c28a4dfb7eeb5141b1f81750b758",
+    "byteIdenticalToSimphony": true,
+    "license": "MIT",
+    "licenseNotice": "LICENSE-SIEPIC.txt"
+  },
+  "implementationSource": {
+    "repository": "https://github.com/BYUCamachoLab/simphony",
+    "commit": "5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c",
+    "path": "simphony/libraries/siepic/models.py",
+    "localPath": "source-models.py",
+    "gitBlobSha1": "22bf60645982c4b7aebeb7b760bdcb90b2a0c69b",
+    "sha256": "4639c35fffdfe596bc0555eddb7aa44f16be054bec2eaab539f37928202bdf8c",
+    "preservation": "exact original 34408 bytes; Git blob hash independently matched",
+    "license": "MIT"
+  },
+  "coefficients": {
+    "sourceColumns": [
+      "lambda0_m",
+      "ne_TE",
+      "ne_TM",
+      "ng_TE",
+      "ng_TM",
+      "nd_TE",
+      "nd_TM"
+    ],
+    "selectedPolarization": "TE",
+    "referenceWavelengthM": 1.55e-06,
+    "neff": 2.44553,
+    "groupIndex": 4.19088,
+    "dispersionCoefficient": 0.000354275,
+    "dispersionCoefficientUnit": "s/m²",
+    "dispersionUnitBasis": "Dimensional inference from the upstream angular-frequency beta expression; the source text does not label nd units."
+  },
+  "equations": {
+    "deltaOmega": "2*pi*c*(1/lambda - 1/lambda0)",
+    "betaRadPerM": "2*pi*ne/lambda0 + (ng/c)*deltaOmega - (nd*lambda0^2/(4*pi*c))*deltaOmega^2",
+    "groupIndex": "ng - nd*lambda0^2*deltaOmega/(2*pi)",
+    "groupDelayS": "groupIndex*lengthM/c",
+    "sourceTransmission": "10^(-lossDbPerM*lengthM/20)*exp(+i*beta*lengthM)",
+    "canonicalTransmission": "10^(-lossDbPerM*lengthM/20)*exp(-i*beta*lengthM)",
+    "canonicalTimeConvention": "exp(+i*omega*t)",
+    "reflection": "zero",
+    "speedOfLightMPerS": 299792458
+  },
+  "physicalMetadata": {
+    "widthM": 5e-07,
+    "heightM": 2.2e-07,
+    "polarization": "TE",
+    "spatialModeFields": null,
+    "temperatureK": null,
+    "fabricationProcessCorner": null,
+    "quantifiedUncertainty": null,
+    "referencePlanes": "Abstract start and end of user-declared straight-guide distance. No offsets or coupler deembedding assumed.",
+    "modeMatchingToBundledCoupler": "unqualified scalar-network assumption",
+    "loss": "Independently user-declared dB/m; no calibrated propagation-loss coefficient is supplied."
+  },
+  "eligibility": {
+    "status": "experimental reduced-order coefficient model",
+    "evaluationWindowM": [
+      1.5e-06,
+      1.6e-06
+    ],
+    "evaluationWindowBasis": "Declared application evaluation assumption around lambda0, not source-qualified validity. Both source files contain no fit domain.",
+    "sourceValidatedWavelengthBandM": null,
+    "outOfWindow": "reject evaluation; preserve document for editing",
+    "notQualifiedFor": [
+      "fabrication signoff",
+      "calibrated-device prediction",
+      "bend or heater prediction",
+      "manufacturing yield",
+      "spatial mode matching",
+      "physical reference-plane registration"
+    ]
+  },
+  "verification": {
+    "script": "../../../scripts/verify_siepic_waveguide.py",
+    "report": "verification.json",
+    "references": "reference.json",
+    "method": "Independent Python standard-library calculation from original seven-coefficient source file and exact pinned implementation; Decimal quadratic roots for equal-phase MZI fringe spacings; finite-difference phase derivative."
+  },
+  "references": [
+    {
+      "purpose": "Pinned original coefficients",
+      "url": "https://github.com/BYUCamachoLab/simphony/blob/5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c/simphony/libraries/siepic/source_data/wg_integral_source/WaveGuideTETMStrip,w=500,h=220.txt"
+    },
+    {
+      "purpose": "Pinned waveguide equation, TE column selection and unit conversions",
+      "url": "https://github.com/BYUCamachoLab/simphony/blob/5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c/simphony/libraries/siepic/models.py"
+    },
+    {
+      "purpose": "Independent upstream coefficient identity",
+      "url": "https://github.com/SiEPIC/SiEPIC_EBeam_PDK/blob/363fbb52eefa8669100499ab531d3fe7befc4867/klayout/EBeam/CML/EBeam/source_data/wg_integral_source/WaveGuideTETMStrip,w=500,h=220.txt"
+    }
+  ]
+}

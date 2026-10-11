@@ -12,8 +12,8 @@ function object(value: unknown, path: string): JsonObject {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) fail(`${path} must be an object.`);
   return value as JsonObject;
 }
-function keys(value: JsonObject, required: string[], path: string) {
-  if (Object.keys(value).some(key => !required.includes(key)) || required.some(key => !Object.hasOwn(value, key))) {
+function keys(value: JsonObject, required: string[], path: string, optional: string[] = []) {
+  if (Object.keys(value).some(key => !required.includes(key) && !optional.includes(key)) || required.some(key => !Object.hasOwn(value, key))) {
     fail(`${path} must contain exactly ${required.join(', ')}. Unsupported fields are not imported.`);
   }
 }
@@ -39,7 +39,7 @@ function list(value: unknown, path: string, max: number): unknown[] {
 /** Reject unsupported content before it can replace an editor's current document. */
 export function validateDocument(value: unknown): asserts value is CircuitDocument {
   const doc = object(value, 'document');
-  keys(doc, ['schema', 'title', 'circuit', 'layout'], 'document');
+  keys(doc, ['schema', 'title', 'circuit', 'layout'], 'document', ['authoring']);
   if (doc.schema !== 'picsetup-playground/1') fail('unsupported schema. Expected picsetup-playground/1.');
   string(doc.title, 'title');
   const circuit = object(doc.circuit, 'circuit');
@@ -71,7 +71,12 @@ export function validateDocument(value: unknown): asserts value is CircuitDocume
   for (const [index, raw] of connections.entries()) {
     const path = `connections[${index}]`;
     const connection = object(raw, path);
-    keys(connection, ['id', 'from', 'to', 'lengthM', 'lossDbPerM', 'neff'], path);
+    keys(connection, ['id', 'from', 'to', 'lengthM', 'lossDbPerM', 'neff'], path, ['waveguide']);
+    if (Object.hasOwn(connection, 'waveguide')) {
+      const reference = object(connection.waveguide, `${path}.waveguide`);
+      keys(reference, ['model', 'version'], `${path}.waveguide`);
+      if (reference.model !== 'siepic-strip-500x220-te' || reference.version !== '1') fail(`${path} uses an unsupported waveguide identity/version.`);
+    }
     identifier(connection.id, `${path}.id`);
     if (allIds.has(connection.id)) fail(`duplicate identifier ${connection.id}.`);
     allIds.add(connection.id);
@@ -116,7 +121,17 @@ export function validateDocument(value: unknown): asserts value is CircuitDocume
   // A supported model outside its wavelength domain is a valid editable scene,
   // just as a singular network is. The solver displays an explicit failure with
   // no invented powers; retaining the scene lets users repair its wavelength.
-  const errors = validateCircuit(circuit as unknown as CircuitDocument['circuit']).filter(diagnostic => diagnostic.severity === 'error' && diagnostic.code !== 'DATASET_OUT_OF_BAND');
+  if (Object.hasOwn(doc, 'authoring')) {
+    const authoring = object(doc.authoring, 'authoring');
+    keys(authoring, ['schema', 'recipeJson', 'semanticKey'], 'authoring');
+    if (authoring.schema !== 'picsetup-authoring/1') fail('unsupported authoring schema.');
+    string(authoring.recipeJson, 'authoring.recipeJson', MAX_DOCUMENT_BYTES);
+    string(authoring.semanticKey, 'authoring.semanticKey', MAX_DOCUMENT_BYTES);
+    let recipe: unknown;
+    try { recipe = JSON.parse(authoring.recipeJson); } catch { fail('authoring recipe must be JSON data.'); }
+    if (object(recipe, 'authoring recipe').schema !== 'picsetup-recipe/1') fail('authoring recipe uses an unsupported schema.');
+  }
+  const errors = validateCircuit(circuit as unknown as CircuitDocument['circuit']).filter(diagnostic => diagnostic.severity === 'error' && !['DATASET_OUT_OF_BAND', 'WAVEGUIDE_OUT_OF_BAND'].includes(diagnostic.code));
   if (errors.length) fail(errors.map(error => error.message).join(' '));
 }
 

@@ -4,6 +4,9 @@ import { MAX_DOCUMENT_BYTES, validateDocument } from '../io/document';
 import { defaultParams, MODEL_IDS, portNames } from '../model/registry';
 import type { CircuitDocument, Component, Connection, Endpoint, ModelId } from '../model/types';
 import { MAX_COMPONENTS, MAX_CONNECTIONS } from '../solver/solve';
+import { semanticCircuitKey } from './authoring';
+import { waveguideMetadata } from '../model/propagation';
+import type { WaveguideReference } from '../model/types';
 
 export interface RecipePart {
   id: string;
@@ -20,6 +23,7 @@ export interface RecipeLink {
   lengthM?: number;
   neff?: number;
   lossDbPerM?: number;
+  waveguide?: WaveguideReference;
 }
 export interface CircuitRecipe {
   schema: 'picsetup-recipe/1';
@@ -71,7 +75,7 @@ export function parseRecipe(source: string): CircuitDocument {
 }
 
 /** Expand source-free blocks into stable namespaced primitives, validate, and arrange. */
-export function compileRecipe(input: unknown): CircuitDocument {
+export function compileRecipe(input: unknown, options: { recordAuthoring?: boolean } = {}): CircuitDocument {
   let serialized: string | undefined;
   try { serialized = JSON.stringify(input); } catch { fail('input must be serializable JSON data.'); }
   if (!serialized || new TextEncoder().encode(serialized).byteLength > MAX_DOCUMENT_BYTES) fail('JSON exceeds the 1 MiB limit or is not a value.');
@@ -123,7 +127,14 @@ export function compileRecipe(input: unknown): CircuitDocument {
   for (const [index, raw] of recipe.links.entries()) {
     const path = `links[${index}]`;
     const link = recipeObject(raw, path);
-    recipeKeys(link, ['from', 'to'], ['id', 'lengthM', 'neff', 'lossDbPerM'], path);
+    recipeKeys(link, ['from', 'to'], ['id', 'lengthM', 'neff', 'lossDbPerM', 'waveguide'], path);
+    let waveguide: WaveguideReference | undefined;
+    if (Object.hasOwn(link, 'waveguide')) {
+      const reference = recipeObject(link.waveguide, `${path}.waveguide`);
+      recipeKeys(reference, ['model', 'version'], [], `${path}.waveguide`);
+      if (reference.model !== 'siepic-strip-500x220-te' || reference.version !== '1') fail(`${path} uses an unsupported waveguide identity/version.`);
+      waveguide = { model: 'siepic-strip-500x220-te', version: '1' };
+    }
     const resolve = (name: unknown, side: string): Endpoint => {
       const key = text(name, `${path}.${side}`, 100);
       const endpoint = endpoints.get(key);
@@ -140,8 +151,9 @@ export function compileRecipe(input: unknown): CircuitDocument {
     connections.push({
       id: connectionId, from: resolve(link.from, 'from'), to: resolve(link.to, 'to'),
       lengthM: link.lengthM === undefined ? 0 : finite(link.lengthM, `${path}.lengthM`),
-      neff: link.neff === undefined ? 2.4 : finite(link.neff, `${path}.neff`),
+      neff: link.neff === undefined ? (waveguide ? waveguideMetadata.neff : 2.4) : finite(link.neff, `${path}.neff`),
       lossDbPerM: link.lossDbPerM === undefined ? 0 : finite(link.lossDbPerM, `${path}.lossDbPerM`),
+      ...(waveguide ? { waveguide } : {}),
     });
   }
   const document: CircuitDocument = {
@@ -154,6 +166,7 @@ export function compileRecipe(input: unknown): CircuitDocument {
   };
   validateDocument(document);
   const arranged = arrangeDocument(document);
+  if (options.recordAuthoring !== false) arranged.authoring = { schema: 'picsetup-authoring/1', recipeJson: JSON.stringify(input), semanticKey: semanticCircuitKey(arranged.circuit) };
   validateDocument(arranged);
   return arranged;
 }

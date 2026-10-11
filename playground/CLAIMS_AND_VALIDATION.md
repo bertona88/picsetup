@@ -8,7 +8,15 @@ Comparison notebooks retain exact independent assumptions; their normalized curv
 
 SiPANN and SAX runtime integrations, arbitrary custom-model imports, user-defined nested modules and persisted hierarchy remain open. The four implemented templates expand into ordinary primitives. Firefox/WebKit, accessibility and performance qualification remain open.
 
-## Workbench evidence
+## Review-response scope
+
+The new controlled dispersion study reports explicit sampled IL/XT targets for both outputs, actual circuit differences, source status and declared phase offsets. An imported TE guide coefficient model is audited against exact upstream bytes/equation and independent high-precision references. Its 1500–1600 nm application window is not a source-qualified fit band. No mode/reference-plane qualification follows from shared provenance.
+
+Goals retain the original result and reject numerical-quality failures before choosing a recommendation. A coarse grid cannot displace a better baseline. The ring lab resolves one known-model ideal single-bus notch using a physical seed and sampled convergence checks; it does not guarantee discovery in arbitrary circuits. Extinction reporting thresholds are display policies, not accuracy bounds.
+
+Local validation: 268 unit tests in 16 files, TypeScript/static/API builds, and independent coefficient/equation verification passed. New Chromium evidence is pending the implementation checkpoint; historical evidence below applies only to its named revision.
+
+## Historical workbench evidence
 
 Final implementation `af4db0a84e5ff228035c5ae4c7cb37611990c6b3` passed **206 tests in 11 files**, TypeScript/static/API builds, distributed API/CLI packaging checks and **five real Chromium journeys**, with zero failures/skips. [Run](https://github.com/bertona88/picsetup/actions/runs/38139054935) and [review artifact](https://github.com/bertona88/picsetup/actions/runs/38139054935/artifacts/11702228545) include fresh Sketch, Compare and Tune screenshots. All three were visually inspected, with browser assertions for dialog bounds. [HANDOFF.md](HANDOFF.md) preserves the first integrated checkpoint and exact evidence links.
 
@@ -25,7 +33,7 @@ Final implementation `af4db0a84e5ff228035c5ae4c7cb37611990c6b3` passed **206 tes
 - `python scripts/convert_siepic.py --check` passed. Conversion preserves all 1,616 complex values after the declared phasor conjugation.
 - `python scripts/verify_siepic.py --check` passed using an independent regex/NumPy parser. Complete raw matrices match canonical values with maximum observed absolute error 0. NumPy SVD records `σmax` from 0.9852978180 to 1.0022352696, including 17/101 slight passivity violations; reciprocity is exact at source precision.
 - `python scripts/verify_siepic_mzi.py` passed. A separate reduced eight-port incident-wave NumPy solve produces complex detector fields and complete budgets at 1500, 1525, 1550, 1575 and 1600 nm for the 80/100 µm SiEPIC MZI. Maximum reference equation residual is `7.67e−18`; maximum budget imbalance is `4.34e−19 W`. This is an independent numerical oracle, not physical ground truth.
-- Source interpolation is explicitly audited: at 1550 nm Cartesian interpolation yields approximately 0.9716 total output fraction, while weighted neighboring sample powers are approximately 0.9834. The difference is an interpolation effect. No clipping, passivity correction or artificial damping hides it.
+- Source interpolation is explicitly audited: at 1550 nm Cartesian interpolation yields approximately 0.9716 total output fraction, while weighted neighboring sample powers are approximately 0.9837416. The difference is an interpolation effect. No clipping, passivity correction or artificial damping hides it.
 
 Historical dataset implementation `9e10b2063d8747c423ad2eee088ec9e272ae5484` passed 125 unit/model/editor tests in five files, TypeScript/Vite build and three real Chromium journeys with zero failures/skips. The browser checks include imported-model spectra/CSV/reopen, model swaps, invalid-band gaps, cancellation/stale requests and plot clipping. [Run](https://github.com/bertona88/picsetup/actions/runs/38136961539) and its screenshot/metadata are retained in [HANDOFF.md](HANDOFF.md). The numerical fixture tests compare all complex imported MZI detector fields and budgets at five wavelengths.
 

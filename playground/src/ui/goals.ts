@@ -1,6 +1,5 @@
 import './goals.css';
 import type { CircuitDocument } from '../model/types';
-import { solveCircuit } from '../solver/solve';
 import { validateGoalRequest, type GoalParameter, type GoalRequest, type GoalResponse, type GoalResult, type GoalSample } from '../experiments/goals';
 import { icon } from './icons';
 
@@ -32,7 +31,7 @@ export class GoalPanel {
 
  constructor(private el: HTMLElement, private options: GoalOptions) {
   el.classList.add('goal-overlay'); el.dataset.testid = 'goal-panel'; el.hidden = true;
-  el.innerHTML = `<section class="goal-window" role="dialog" aria-modal="true" aria-labelledby="goal-title"><header class="goal-header"><div><span class="goal-eyebrow">ONE PARAMETER · ONE QUESTION</span><h2 id="goal-title">Find a useful setting.</h2><p>Try a bounded range and inspect the best sampled result.</p></div><button class="goal-dismiss" data-testid="goal-close" aria-label="Close design goal">${icon('close',20)}</button></header><div class="goal-body"><div class="goal-controls"><div class="goal-target"><span>ADJUST</span><strong data-goal-target></strong><small data-goal-current></small></div><label>DETECTOR<select data-testid="goal-detector" aria-label="Goal detector"></select></label><div class="goal-control-row"><label>GOAL<select data-testid="goal-objective" aria-label="Goal objective"><option value="minimize">Minimize power</option><option value="maximize">Maximize power</option></select></label><label>AT WAVELENGTH<span class="goal-input-unit"><input data-testid="goal-wavelength" aria-label="Goal wavelength in nanometres" type="number" step="any" min="0"><small>nm</small></span></label></div><div class="goal-control-row"><label>FROM<span class="goal-input-unit"><input data-testid="goal-min" aria-label="Minimum parameter value" type="number" step="any"><small data-goal-unit></small></span></label><label>TO<span class="goal-input-unit"><input data-testid="goal-max" aria-label="Maximum parameter value" type="number" step="any"><small data-goal-unit></small></span></label></div><label>SAMPLED CANDIDATES<input data-testid="goal-points" aria-label="Number of goal candidates" type="number" min="2" max="201" step="1" value="61"></label><p class="goal-domain-note">Uniform sampling at one wavelength. Narrow features can fall between candidates.</p><div class="goal-actions"><button class="primary" data-testid="goal-run">Search this range ${icon('arrow',14)}</button><button class="outline" data-testid="goal-cancel" hidden>Cancel</button></div></div><div class="goal-results"><div class="goal-results-heading"><span>THE EXPERIMENT</span><span data-goal-count>0 candidates</span></div><svg class="goal-chart" data-testid="goal-chart" viewBox="0 0 470 205" role="img" aria-label="Detector power over the sampled parameter range"></svg><div class="goal-readouts"><div><span>CURRENT AT TARGET λ</span><strong data-testid="goal-current-power">—</strong></div><div class="goal-best-readout"><span>BEST SAMPLED POWER</span><strong data-testid="goal-best-power">—</strong><small data-testid="goal-best-value">Run a search to compare.</small></div></div><div class="goal-result-flags"><span data-testid="goal-failed-count">0 failed candidates</span><span data-testid="goal-boundary">Bounds not yet searched</span></div><p class="goal-status" data-testid="goal-status" data-state="idle" role="status">Choose a detector and range, then search.</p><div class="goal-diagnostics" data-goal-diagnostics></div><div class="goal-apply-row"><span>Only the selected parameter and target wavelength change.</span><button class="primary" data-testid="goal-apply" disabled>Apply best setting</button></div></div></div><footer class="goal-footer">A sampled best is a design lead. It is not a guaranteed optimum or a calibrated device prediction.</footer></section>`;
+  el.innerHTML = `<section class="goal-window" role="dialog" aria-modal="true" aria-labelledby="goal-title"><header class="goal-header"><div><span class="goal-eyebrow">ONE PARAMETER · ONE QUESTION</span><h2 id="goal-title">Find a useful setting.</h2><p>Try a bounded range and inspect the best sampled result.</p></div><button class="goal-dismiss" data-testid="goal-close" aria-label="Close design goal">${icon('close',20)}</button></header><div class="goal-body"><div class="goal-controls"><div class="goal-target"><span>ADJUST</span><strong data-goal-target></strong><small data-goal-current></small></div><label>DETECTOR<select data-testid="goal-detector" aria-label="Goal detector"></select></label><div class="goal-control-row"><label>GOAL<select data-testid="goal-objective" aria-label="Goal objective"><option value="minimize">Minimize power</option><option value="maximize">Maximize power</option></select></label><label>AT WAVELENGTH<span class="goal-input-unit"><input data-testid="goal-wavelength" aria-label="Goal wavelength in nanometres" type="number" step="any" min="0"><small>nm</small></span></label></div><div class="goal-control-row"><label>FROM<span class="goal-input-unit"><input data-testid="goal-min" aria-label="Minimum parameter value" type="number" step="any"><small data-goal-unit></small></span></label><label>TO<span class="goal-input-unit"><input data-testid="goal-max" aria-label="Maximum parameter value" type="number" step="any"><small data-goal-unit></small></span></label></div><label>SAMPLED CANDIDATES<input data-testid="goal-points" aria-label="Number of goal candidates" type="number" min="2" max="201" step="1" value="61"></label><p class="goal-domain-note">Uniform sampling at one wavelength. Narrow features can fall between candidates.</p><div class="goal-actions"><button class="primary" data-testid="goal-run">Search this range ${icon('arrow',14)}</button><button class="outline" data-testid="goal-cancel" hidden>Cancel</button></div></div><div class="goal-results"><div class="goal-results-heading"><span>THE EXPERIMENT</span><span data-goal-count>0 candidates</span></div><svg class="goal-chart" data-testid="goal-chart" viewBox="0 0 470 205" role="img" aria-label="Detector power over the sampled parameter range"></svg><div class="goal-readouts"><div><span>CURRENT AT TARGET λ</span><strong data-testid="goal-current-power">—</strong><small data-testid="goal-baseline-quality"></small></div><div class="goal-best-readout"><span>BEST ELIGIBLE SAMPLE</span><strong data-testid="goal-best-power">—</strong><small data-testid="goal-best-value">Run a search to compare.</small></div></div><div class="goal-result-flags"><span data-testid="goal-failed-count">0 failed candidates</span><span data-testid="goal-boundary">Bounds not yet searched</span></div><p class="goal-status" data-testid="goal-status" data-state="idle" role="status">Choose a detector and range, then search.</p><div class="goal-diagnostics" data-goal-diagnostics></div><div class="goal-apply-row"><span>Only the selected parameter and target wavelength change.</span><button class="primary" data-testid="goal-apply" disabled>Apply improvement</button></div></div></div><footer class="goal-footer">A sampled best is a design lead. It is not a guaranteed optimum or a calibrated device prediction.</footer></section>`;
   this.query('[data-testid=goal-close]').addEventListener('click', () => this.close());
   this.query('[data-testid=goal-run]').addEventListener('click', () => this.run());
   this.query('[data-testid=goal-cancel]').addEventListener('click', () => this.cancel());
@@ -63,7 +62,7 @@ export class GoalPanel {
  private buttons() {
   this.query<HTMLButtonElement>('[data-testid=goal-run]').disabled = this.running || this.query<HTMLSelectElement>('[data-testid=goal-detector]').options.length === 0;
   this.query('[data-testid=goal-cancel]').hidden = !this.running;
-  this.query<HTMLButtonElement>('[data-testid=goal-apply]').disabled = this.running || this.stale || !this.result?.best || this.result.cancelled;
+  this.query<HTMLButtonElement>('[data-testid=goal-apply]').disabled = this.running || this.stale || !this.result?.best || this.result.cancelled || this.result.decision !== 'improved';
  }
  private parameter(): GoalParameter {
   if (!this.target) throw new Error('Choose a phase shifter, ideal coupler, or guide first.');
@@ -132,6 +131,7 @@ export class GoalPanel {
  }
  private resetReadouts() {
   this.query('[data-testid=goal-current-power]').textContent = '—';
+  this.query('[data-testid=goal-baseline-quality]').textContent = '';
   this.query('[data-testid=goal-best-power]').textContent = '—';
   this.query('[data-testid=goal-best-value]').textContent = 'Run a search to compare.';
   this.query('[data-testid=goal-failed-count]').textContent = '0 failed candidates';
@@ -176,38 +176,45 @@ export class GoalPanel {
     : document.circuit.connections.find(connection => connection.id === parameter.connectionId)!.lengthM;
    this.query('[data-goal-current]').textContent = `Current setting: ${fmt(currentValue / this.scale)} ${this.unit}`;
    this.sourceFingerprint = fingerprint(document); this.stale = false; this.request = request; this.result = null; this.samples = [];
-   const baseline = solveCircuit({ ...document.circuit, wavelengthM: request.wavelengthM });
-   this.baselinePower = baseline.ok ? baseline.detectors[request.detectorId]?.powerW ?? null : null;
-   this.resetReadouts();
-   this.query('[data-testid=goal-current-power]').textContent = this.baselinePower === null ? 'Unavailable' : `${fmt(this.baselinePower * 1e3)} mW`;
+   this.baselinePower = null; this.resetReadouts();
+   this.query('[data-testid=goal-current-power]').textContent = 'Evaluating…';
    this.running = true; this.buttons(); this.renderPlot(); this.status(`Searching ${request.points} candidates at ${fmt(request.wavelengthM * 1e9)} nm…`, 'running');
    this.makeWorker().postMessage({ type: 'run', ...request });
   } catch (error) { this.running = false; this.fail(error instanceof Error ? error.message : String(error)); }
  }
  private renderResult() {
   const result = this.result!;
+  this.baselinePower = result.baseline?.powerW ?? null;
+  this.query('[data-testid=goal-current-power]').textContent = this.baselinePower === null ? 'Unavailable' : `${fmt(this.baselinePower * 1e3)} mW`;
+  this.query('[data-testid=goal-baseline-quality]').textContent = result.baseline?.eligible ? 'Numerically eligible baseline' : 'Baseline excluded from decisions';
   this.query('[data-goal-count]').textContent = `${result.samples.length} candidates`;
-  this.query('[data-testid=goal-failed-count]').textContent = `${result.failedCount} failed candidates`;
-  this.query('[data-testid=goal-boundary]').textContent = result.boundaryHit ? 'Best is at a search boundary' : 'Best is inside the bounds';
-  if (!result.best) {
-   this.query('[data-testid=goal-boundary]').textContent = 'No valid candidate';
-   this.status('No valid candidate was found. Review the model diagnostics or change the range.', 'error');
-  } else {
+  this.query('[data-testid=goal-failed-count]').textContent = `${result.rejectedCount} excluded · ${result.failedCount} failed solves`;
+  const fullPhasePeriod = result.request.parameter.kind === 'component' && result.request.parameter.name === 'phaseRad' && result.request.max - result.request.min >= 2 * Math.PI * (1 - 1e-12);
+  this.query('[data-testid=goal-boundary]').textContent = !result.best ? 'No eligible candidate' : result.boundaryHit ? fullPhasePeriod ? 'Boundary sample · full phase period covered' : 'Best eligible sample is at a boundary' : 'Best eligible sample is inside the bounds';
+  if (result.best) {
    this.query('[data-testid=goal-best-power]').textContent = `${fmt(result.best.powerW * 1e3)} mW`;
    this.query('[data-testid=goal-best-value]').textContent = `at ${fmt(result.best.value / this.scale, 7)} ${this.unit}`;
-   const difference = this.baselinePower === null ? '' : ` Change from current: ${fmt((result.best.powerW - this.baselinePower) * 1e6)} µW.`;
-   this.status(`Best of ${result.samples.length - result.failedCount} valid sampled candidates.${difference}${result.boundaryHit ? ' Try wider bounds if the parameter allows it.' : ''}`, 'complete');
   }
-  const diagnostics = new Map<string, string>();
-  for (const sample of result.samples) for (const diagnostic of sample.diagnostics) {
-   if (diagnostic.severity === 'error' || diagnostic.severity === 'warning' && diagnostic.code !== 'MATCHED_BOUNDARIES') diagnostics.set(diagnostic.code, diagnostic.message);
+  const boundaryAdvice = result.boundaryHit ? fullPhasePeriod ? ' A full phase period is covered; finer sampling may reveal missed features.' : ' The best eligible sample lies at a bound; inspect finer sampling and the declared bounds.' : '';
+  if (result.decision === 'improved') {
+   this.status(`Sampled improvement: ${fmt(result.improvementW! * 1e6)} µW toward the goal, above the numerical comparison threshold.${boundaryAdvice}`, 'complete');
+  } else if (result.decision === 'no-improvement') {
+   this.status(`No sampled improvement over the current setting. Keep the current setting; a finite grid does not prove an optimum.${boundaryAdvice}`, 'no-improvement');
+  } else {
+   this.status(!result.baseline?.eligible ? 'Unresolved: the current setting fails numerical quality checks, so no change is recommended.' : 'Unresolved: no numerically eligible candidate was found. Review the excluded-result diagnostics.', 'unresolved');
   }
-  this.query('[data-goal-diagnostics]').innerHTML = [...diagnostics.values()].map(message => `<p>${esc(message)}</p>`).join('');
+  const rejected = new Map<string, string>(), qualifications = new Map<string, string>();
+  for (const sample of [...(result.baseline ? [result.baseline] : []), ...result.samples]) {
+   for (const diagnostic of sample.rejectionReasons) rejected.set(diagnostic.code, diagnostic.message);
+   const excludedCodes = new Set(sample.rejectionReasons.map(diagnostic => diagnostic.code));
+   for (const diagnostic of sample.diagnostics) if (diagnostic.severity === 'warning' && !excludedCodes.has(diagnostic.code)) qualifications.set(diagnostic.code, diagnostic.message);
+  }
+  this.query('[data-goal-diagnostics]').innerHTML = `${rejected.size ? `<div class="goal-numerical-warnings"><strong>Excluded numerical results</strong>${[...rejected.values()].map(message => `<p>${esc(message)}</p>`).join('')}</div>` : ''}${qualifications.size ? `<div><strong>Model and circuit qualifications</strong>${[...qualifications.values()].map(message => `<p>${esc(message)}</p>`).join('')}</div>` : ''}`;
   this.renderPlot();
  }
  private apply() {
   try {
-   if (!this.result?.best || this.result.cancelled || this.running) throw new Error('Finish a valid search before applying a setting.');
+   if (!this.result?.best || this.result.cancelled || this.running || this.result.decision !== 'improved') throw new Error('Apply requires a numerically eligible sampled improvement over the current setting.');
    const current = this.options.getDocument();
    if (fingerprint(current) !== this.sourceFingerprint) { this.stale = true; this.buttons(); throw new Error('The circuit changed. Search again before applying a setting.'); }
    const document = structuredClone(current);
@@ -232,10 +239,11 @@ export class GoalPanel {
   const grid = [0, 0.5, 1].map(fraction => `<path d="M${left} ${top + height * fraction}H449" class="goal-grid"/><text x="36" y="${top + height * fraction + 3}" class="goal-axis" text-anchor="end">${fmt(ymax * (1 - fraction) * 1e3, 3)}</text>`).join('');
   let path = '', open = false;
   for (const sample of this.samples) {
-   if (!sample.ok || sample.powerW === null) { open = false; continue; }
+   if (!sample.eligible || sample.powerW === null) { open = false; continue; }
    path += `${open ? 'L' : 'M'}${x(sample.value).toFixed(3)} ${y(sample.powerW).toFixed(3)} `; open = true;
   }
   const best = this.result?.best;
-  svg.innerHTML = `${grid}<text x="45" y="10" class="goal-axis">DETECTOR POWER · mW</text>${this.baselinePower !== null ? `<path d="M45 ${y(this.baselinePower)}H449" class="goal-baseline"/>` : ''}<path d="${path}" class="goal-curve"/>${best ? `<circle cx="${x(best.value)}" cy="${y(best.powerW)}" r="5" class="goal-best-dot"/>` : ''}<text x="45" y="186" class="goal-axis">${fmt(this.request.min / this.scale)} ${esc(this.unit)}</text><text x="449" y="186" class="goal-axis" text-anchor="end">${fmt(this.request.max / this.scale)} ${esc(this.unit)}</text><text x="247" y="202" class="goal-axis" text-anchor="middle">${this.baselinePower !== null ? 'Dashed line: current power at target wavelength' : 'Current power unavailable at target wavelength'}</text>`;
+  const rejected = values.filter(sample => !sample.eligible).map(sample => `<circle cx="${x(sample.value)}" cy="${y(sample.powerW!)}" r="2.5" class="goal-rejected-dot"/>`).join('');
+  svg.innerHTML = `${grid}<text x="45" y="10" class="goal-axis">DETECTOR POWER · mW</text>${this.baselinePower !== null ? `<path d="M45 ${y(this.baselinePower)}H449" class="goal-baseline"/>` : ''}<path d="${path}" class="goal-curve"/>${rejected}${best ? `<circle cx="${x(best.value)}" cy="${y(best.powerW)}" r="5" class="goal-best-dot"/>` : ''}<text x="45" y="186" class="goal-axis">${fmt(this.request.min / this.scale)} ${esc(this.unit)}</text><text x="449" y="186" class="goal-axis" text-anchor="end">${fmt(this.request.max / this.scale)} ${esc(this.unit)}</text><text x="247" y="202" class="goal-axis" text-anchor="middle">${this.baselinePower !== null ? this.result?.baseline?.eligible ? 'Dashed: current · orange: excluded candidates' : 'Dashed: excluded baseline · orange: excluded candidates' : 'Current power unavailable at target wavelength'}</text>`;
  }
 }

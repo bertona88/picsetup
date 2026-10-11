@@ -1,0 +1,25 @@
+{
+  "schema": "picsetup.waveguide-audit/1",
+  "sourceSha256": "337eb53881a39a03741cee40f277b5e9f0997dc186915c074c97bbb975198edc",
+  "exactSourceBlobVerified": true,
+  "exactImplementationBlobVerified": true,
+  "pinnedBetaAstVerified": true,
+  "sourceCoefficientCount": 7,
+  "guideSampleCount": 5,
+  "mziSampleCount": 5,
+  "phaseDerivativeDelayMaxAbsErrorS": 6.6314e-68,
+  "mziPowerClosureMaxAbsErrorW": 2.168404344971009e-19,
+  "referenceGroupDelayFor13_7umS": 1.915160120539123e-13,
+  "referenceLocalFsrFor20umHz": 3576724434963.54,
+  "sourceValidatedWavelengthBandM": null,
+  "declaredEvaluationWindowM": [
+    1.5e-06,
+    1.6e-06
+  ],
+  "nonclaims": [
+    "No hardware validation",
+    "No calibrated fit domain",
+    "No loss calibration",
+    "No coupler mode or port-plane matching"
+  ]
+}

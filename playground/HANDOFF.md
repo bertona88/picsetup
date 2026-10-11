@@ -2,6 +2,16 @@
 
 Branch: `rebuild/playground-m1`. This iteration turns the M0/M1 and early SiEPIC experiments into a sketch → change → compare workflow. It is not full M0–M5 milestone completion. No production replacement was made.
 
+## Review-response implementation
+
+The four [independent reviews](docs/reviews/2026-10-11/README.md) now have concrete responses: pinned dispersive guides with an independent source/equation audit; an A/B/C MZI study with two output metrics, editable targets, sample markers, diagnostics and explicit phase scenarios; baseline-aware goals that exclude numerical artifacts; retained recipe source with current/stale checks; complete notebook bridge/replay; and a known-model ring refinement lab. The new waveguide licenses and manifest ship in both distributions.
+
+At nominal phase, the shipped study gives sampled worst IL/XT of A **0.607/−11.289 dB**, B **1.209/−6.298 dB**, C **0.524/−12.673 dB**. Targets are IL ≤1.5 dB and XT ≤−8 dB over 1545–1555 nm, 101 points. A and C also pass the two assumed ±0.08 rad scenarios; B fails them. These are declared-model results, not calibrated hardware performance.
+
+The default ring's broad 101-point scan has minimum transmission about 0.99899. Local refinement resolves the modeled notch at **1550.05 nm**, half-depth linewidth **3.1848 pm**, Q about **486,703**, in **209 evaluations**. Extinction below the display cutoff is withheld; 120 dB is not an accuracy claim. A focused follow-up numerical review accepted the scoped algorithm and requested this explicit reporting-cutoff wording.
+
+Local integration passed **268 tests in 16 files**, static/API builds, and the independent waveguide source/equation check. Browser evidence for this revision will be recorded separately from the historical workbench checkpoints below.
+
 ## Current implementation
 
 - **Sketch from data:** strict `picsetup-recipe/1` JSON names components, source-free blocks and exposed ports in SI units. Compilation expands blocks, validates the complete flat scene and arranges the drawing atomically. The five starters are imported MZI, ideal MZI, ring, 1 × 4 splitter and delay line. The sketch panel also offers a 10/20/30 µm arm-difference study.
@@ -42,7 +52,7 @@ Raw Simphony revision: `5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c`. Direct upstre
 
 Source S parameters use the documented Ansys `exp(−iωt)` convention; conversion conjugates them once to the playground's `exp(+iωt)`. Native source port planes are preserved, but their spatial coordinates and de-embedding are unknown. Added guide lengths refer to abstract source boundaries. Physical modal matching, process corner, temperature and uncertainty are unqualified.
 
-Only the original approximately 1500–1600 nm band is supported. Frequency-domain Cartesian interpolation is explicit, with no extrapolation. It can introduce apparent attenuation between rotating complex samples: at 1550 nm, interpolated single-port total output is approximately 0.9716 versus 0.9834 for weighted neighboring sampled powers. That difference is interpolation error, not measured extra loss.
+Only the original approximately 1500–1600 nm band is supported. Frequency-domain Cartesian interpolation is explicit, with no extrapolation. It can introduce apparent attenuation between rotating complex samples: at 1550 nm, interpolated single-port total output is approximately 0.9716 versus 0.9837416 for weighted neighboring sampled powers. That difference is interpolation error, not measured extra loss.
 
 Raw full-matrix `σmax` ranges from 0.9852978180 to 1.0022352696; 17/101 points slightly violate passivity. Runtime uses a checked exact-symmetry Hadamard norm for this fixed matrix family. Original apparent gain remains in the circuit solve and budgets. No calibrated-device, passive-certified-network or fabrication claim is made. These comparisons evaluate declared models, not physical ground truth.
 
@@ -95,7 +105,7 @@ Analytical oracles include MZI complex fields `e(t2*t1*hu − sqrt(K2*K1)*hl)` a
 
 ## Remaining boundaries
 
-M2 is not complete: a ring starter and numerically verified ring block now exist, but a dedicated interactive ring spectral journey and full intended spectral acceptance remain open. Uniform wavelength grids may miss narrow resonances. M3 is not complete: this is one pinned dataset, not general custom-model import or broad qualified libraries. SiPANN and SAX integrations remain unimplemented. Four reusable source-free templates are implemented; arbitrary user-defined nested modules, persisted hierarchy and general module-interface equivalence remain deferred. M5 cross-browser/accessibility/performance qualification remains open. No throughput or offline-reload claim. Probe and external-bridge work remains deferred.
+M2 is not fully complete: the known-model ring lab adds a dedicated refinement workflow; general adaptive resonance discovery and broader spectral acceptance remain open. Uniform wavelength grids may miss narrow resonances. M3 is not complete: this includes a pinned coupler table and guide coefficient model, not general custom-model import or broad qualified libraries. SiPANN and SAX integrations remain unimplemented. Four reusable source-free templates are implemented; arbitrary user-defined nested modules, persisted hierarchy and general module-interface equivalence remain deferred. M5 cross-browser/accessibility/performance qualification remains open. No throughput or offline-reload claim. Probe and external-bridge work remains deferred.
 
 Dense solver caps remain 100 components, 256 optical ports and 128 links per expanded circuit; document/recipe JSON is capped at 1 MiB. Notebooks hold at most six variants, with a bounded approximately 6 MiB import; the CLI streams at most 7 MiB per command envelope. No production deployment, DNS change, live OpticalSetup bridge or modification of the legacy applications is part of this iteration. Source licenses are preserved; no repository-wide license was selected. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
