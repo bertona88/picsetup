@@ -14,7 +14,7 @@ The new controlled dispersion study reports explicit sampled IL/XT targets for b
 
 Goals retain the original result and reject numerical-quality failures before choosing a recommendation. A coarse grid cannot displace a better baseline. The ring lab resolves one known-model ideal single-bus notch using a physical seed and sampled convergence checks; it does not guarantee discovery in arbitrary circuits. Extinction reporting thresholds are display policies, not accuracy bounds.
 
-Local validation: 268 unit tests in 16 files, TypeScript/static/API builds, and independent coefficient/equation verification passed. New Chromium evidence is pending the implementation checkpoint; historical evidence below applies only to its named revision.
+Final implementation `f51433e43a9d982e9d954e49b138ffc12a83c3f8` passed **268 tests in 16 files**, TypeScript/static/API builds, the independent coefficient/equation check, distributed CLI replay/notices checks, and **eight real Chromium journeys**, with zero failures or skips. [Validation run](https://github.com/bertona88/picsetup/actions/runs/38143314798); [static/API build and evidence](https://github.com/bertona88/picsetup/actions/runs/38143314798/artifacts/11703861693) (artifact retention applies). The [validation record](evidence/review-response-validation.json) and [handoff](HANDOFF.md) preserve screenshots and the precise accepted scope.
 
 ## Historical workbench evidence
 

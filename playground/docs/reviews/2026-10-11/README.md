@@ -1,5 +1,7 @@
 # Four independent photonics reviews
 
+Subsequent implementation: [response and results](response.md). The reports below preserve the original independent assessments.
+
 Reviewed 11 October 2026 at checkpoint `7b79b0ab6bba7a57f50fd955afc1e0f7a4d507f6` on `rebuild/playground-m1` (tree `106d28c33ff781aa54dddd984104a6fb4dbbc0d2`). The implementation tested by the preceding CI was `af4db0a84e5ff228035c5ae4c7cb37611990c6b3`; subsequent changes before this review were documentation and evidence.
 
 The owner requested four independent photonics agents, candid criticism, and ideas for future directions. Four fresh-context AI reviewers received the same current repository, contracts, screenshots and test record, with distinct professional perspectives. They did not see one another's findings before submitting. These are AI reviews, not external human expert validation or customer interviews. The coordinator then checked consequential findings and prepared this synthesis. One numerical-review paragraph was corrected against the committed source audit after submission; its conclusions were unchanged.

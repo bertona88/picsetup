@@ -1,0 +1,60 @@
+{
+  "capturedAt": "2026-10-11T13:29:26.760Z",
+  "commit": "f51433e43a9d982e9d954e49b138ffc12a83c3f8",
+  "workflowRun": "38143314798",
+  "browserVersion": "141.0.7390.37",
+  "viewport": {
+    "width": 1440,
+    "height": 1250
+  },
+  "variantCount": 3,
+  "scenarioCount": 3,
+  "sampleCountPerCurve": 101,
+  "numericRows": 909,
+  "nominal": [
+    {
+      "variant": "A · Constant index · ΔL 20 µm",
+      "status": "sampled-pass",
+      "worstInsertionLossDb": {
+        "value": 0.6069742898736037,
+        "status": "finite"
+      },
+      "worstCrosstalkDb": {
+        "value": -11.289414262630384,
+        "status": "finite"
+      }
+    },
+    {
+      "variant": "B · Dispersive guide · ΔL 20 µm",
+      "status": "sampled-fail",
+      "worstInsertionLossDb": {
+        "value": 1.2088409469389803,
+        "status": "finite"
+      },
+      "worstCrosstalkDb": {
+        "value": -6.2982294474332035,
+        "status": "finite"
+      }
+    },
+    {
+      "variant": "C · Dispersive guide · ΔL 10 µm",
+      "status": "sampled-pass",
+      "worstInsertionLossDb": {
+        "value": 0.5242585855382662,
+        "status": "finite"
+      },
+      "worstCrosstalkDb": {
+        "value": -12.673312527638272,
+        "status": "finite"
+      }
+    }
+  ],
+  "bridge": {
+    "cloneIsolated": true,
+    "invalidNotebookRejectedAtomically": true,
+    "jsonReloadPreserved": true,
+    "csvMeasurementsAndProvenanceReplayEqual": true
+  },
+  "runtimeErrors": [],
+  "remoteRequests": []
+}

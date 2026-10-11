@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-10-11T13:29:28.434Z",
+  "commit": "f51433e43a9d982e9d954e49b138ffc12a83c3f8",
+  "workflowRun": "38143314798",
+  "browserVersion": "141.0.7390.37",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "limited": {
+    "evaluations": 32,
+    "status": "unresolved",
+    "metrics": null
+  },
+  "resolved": {
+    "evaluations": 209,
+    "coarseMinimum": 0.9989867182978945,
+    "localMinimum": 4.703645732191776e-21,
+    "metrics": {
+      "resonanceM": 0.00000155005,
+      "minimumTransmission": 4.703645732191776e-21,
+      "peakTransmission": 0.9999997497498126,
+      "linewidthM": 3.1847936737982208e-12,
+      "q": 486703.4284677516,
+      "extinctionDb": null,
+      "extinctionReportingThresholdDb": 120
+    },
+    "convergence": {
+      "locationBracketM": 6.112825233855709e-15,
+      "linewidthBracketM": 3.1101499752884433e-15,
+      "maximumReferenceError": 1.042826103248018e-10,
+      "rejectedSamples": 0
+    }
+  },
+  "loadedCircuitExact": true,
+  "runtimeErrors": [],
+  "remoteRequests": []
+}

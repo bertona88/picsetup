@@ -10,7 +10,11 @@ At nominal phase, the shipped study gives sampled worst IL/XT of A **0.607/−11
 
 The default ring's broad 101-point scan has minimum transmission about 0.99899. Local refinement resolves the modeled notch at **1550.05 nm**, half-depth linewidth **3.1848 pm**, Q about **486,703**, in **209 evaluations**. Extinction below the display cutoff is withheld; 120 dB is not an accuracy claim. A focused follow-up numerical review accepted the scoped algorithm and requested this explicit reporting-cutoff wording.
 
-Local integration passed **268 tests in 16 files**, static/API builds, and the independent waveguide source/equation check. Browser evidence for this revision will be recorded separately from the historical workbench checkpoints below.
+Final implementation `f51433e43a9d982e9d954e49b138ffc12a83c3f8` passed **268 tests in 16 files**, TypeScript/static/API builds, the independent coefficient/equation check, distributed CLI replay/notices checks, and **eight real Chromium journeys**, with zero failures or skips. [Validation run](https://github.com/bertona88/picsetup/actions/runs/38143314798); [static/API build and evidence](https://github.com/bertona88/picsetup/actions/runs/38143314798/artifacts/11703861693) (artifact retention applies).
+
+Fresh screenshots: [design study](evidence/study-chromium.png), [resolved ring](evidence/resolved-ring-chromium.png), [excluded goal candidates](evidence/trust-goal-chromium.png). All were visually inspected. The study verifies 909 scenario/wavelength rows, exact notebook handoff and JSON/CSV replay; the ring verifies budget-limited unresolved state then resolution and exact canvas load; the goals reject both a worse coarse-grid result and all 201 numerical-artifact candidates. No page errors or external runtime requests occurred in the three new journeys. Browser metadata and [validation record](evidence/review-response-validation.json) identify the exact commit.
+
+The six-agent implementation and focused follow-up numerical review are summarized in [the review response](docs/reviews/2026-10-11/response.md). Start with **Design study** or **Resolve ring** from the toolbar. The previous five browser journeys remain passing.
 
 ## Current implementation
 
@@ -79,6 +83,7 @@ From the repository root:
 python scripts/convert_siepic.py --check
 python scripts/verify_siepic.py --check
 python scripts/verify_siepic_mzi.py
+python scripts/verify_siepic_waveguide.py --check
 ```
 
 The converter is standard-library-only. Independent verification needs NumPy. `--write` on either verification script regenerates its report/fixture.

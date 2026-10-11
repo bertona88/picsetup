@@ -1,0 +1,45 @@
+{
+  "schema": "picsetup.review-response-validation/1",
+  "date": "2026-10-11",
+  "implementationCommit": "f51433e43a9d982e9d954e49b138ffc12a83c3f8",
+  "implementationTree": "af95478ac550efb9513dc7dc79e0734b106643e3",
+  "workflowRun": 38143314798,
+  "artifact": 11703861693,
+  "artifactSha256": "3f21fcdec5997b72e2513470638142ad706d7c43a8e62ce4020bb8fe54615776",
+  "result": "success",
+  "unitTests": 268,
+  "unitFiles": 16,
+  "chromiumJourneys": 8,
+  "failures": 0,
+  "skipped": 0,
+  "gates": [
+    "deterministic coupler conversion",
+    "independent guide coefficient/equation check",
+    "unit and independent-reference tests",
+    "TypeScript/static/API builds",
+    "distributed JSON CLI studies/ring replay and notices",
+    "real Chromium editor, study, goal and ring journeys"
+  ],
+  "runtime": {
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "chromium": "141.0.7390.37",
+    "os": "Ubuntu 24.04"
+  },
+  "screenshots": [
+    "study-chromium.png",
+    "resolved-ring-chromium.png",
+    "trust-goal-chromium.png"
+  ],
+  "visualInspection": "Study, ring and goal dialogs, numerical plots, targets, status and export/apply controls inspected; comparison sidebar and details scroll independently. Study captured at 1440x1250 after ordinary-viewport reachability; ring/goal at 1440x1000.",
+  "browserRecords": [
+    "study-browser-run.json",
+    "resolved-ring-browser-run.json",
+    "trust-goal-browser-run.json"
+  ],
+  "preservedTrees": {
+    "app": "7266a6656f54c4e72d723bace45820a42d4a5f23",
+    "prototype": "4d72604f67ffea9a7a7bc6b675d8b5e83306d8b5"
+  },
+  "scope": "Experimental declared-model design studies; no calibrated hardware, fit-band, manufacturing-yield, general resonance-discovery or extinction-accuracy claim. No production deployment."
+}
