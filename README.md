@@ -1,77 +1,35 @@
 # PicSetup
 
-> **Preliminary Setup Universe wrapper.** The current demo is temporary; the full simulator is expected to be redesigned and rebuilt substantially from scratch.
+A photonic circuit workbench at **https://picsetup.com/**. The production source is `playground/`: compose coherent circuits, compare explicit design alternatives, and inspect the numerical evidence behind the result.
 
-- **Live prototype:** https://picsetup.com/
-- **Prototype release verified:** 2026-07-26 (`20260726T002235Z-478235af2650`); check the URL for current availability
-- **Field:** Integrated photonics
-- **Status:** Greenfield successor candidate with a preserved production prototype
+- **Design study:** compare constant-index and dispersive SiEPIC MZIs with both outputs, insertion-loss/crosstalk targets, and declared phase-error scenarios.
+- **Resolve ring:** reveal a narrow modeled notch missed by a broad scan, with sampled refinement and convergence checks.
+- **Sketch and tune:** build from named-port recipes and reusable blocks, edit the canvas, preserve exact notebooks, and apply only eligible sampled improvements.
+- **Agent API:** the same compiler, models and experiments are available through Node JSON commands and `window.picsetup`.
 
-## Vision
+Start with [the playground guide](playground/README.md), [API documentation](playground/docs/API.md), [model contract](playground/PHOTONICS_MODEL_CONTRACT.md), and [validation evidence](playground/HANDOFF.md). The model evaluates declared scalar coherent CW networks; it does not claim calibrated hardware prediction, manufacturing yield or fabrication signoff. Propagation assumptions, imported data limitations and numerical failures remain visible.
 
-The intended PicSetup product is an integrated-photonics workbench for composing waveguides, couplers, resonators, phase shifters, sources, detectors, and electrical controls with explicit coherent-field and scattering models.
+## Develop and deploy
 
-PicSetup is part of the **Setup Universe**: independently deployed scientific and systems workbenches intended to become interoperable. Over time, setups should be able to orchestrate or interface with one another through explicit, versioned, unit-aware ports without transferring ownership or copying private implementation state.
-
-**First accepted end-to-end slice:** Build one connectable Mach–Zehnder interferometer whose two output powers respond to wavelength and phase through a documented scattering model, with conservation and reference-plane tests.
-
-**Model boundary:** PicSetup owns guided photonic networks; OpticalSetup owns free-space instrument propagation and geometry; ElectricalSetup owns electronic drive and readout dynamics.
-
-**Claim gate:** No fabrication-ready, layout-signoff, or calibrated-device claim is allowed until modes, polarization, wavelength domain, loss model, and port reference planes are validated.
-
-## Important starting point
-
-Read [AGENTS.md](./AGENTS.md) before planning or implementing work.
-
-The present browser demo should not constrain the next architecture. The candidate successor is governed by `VISION.md`, `PHOTONICS_MODEL_CONTRACT.md`, `INTERFACE_CONTRACT.md`, `CLAIMS_AND_VALIDATION.md`, and `ACCEPTANCE_TESTS.md`.
-
-## Successor candidate
-
-`app/` contains the dependency-light greenfield workbench candidate. It combines an editable semantic PIC canvas, compact coherent-network analysis, typed cross-domain figure connections, publication SVG/PNG export, and versioned OpticalSetup bridge ports.
-
-Paper Figure Studio can combine simulated photonic objects with diagram-only instruments, RF/electrical/control wiring, plots, image panels, annotations, and chip boundaries without admitting non-optical links into the coherent solve. Its included hybrid template demonstrates the complete figure workflow.
-
-The `setup-port/1` bridge is a deterministic document handoff. PicSetup emits an explicit scalar guided-mode boundary; OpticalSetup retains authority over free-space geometry, beam waist, numerical aperture, wavefront, and receiver-side scene construction. The neutral receiver adapter under `app/integrations/opticalsetup/` is a focused integration proposal, not a deployment to Luca Genchi's repository.
-
-To validate or serve the candidate locally:
+Use Node 24:
 
 ```sh
-npm run app:validate
-npm run app:serve
+cd playground
+npm ci
+npm run dev
+npm test
+npm run build
+node scripts/check-api.mjs
+PICSETUP_STATIC=1 npm run test:browser
 ```
 
-Then open http://127.0.0.1:4174/.
+The Pages workflow builds `playground/dist` on `main`, verifies the built site in Chromium before publication, stamps `release.json`, and checks the public study and ring workflows after deployment. The existing Pages custom domain is retained; no DNS change is needed. A retirement worker at `/sw.js` clears legacy application caches and unregisters itself. It leaves saved browser documents intact and does not force-reload open tabs.
 
-The candidate is not deployed by the current Pages workflow. Acceptance, merge, and replacement of the live prototype remain separate decisions.
+## Preserved earlier implementations
 
-## Prototype model boundary
+`app/` retains the earlier workbench and Paper Figure Studio; its OpticalSetup receiver adapter remains a proposal rather than a deployment to Luca Genchi's repository. `prototype/` remains the immutable source snapshot associated with release `20260726T002235Z-478235af2650`. Neither directory is the production source for this release. Their saved-document formats are not silently converted to the new schema; legacy browser storage remains untouched.
 
-The following describes only the current reference prototype, not the intended simulator.
-
-**Exact current scope:** A coherent, single-mode 2 × 2 scattering-matrix model with wavelength-dependent phase and lumped arm loss.
-
-**Known limits:**
-
-- It does not solve waveguide modes, bends, reflections, or polarization.
-- Dispersion is reduced to fixed effective/group indices; thermal crosstalk and detector noise are omitted.
-
-## Current prototype snapshot
-
-`prototype/` preserves the exact shared browser-prototype source associated with production release `20260726T002235Z-478235af2650`. Its recorded deployed-source SHA-256 is `478235af26508aa70aa2af5f0196c9868b92ded1bed88106a9aa1a1cd86f8ba5`.
-
-The snapshot contains all current Setup Universe demos because that release uses one shared, host-routed runtime. It is immutable, reference-only prior art: do not build the new architecture inside it. Moving, archiving, or removing it requires explicit user authorization after an accepted successor and preserved provenance.
-
-To run the snapshot locally:
-
-```sh
-npm run prototype:test
-npm run prototype:check
-npm run prototype:serve
-```
-
-Then open http://127.0.0.1:4173/?setup=pic.
-
-These commands validate only the legacy prototype. The successor has its own tests and build under `app/`; neither suite demonstrates a production deployment.
+Read [AGENTS.md](AGENTS.md) for repository ownership and scientific boundaries. PicSetup owns guided photonic networks; OpticalSetup owns free-space optics; ElectricalSetup owns electronic drive/readout. Cross-setup integration requires explicit versioned interfaces and does not follow merely from shared branding.
 
 ## Setup Universe
 

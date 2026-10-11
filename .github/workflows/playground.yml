@@ -28,6 +28,8 @@ jobs:
       - run: node scripts/check-api.mjs
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+        env:
+          PICSETUP_STATIC: '1'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

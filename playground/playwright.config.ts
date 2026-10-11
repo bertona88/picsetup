@@ -20,9 +20,9 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 1000 } } }],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 4175 --strictPort',
+    command: `npm run ${process.env.PICSETUP_STATIC === '1' ? 'preview' : 'dev'} -- --host 127.0.0.1 --port 4175 --strictPort`,
     url: 'http://127.0.0.1:4175',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env.CI && process.env.PICSETUP_STATIC !== '1',
     timeout: 30_000,
   },
 });

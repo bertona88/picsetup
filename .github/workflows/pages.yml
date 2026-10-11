@@ -2,8 +2,13 @@ name: Deploy PicSetup to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'playground/**'
+      - '!playground/evidence/**'
+      - '!playground/**/*.md'
+      - 'scripts/*siepic*.py'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -21,26 +26,51 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: playground
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: playground/package-lock.json
       - name: Configure Pages
         uses: actions/configure-pages@v5
-
-      - name: Stage PicSetup app
+      - run: npm ci
+      - run: python3 ../scripts/convert_siepic.py --check
+      - run: python3 ../scripts/verify_siepic_waveguide.py --check
+      - run: npm test
+      - run: npm run build
+      - run: node scripts/check-api.mjs
+      - run: npx playwright install --with-deps chromium
+      - name: Verify built site and returning-visitor migration
+        run: npm run test:browser
+        env:
+          PICSETUP_STATIC: '1'
+      - name: Stamp release identity
         run: |
-          mkdir -p _site/src _site/integrations/opticalsetup
-          cp app/index.html app/styles.css app/icon.svg app/manifest.webmanifest app/sw.js _site/
-          cp app/src/*.js _site/src/
-          cp app/integrations/opticalsetup/receiver-adapter.js _site/integrations/opticalsetup/
-          cp prototype/robots.txt _site/robots.txt
-
+          node --input-type=module -e 'import {writeFileSync} from "node:fs"; writeFileSync("dist/release.json", JSON.stringify({schema:"picsetup-release/1",commit:process.env.GITHUB_SHA,workflowRun:process.env.GITHUB_RUN_ID,builtAt:new Date().toISOString()})+"\n");'
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
-
+          path: playground/dist
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v5
+      - name: Verify picsetup.com in Chromium
+        run: node scripts/check-live.mjs
+        env:
+          PICSETUP_LIVE_URL: https://picsetup.com/
+          PICSETUP_EXPECTED_COMMIT: ${{ github.sha }}
+      - name: Save production verification
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: picsetup-production-evidence
+          path: |
+            playground/evidence/production-*.png
+            playground/evidence/production-*.json
+            playground/test-results/
