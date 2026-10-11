@@ -2,3 +2,4 @@
 node_modules/
 prototype/node_modules/
 app/dist/
+playground/dist-api/

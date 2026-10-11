@@ -1,0 +1,21 @@
+/** Supported headless authoring entry point. All distances and wavelengths are metres. */
+export { compileRecipe, parseRecipe } from './recipe';
+export type { CircuitRecipe, RecipePart, RecipeLink } from './recipe';
+export { queryCatalog } from './catalog';
+export type { CatalogFilter } from './catalog';
+export { starterRecipe, exampleRecipes } from './examples';
+export { executeCommand } from './commands';
+export { arrangeDocument } from '../editor/arrange';
+export { instantiateBlock, blockCatalog } from '../blocks';
+export type { BlockId, BlockParams, BlockFragment, BlockDefinition, BlockParameter } from '../blocks';
+export { solveCircuit, validateCircuit } from '../solver/solve';
+export { sweepCircuit, exportSweepCsv } from '../solver/sweep';
+export type { SweepRequest, SweepSample, SweepOptions } from '../solver/sweep';
+export { blankDocument, validateDocument, parseDocument, serializeDocument } from '../io/document';
+export { createNotebook, addVariant, forkVariant, removeVariant, renameVariant, replaceVariant, setSweep, selectVariantDetector, parseNotebook, serializeNotebook } from '../experiments/notebook';
+export type { Notebook, ExperimentVariant, SweepConfig } from '../experiments/notebook';
+export { compareExperiments, exportComparisonCsv, normalizedPower } from '../experiments/compare';
+export type { CompareRequest, ComparisonResult, ComparisonOptions } from '../experiments/compare';
+export { runGoalSearch, validateGoalRequest } from '../experiments/goals';
+export type { GoalRequest, GoalResult, GoalSample, GoalParameter } from '../experiments/goals';
+export type { Circuit, CircuitDocument, Component, Connection, Endpoint, ModelId, SolveResult } from '../model/types';

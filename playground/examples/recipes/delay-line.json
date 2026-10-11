@@ -1,0 +1,33 @@
+{
+  "schema": "picsetup-recipe/1",
+  "title": "Delay and attenuation",
+  "wavelengthM": 0.00000155,
+  "parts": [
+    {
+      "id": "laser",
+      "model": "source"
+    },
+    {
+      "id": "delay",
+      "block": "delay-line",
+      "params": {
+        "lengthM": 0.0001,
+        "attenuationDb": 3
+      }
+    },
+    {
+      "id": "out",
+      "model": "detector"
+    }
+  ],
+  "links": [
+    {
+      "from": "laser.out",
+      "to": "delay.in"
+    },
+    {
+      "from": "delay.out",
+      "to": "out.in"
+    }
+  ]
+}

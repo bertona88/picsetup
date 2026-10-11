@@ -1,0 +1,29 @@
+{
+  "schema": "picsetup-recipe/1",
+  "title": "Ring transmission",
+  "wavelengthM": 0.00000155,
+  "parts": [
+    {
+      "id": "laser",
+      "model": "source"
+    },
+    {
+      "id": "ring",
+      "block": "ring"
+    },
+    {
+      "id": "through",
+      "model": "detector"
+    }
+  ],
+  "links": [
+    {
+      "from": "laser.out",
+      "to": "ring.in"
+    },
+    {
+      "from": "ring.out",
+      "to": "through.in"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "command": "catalog",
+  "filter": {
+    "kind": "model",
+    "mode": "TE",
+    "wavelengthM": 0.00000155
+  }
+}

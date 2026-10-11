@@ -1,0 +1,53 @@
+{
+  "schema": "picsetup-recipe/1",
+  "title": "Four-way power splitter",
+  "wavelengthM": 0.00000155,
+  "parts": [
+    {
+      "id": "laser",
+      "model": "source"
+    },
+    {
+      "id": "tree",
+      "block": "splitter-tree"
+    },
+    {
+      "id": "out0",
+      "model": "detector"
+    },
+    {
+      "id": "out1",
+      "model": "detector"
+    },
+    {
+      "id": "out2",
+      "model": "detector"
+    },
+    {
+      "id": "out3",
+      "model": "detector"
+    }
+  ],
+  "links": [
+    {
+      "from": "laser.out",
+      "to": "tree.in"
+    },
+    {
+      "from": "tree.out0",
+      "to": "out0.in"
+    },
+    {
+      "from": "tree.out1",
+      "to": "out1.in"
+    },
+    {
+      "from": "tree.out2",
+      "to": "out2.in"
+    },
+    {
+      "from": "tree.out3",
+      "to": "out3.in"
+    }
+  ]
+}

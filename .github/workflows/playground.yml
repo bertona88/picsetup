@@ -1,10 +1,10 @@
 name: Validate fresh photonic playground
 on:
   pull_request:
-    paths: ['playground/**', 'scripts/*siepic.py', '.github/workflows/playground.yml']
+    paths: ['playground/**', 'scripts/*siepic*.py', '.github/workflows/playground.yml']
   push:
     branches: ['rebuild/playground-m1']
-    paths: ['playground/**', 'scripts/*siepic.py', '.github/workflows/playground.yml']
+    paths: ['playground/**', 'scripts/*siepic*.py', '.github/workflows/playground.yml']
 permissions:
   contents: read
 jobs:
@@ -24,6 +24,7 @@ jobs:
       - run: python3 ../scripts/convert_siepic.py --check
       - run: npm test
       - run: npm run build
+      - run: node scripts/check-api.mjs
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
       - uses: actions/upload-artifact@v4
@@ -32,6 +33,7 @@ jobs:
           name: playground-browser-evidence
           path: |
             playground/dist/
+            playground/dist-api/
             playground/evidence/*.png
             playground/evidence/*.json
             playground/test-results/

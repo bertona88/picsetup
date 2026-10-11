@@ -1,0 +1,45 @@
+{
+  "schema": "picsetup-recipe/1",
+  "title": "SiEPIC wavelength splitter",
+  "wavelengthM": 0.00000155,
+  "parts": [
+    {
+      "id": "laser",
+      "model": "source",
+      "params": {
+        "powerW": 0.001
+      }
+    },
+    {
+      "id": "mzi",
+      "block": "mzi",
+      "params": {
+        "couplerModel": "siepic-coupler",
+        "deltaLengthM": 0.00002,
+        "phaseRad": 0
+      }
+    },
+    {
+      "id": "upper",
+      "model": "detector"
+    },
+    {
+      "id": "lower",
+      "model": "detector"
+    }
+  ],
+  "links": [
+    {
+      "from": "laser.out",
+      "to": "mzi.in0"
+    },
+    {
+      "from": "mzi.out0",
+      "to": "upper.in"
+    },
+    {
+      "from": "mzi.out1",
+      "to": "lower.in"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "command": "search",
+  "request": {
+    "id": 0,
+    "document": {
+      "schema": "picsetup-playground/1",
+      "title": "Ideal wavelength splitter",
+      "circuit": {
+        "wavelengthM": 0.00000155,
+        "components": [
+          {
+            "id": "laser",
+            "model": "source",
+            "version": "1",
+            "label": "laser",
+            "params": {
+              "powerW": 0.001,
+              "phaseRad": 0
+            }
+          },
+          {
+            "id": "mzi__split",
+            "model": "coupler",
+            "version": "1",
+            "label": "mzi · MZI input coupler",
+            "params": {
+              "coupling": 0.5
+            }
+          },
+          {
+            "id": "mzi__phase",
+            "model": "phase",
+            "version": "1",
+            "label": "mzi · MZI upper phase",
+            "params": {
+              "phaseRad": 0
+            }
+          },
+          {
+            "id": "mzi__combine",
+            "model": "coupler",
+            "version": "1",
+            "label": "mzi · MZI output coupler",
+            "params": {
+              "coupling": 0.5
+            }
+          },
+          {
+            "id": "upper",
+            "model": "detector",
+            "version": "1",
+            "label": "upper",
+            "params": {}
+          },
+          {
+            "id": "lower",
+            "model": "detector",
+            "version": "1",
+            "label": "lower",
+            "params": {}
+          }
+        ],
+        "connections": [
+          {
+            "id": "mzi__upper-start",
+            "from": {
+              "component": "mzi__split",
+              "port": 2
+            },
+            "to": {
+              "component": "mzi__phase",
+              "port": 0
+            },
+            "lengthM": 0.00004,
+            "neff": 2.4,
+            "lossDbPerM": 0
+          },
+          {
+            "id": "mzi__upper-end",
+            "from": {
+              "component": "mzi__phase",
+              "port": 1
+            },
+            "to": {
+              "component": "mzi__combine",
+              "port": 0
+            },
+            "lengthM": 0.00004,
+            "neff": 2.4,
+            "lossDbPerM": 0
+          },
+          {
+            "id": "mzi__lower",
+            "from": {
+              "component": "mzi__split",
+              "port": 3
+            },
+            "to": {
+              "component": "mzi__combine",
+              "port": 1
+            },
+            "lengthM": 0.0001,
+            "neff": 2.4,
+            "lossDbPerM": 0
+          },
+          {
+            "id": "link_1",
+            "from": {
+              "component": "laser",
+              "port": 0
+            },
+            "to": {
+              "component": "mzi__split",
+              "port": 0
+            },
+            "lengthM": 0,
+            "neff": 2.4,
+            "lossDbPerM": 0
+          },
+          {
+            "id": "link_2",
+            "from": {
+              "component": "mzi__combine",
+              "port": 2
+            },
+            "to": {
+              "component": "upper",
+              "port": 0
+            },
+            "lengthM": 0,
+            "neff": 2.4,
+            "lossDbPerM": 0
+          },
+          {
+            "id": "link_3",
+            "from": {
+              "component": "mzi__combine",
+              "port": 3
+            },
+            "to": {
+              "component": "lower",
+              "port": 0
+            },
+            "lengthM": 0,
+            "neff": 2.4,
+            "lossDbPerM": 0
+          }
+        ]
+      },
+      "layout": {
+        "components": {
+          "laser": {
+            "x": 150,
+            "y": 230,
+            "rotation": 0
+          },
+          "mzi__split": {
+            "x": 380,
+            "y": 230,
+            "rotation": 0
+          },
+          "mzi__phase": {
+            "x": 610,
+            "y": 140,
+            "rotation": 0
+          },
+          "mzi__combine": {
+            "x": 840,
+            "y": 230,
+            "rotation": 0
+          },
+          "upper": {
+            "x": 1070,
+            "y": 310,
+            "rotation": 0
+          },
+          "lower": {
+            "x": 1070,
+            "y": 150,
+            "rotation": 0
+          }
+        },
+        "connections": {
+          "mzi__upper-start": {
+            "bend": 0
+          },
+          "mzi__upper-end": {
+            "bend": 0
+          },
+          "mzi__lower": {
+            "bend": 170
+          },
+          "link_1": {
+            "bend": 0
+          },
+          "link_2": {
+            "bend": 0
+          },
+          "link_3": {
+            "bend": 0
+          }
+        },
+        "viewport": {
+          "x": 0,
+          "y": 0,
+          "zoom": 1
+        }
+      }
+    },
+    "wavelengthM": 0.00000155,
+    "detectorId": "upper",
+    "objective": "minimize",
+    "parameter": {
+      "kind": "component",
+      "componentId": "mzi__phase",
+      "name": "phaseRad"
+    },
+    "min": 0,
+    "max": 6.283185307179586,
+    "points": 51
+  }
+}
