@@ -12,7 +12,7 @@ The supported scientific claim is numerical evaluation of the declared scalar-mo
 - `python scripts/verify_siepic_mzi.py` passed. A separate reduced eight-port incident-wave NumPy solve produces complex detector fields and complete budgets at 1500, 1525, 1550, 1575 and 1600 nm for the 80/100 µm SiEPIC MZI. Maximum reference equation residual is `7.67e−18`; maximum budget imbalance is `4.34e−19 W`. This is an independent numerical oracle, not physical ground truth.
 - Source interpolation is explicitly audited: at 1550 nm Cartesian interpolation yields approximately 0.9716 total output fraction, while weighted neighboring sample powers are approximately 0.9834. The difference is an interpolation effect. No clipping, passivity correction or artificial damping hides it.
 
-Fresh TypeScript/build results and fresh browser evidence for this iteration must be recorded in [HANDOFF.md](HANDOFF.md) after execution. They are **pending at this documentation checkpoint**. Historical M1 screenshots and browser metadata do not validate the new data adapter, spectral controls or CSV flow.
+Implementation `9e10b2063d8747c423ad2eee088ec9e272ae5484` passed 125 unit/model/editor tests in five files, TypeScript/Vite build and three real Chromium journeys with zero failures/skips. The browser checks include imported-model spectra/CSV/reopen, model swaps, invalid-band gaps, cancellation/stale requests and plot clipping. [Run](https://github.com/bertona88/picsetup/actions/runs/38136961539) and fresh screenshot/metadata are recorded in [HANDOFF.md](HANDOFF.md). The numerical fixture tests compare all complex imported MZI detector fields and budgets at five wavelengths.
 
 ## Historical baseline
 

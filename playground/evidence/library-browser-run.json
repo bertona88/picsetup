@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-10-11T11:50:11.290Z",
+  "commit": "9e10b2063d8747c423ad2eee088ec9e272ae5484",
+  "workflowRun": "38136961539",
+  "browserVersion": "141.0.7390.37",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "model": "siepic-coupler",
+  "modelVersion": "1",
+  "sourceSha256": "945ddee41a7b46d7288a862ac9ad3c4802336810cf5c7b6d3716b848c00f1371",
+  "sampleCount": 201,
+  "wavelengthNm": [
+    1500,
+    1600
+  ],
+  "firstDetectorPowerRangeW": [
+    0.00011705195249305122,
+    0.0009546445052923104
+  ],
+  "runtimeErrors": [],
+  "remoteRequests": [],
+  "journey": [
+    "dataset MZI preset",
+    "worker spectrum",
+    "CSV numerical export",
+    "keyboard wavelength scrubbing",
+    "coupler model swap",
+    "portable JSON reopen",
+    "autosave reload"
+  ]
+}

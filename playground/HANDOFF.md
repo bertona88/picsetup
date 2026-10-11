@@ -54,7 +54,11 @@ The Python conversion and independent verification commands passed. All 1,616 ca
 
 The independent eight-port incident-wave NumPy MZI oracle at five wavelengths has maximum equation residual `7.67e−18` and maximum power-budget imbalance `4.34e−19 W`. Full complex detector fields, component exchanges and budgets are in [mzi-reference.json](models/siepic-dc-200nm-10um/mzi-reference.json). It parses original source data independently and does not execute the production TypeScript solver.
 
-**Fresh TypeScript/build and browser verification remain pending at this documentation checkpoint.** Record their actual run IDs, tested commit, results and screenshots here after completion. Existing `evidence/mzi-chromium.png` and `evidence/browser-run.json` are historical M1 evidence, not validation of the new spectral interface.
+Implementation checkpoint `9e10b2063d8747c423ad2eee088ec9e272ae5484` passed **125 unit/model/editor tests in 5 files**, TypeScript/Vite build, deterministic data conversion and **3 real Chromium journeys**, with zero failures or skips. [Validation run](https://github.com/bertona88/picsetup/actions/runs/38136961539); [static review build](https://github.com/bertona88/picsetup/actions/runs/38136961539/artifacts/11701920467) (artifact retention applies). CI: Node 24.21.0, npm 11.19.0, Ubuntu 24.04, Chromium 141.0.7390.37.
+
+The browser journeys cover blank-canvas MZI construction; imported MZI spectra, CSV and exact model swaps; JSON reopen and autosave; unsupported wavelengths with unavailable powers; cancellation and stale-result isolation. New [screenshot](evidence/library-experiments-chromium.png) and [browser metadata](evidence/library-browser-run.json) were captured from that tested commit. The 201-point imported MZI sweep spans 1500–1600 nm; its first detector spans approximately 0.11705–0.95464 mW for 1 mW input. No page errors or mandatory external requests were observed. [Validation metadata](evidence/library-validation.json) records the check counts and scope.
+
+Visual inspection caught the chart growing beyond its drawer. The fixed layout and a browser regression assertion now keep its zero axis, wavelength labels and status visible. Bundled source license notices are included in the static build. Historical `evidence/mzi-chromium.png` and `evidence/browser-run.json` remain the previous M1 record.
 
 ## Historical M1 evidence
 

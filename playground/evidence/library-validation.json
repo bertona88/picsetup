@@ -1,0 +1,36 @@
+{
+  "commit": "9e10b2063d8747c423ad2eee088ec9e272ae5484",
+  "runUrl": "https://github.com/bertona88/picsetup/actions/runs/38136961539",
+  "unitTests": {
+    "passed": 125,
+    "failed": 0,
+    "skipped": 0,
+    "files": 5
+  },
+  "browserTests": {
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0
+  },
+  "build": "passed",
+  "converterCheck": "passed",
+  "independentPythonChecks": [
+    "all 1616 complex values",
+    "full-matrix SVD and reciprocity",
+    "five-wavelength full complex MZI and budgets"
+  ],
+  "ciRuntime": {
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "os": "Ubuntu 24.04",
+    "chromium": "141.0.7390.37"
+  },
+  "scope": "Early M2/M3 experiments; M0/M1 retained; no full milestone completion or calibrated device claim",
+  "runtimeNetworkRequests": [],
+  "visualReview": "Passed after fixing chart clipping; screenshot and browser geometry assertions verify all axes/status visible",
+  "skippedEnvironments": [
+    "Firefox",
+    "WebKit"
+  ],
+  "artifactUrl": "https://github.com/bertona88/picsetup/actions/runs/38136961539/artifacts/11701920467"
+}

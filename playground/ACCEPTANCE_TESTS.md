@@ -23,7 +23,7 @@ From `playground/`: `npm ci`, `npm test`, `npm run build`, `npm run test:browser
 
 ## Observed evidence
 
-The three Python conversion/reference commands passed in this iteration. Full fresh TypeScript/build and browser results are pending at this documentation checkpoint; record actual counts and execution metadata in [HANDOFF.md](HANDOFF.md) after the runs. Do not substitute historical screenshots for the spectral UI checks.
+The three Python conversion/reference commands passed. Implementation `9e10b2063d8747c423ad2eee088ec9e272ae5484` passed 125 unit/model/editor tests in five files, TypeScript/Vite build and three Chromium journeys with zero failures/skips. [Run](https://github.com/bertona88/picsetup/actions/runs/38136961539) verifies the new dataset/spectral controls, CSV, model swaps, portability, unsupported wavelength failures, cancellation and stale state; screenshot bounds checks cover the zero axis, wavelength labels and status. Actual environment and fresh evidence links are in [HANDOFF.md](HANDOFF.md).
 
 Historical M1: 87 unit/model/editor tests and one Chromium journey passed at implementation commit `0ddecde64e030d93f4bb854ab6dcca2157d5d722`, with no failures/skips. Historical links are retained in the handoff.
 
