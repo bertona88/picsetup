@@ -1,9 +1,14 @@
-# SiEPIC experiments — 11 October 2026
+# Idea workbench — 11 October 2026
 
-Branch: `rebuild/playground-m1`. This iteration extends the fresh M0/M1 workbench with early M2/M3 experiments; it is not full milestone completion. No production replacement was made.
+Branch: `rebuild/playground-m1`. This iteration turns the M0/M1 and early SiEPIC experiments into a sketch → change → compare workflow. It is not full M0–M5 milestone completion. No production replacement was made.
 
 ## Current implementation
 
+- **Sketch from data:** strict `picsetup-recipe/1` JSON names components, source-free blocks and exposed ports in SI units. Compilation expands blocks, validates the complete flat scene and arranges the drawing atomically. The five starters are imported MZI, ideal MZI, ring, 1 × 4 splitter and delay line. The sketch panel also offers a 10/20/30 µm arm-difference study.
+- **Reusable structures:** MZI, single-bus ring, splitter tree and delay line insert as independently editable primitives. They add no source or hidden solver state. Supported coupler-based blocks can use the fixed SiEPIC dataset. Automatic arrangement preserves all physical parameters and complex results.
+- **Headless authoring:** the bundled ESM API, JSON CLI and `window.picsetup` browser bridge expose named-port construction, catalog queries and numerical experiments. The catalog declares defaults, units, parameter bounds, wavelength band, source mode labels and provenance. [API documentation and examples](docs/API.md) describe the exact schemas. Recipe text is data, never executed code; no natural-language AI service is implemented.
+- **Comparison notebook:** capture, fork, rename, restore or remove up to six immutable circuit variants; choose a detector per variant; run a shared wavelength sweep and overlay normalized powers. Saved notebook JSON retains each exact document and sampling settings; CSV retains all detector rows, raw powers, diagnostics and provenance. Notebook autosave/reopen recomputes curves from saved assumptions.
+- **Bounded design goals:** sample one phase-shifter phase, ideal-coupler ratio or physical link length at a chosen wavelength to minimize/maximize a detector output. Searches use 2–201 candidates, retain failures, report boundary hits, support cancellation and produce a separate best document. Applying that candidate is explicit and undoable. This is finite sampling, not guaranteed continuous/global optimization.
 - Bundled real SiEPIC directional-coupler data: fixed 200 nm gap, 10 µm coupling length, TE mode 1; all sixteen complex S entries at 101 frequency samples, including reflection and back-coupling.
 - New `siepic-coupler` component version `1` permanently references dataset `siepic-dc-200nm-10um` version `1.0.0` and its exact source hash. It can be placed, wired and saved with the analytical parts.
 - Three experiments: single-coupler spectrum; SiEPIC MZI; ideal MZI. Both unequal-arm MZIs use explicit 80/100 µm arms and a controllable phase shifter. The previous balanced MZI remains available.
@@ -11,7 +16,25 @@ Branch: `rebuild/playground-m1`. This iteration extends the fresh M0/M1 workbenc
 - Power accounting separates imported component absorption from apparent model-supplied power. Passivity violations and the experimental status stay visible; no values are clipped to make the result passive.
 - Structurally valid scenes with out-of-band wavelengths remain importable/exportable and editable. The solver reports failure with unavailable powers until the wavelength is repaired; it never extrapolates.
 
-Existing editing supports palette placement, port connections, move/rotate, independent curve geometry, pan/zoom, duplicate/delete, undo/redo, explicit phase/wavelength/length/index/loss controls, detector powers/phases, JSON export/import and recoverable local autosave. Drawn geometry remains independent of physical path length.
+Existing editing supports palette placement, port connections, move/rotate, independent curve geometry, pan/zoom, duplicate/delete, undo/redo, explicit phase/wavelength/length/index/loss controls, detector powers/phases, JSON export/import and recoverable local autosave. Drawn geometry remains independent of physical path length. The original three spectral experiments remain available alongside the new sketch starters.
+
+## Final workbench evidence
+
+Implementation `af4db0a84e5ff228035c5ae4c7cb37611990c6b3` passed **206 tests in 11 files**, TypeScript/static/API builds, the distributed CLI packaging check, deterministic dataset conversion and **five Chromium journeys**, with zero failures or skips. [Validation run](https://github.com/bertona88/picsetup/actions/runs/38139054935); [review build and evidence](https://github.com/bertona88/picsetup/actions/runs/38139054935/artifacts/11702228545) (artifact retention applies). The artifact includes `dist/` and `dist-api/`.
+
+Fresh screenshots show [Sketch](evidence/sketch-chromium.png), [Compare](evidence/workbench-chromium.png) and [Tune](evidence/goal-chromium.png). All three were visually inspected; the dialogs, plot axes, readouts and action controls are visible without clipping at 1440 × 1000. The browser also asserts the new dialog bounds. [Browser metadata](evidence/workbench-browser-run.json) and [validation metadata](evidence/workbench-validation.json) record the tested commit, runtime and scope.
+
+The comparison captures three phase variants across 101 wavelengths from 1500–1600 nm and exports 606 full-precision detector rows. No page errors or external runtime requests were observed in that journey. The goal journey samples 21 phases, selects the zero-power boundary candidate in the ideal MZI, applies it and verifies undo. CI used Node 24.21.0, npm 11.19.0, Ubuntu 24.04 and Chromium 141.0.7390.37.
+
+Start with **Sketch → Compare three arm lengths** for a ready-to-run SiEPIC study, or edit a recipe and choose **Build this idea**. The command-line equivalent is documented in [API.md](docs/API.md).
+
+## First integrated workbench checkpoint
+
+Implementation `c8825aa46557d1010fa516e51537a7ad602fb40d` passed **206 tests in 11 files**, the TypeScript/static/API builds, distributed API/CLI packaging checks and **five real Chromium journeys**, with zero failures or skips. [Validation run](https://github.com/bertona88/picsetup/actions/runs/38138574207); [review artifact](https://github.com/bertona88/picsetup/actions/runs/38138574207/artifacts/11701333137) (artifact retention applies).
+
+The new journeys build a SiEPIC MZI from a recipe, edit an inserted source-free block, verify arrangement leaves physics unchanged, capture three phase variants, compare/export/reopen their exact notebook and apply/undo a bounded phase-search result. Independent numerical tests compare recipe-expanded circuits with separately wired fixtures; block tests cover MZI, ring, splitter and delay-line responses. The distributed CLI check executes the built Node entry point rather than importing TypeScript test code.
+
+The final evidence pass above adds dedicated Sketch and Goal screenshots. The earlier dataset and M1 evidence below remains historical and is not relabeled as verification of new controls.
 
 ## Data provenance and limitations
 
@@ -32,11 +55,13 @@ npm ci
 npm run dev
 npm test
 npm run build
+node scripts/check-api.mjs
+node dist-api/cli.mjs examples/commands/solve-mzi.json
 npx playwright install chromium
 npm run test:browser
 ```
 
-Development opens at http://localhost:4175. Static output is `dist/`; `npm run preview` serves it. Linux browser dependencies may require `npx playwright install --with-deps chromium` when system installation is allowed. The GitHub Actions validation workflow uploads review artifacts without deploying production.
+Development opens at http://localhost:4175. Static output is `dist/`; `npm run preview` serves it. The same build produces `dist-api/api.mjs` and `dist-api/cli.mjs` with bundled notices. Additional catalog, spectrum, comparison and goal commands are in `examples/commands/`. Linux browser dependencies may require `npx playwright install --with-deps chromium` when system installation is allowed. The GitHub Actions validation workflow uploads review artifacts without deploying production.
 
 From the repository root:
 
@@ -48,7 +73,7 @@ python scripts/verify_siepic_mzi.py
 
 The converter is standard-library-only. Independent verification needs NumPy. `--write` on either verification script regenerates its report/fixture.
 
-## Fresh evidence
+## Historical SiEPIC data and spectral evidence
 
 The Python conversion and independent verification commands passed. All 1,616 canonical complex values match an independent raw parser with observed maximum absolute error 0. Full SVD and reciprocity audit are in [verification.json](models/siepic-dc-200nm-10um/verification.json).
 
@@ -70,8 +95,8 @@ Analytical oracles include MZI complex fields `e(t2*t1*hu − sqrt(K2*K1)*hl)` a
 
 ## Remaining boundaries
 
-M2 is not complete: the interactive ring journey and full intended spectral acceptance remain open. M3 is not complete: this is one pinned dataset, not general custom-model import or broad qualified libraries. SiPANN and SAX integrations remain unimplemented. M4 reusable modules and M5 cross-browser/accessibility/performance qualification remain open. No throughput or offline-reload claim. Probe/module/external-bridge work remains deferred.
+M2 is not complete: a ring starter and numerically verified ring block now exist, but a dedicated interactive ring spectral journey and full intended spectral acceptance remain open. Uniform wavelength grids may miss narrow resonances. M3 is not complete: this is one pinned dataset, not general custom-model import or broad qualified libraries. SiPANN and SAX integrations remain unimplemented. Four reusable source-free templates are implemented; arbitrary user-defined nested modules, persisted hierarchy and general module-interface equivalence remain deferred. M5 cross-browser/accessibility/performance qualification remains open. No throughput or offline-reload claim. Probe and external-bridge work remains deferred.
 
-Dense solver caps remain 100 components, 256 optical ports and 128 links; JSON import limit is 1 MiB. No production deployment, DNS change, live OpticalSetup bridge or modification of the legacy applications is part of this iteration. Source licenses are preserved; no repository-wide license was selected. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Dense solver caps remain 100 components, 256 optical ports and 128 links per expanded circuit; document/recipe JSON is capped at 1 MiB. Notebooks hold at most six variants, with a bounded approximately 6 MiB import; the CLI streams at most 7 MiB per command envelope. No production deployment, DNS change, live OpticalSetup bridge or modification of the legacy applications is part of this iteration. Source licenses are preserved; no repository-wide license was selected. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Historical preserved tree identities: `prototype/` is `4d72604f67ffea9a7a7bc6b675d8b5e83306d8b5`, `app/` is `7266a6656f54c4e72d723bace45820a42d4a5f23`. The task branch preserves changes without replacing production on `main`.

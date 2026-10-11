@@ -1,0 +1,55 @@
+{
+  "commit": "af4db0a84e5ff228035c5ae4c7cb37611990c6b3",
+  "runUrl": "https://github.com/bertona88/picsetup/actions/runs/38139054935",
+  "artifactUrl": "https://github.com/bertona88/picsetup/actions/runs/38139054935/artifacts/11702228545",
+  "artifactSha256": "07296bde1e817201d266069e920195e39812c27ef61f3fc9031de760da56b481",
+  "unitTests": {
+    "passed": 206,
+    "failed": 0,
+    "skipped": 0,
+    "files": 11
+  },
+  "browserTests": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "build": "passed: TypeScript, static application, Node API and CLI",
+  "distributedApiCheck": "passed: catalog, compile, solve, sweep, compare, file/stdin, rejection and source notices",
+  "converterCheck": "passed",
+  "ciRuntime": {
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "os": "Ubuntu 24.04",
+    "chromium": "141.0.7390.37"
+  },
+  "scope": "Recipe authoring, four flat source-free templates, arrangement, immutable comparisons and bounded sampled design goals; no calibrated device or complete M2-M5 claim",
+  "comparisonJourney": {
+    "variants": 3,
+    "samples": 101,
+    "csvDetectorRows": 606,
+    "runtimeErrors": [],
+    "externalRuntimeRequests": []
+  },
+  "visualReview": {
+    "status": "passed",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "screenshots": [
+      "sketch-chromium.png",
+      "workbench-chromium.png",
+      "goal-chromium.png"
+    ],
+    "observations": "Recipe editor and Build control, all three comparison cards and curves, tuning chart/readouts and Apply control visible without clipping; dialog bounds also asserted in Chromium"
+  },
+  "unqualifiedEnvironments": [
+    "Firefox",
+    "WebKit"
+  ],
+  "preservedTrees": {
+    "app": "7266a6656f54c4e72d723bace45820a42d4a5f23",
+    "prototype": "4d72604f67ffea9a7a7bc6b675d8b5e83306d8b5"
+  }
+}
