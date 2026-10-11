@@ -194,6 +194,8 @@ export class GoalPanel {
   if (result.best) {
    this.query('[data-testid=goal-best-power]').textContent = `${fmt(result.best.powerW * 1e3)} mW`;
    this.query('[data-testid=goal-best-value]').textContent = `at ${fmt(result.best.value / this.scale, 7)} ${this.unit}`;
+  } else {
+   this.query('[data-testid=goal-best-value]').textContent = 'No eligible candidate.';
   }
   const boundaryAdvice = result.boundaryHit ? fullPhasePeriod ? ' A full phase period is covered; finer sampling may reveal missed features.' : ' The best eligible sample lies at a bound; inspect finer sampling and the declared bounds.' : '';
   if (result.decision === 'improved') {

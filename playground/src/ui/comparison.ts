@@ -378,11 +378,50 @@ export class ComparisonPanel {
   return differences.length ? differences : ['Same physics as baseline'];
  }
 
+ /** Compact card copy; the expandable assumptions retain every exact semantic difference. */
+ private variantSummary(variant: ExperimentVariant): string[] {
+  const baseline = this.baseline();
+  if (!baseline || baseline.id === variant.id) return ['Baseline circuit'];
+  const differences = semanticDifferences(baseline.document, variant.document);
+  if (!differences.length) return ['Same physics as baseline'];
+  const summaries: string[] = [];
+  const guideChanges = differences.filter(diff => diff.path.startsWith('connections.') && /\.waveguide(?:\.|$)/.test(diff.path));
+  if (guideChanges.length) {
+   const paths = new Set(guideChanges.map(diff => diff.path.split('.waveguide')[0]));
+   const modelName = (value: unknown) => value === null ? 'constant index' : typeof value === 'object' && 'model' in value && value.model === 'siepic-strip-500x220-te' ? 'SiEPIC TE' : 'model changed';
+   const transitions = [...new Set(guideChanges.map(diff => `${modelName(diff.before)} → ${modelName(diff.after)}`))];
+   summaries.push(`${paths.size} waveguide${paths.size === 1 ? '' : 's'}: ${transitions.length === 1 ? transitions[0] : 'propagation models changed'}`);
+  }
+  for (const diff of differences.filter(diff => !guideChanges.includes(diff))) {
+   const field = diff.path.split('.').at(-1)!;
+   let label = field;
+   if (diff.path.startsWith('components.')) {
+    const component = variant.document.circuit.components.find(item => diff.path.startsWith(`components.${item.id}.`));
+    const name = component?.label.split(' · ').at(-1)?.replace(/^MZI /, '') ?? 'Component';
+    label = field === 'phaseRad' ? name : `${name} ${field}`;
+   } else if (diff.path.startsWith('connections.')) {
+    const connection = variant.document.circuit.connections.find(item => {
+     const pair = [item.from, item.to].map(endpoint => JSON.stringify([endpoint.component, endpoint.port])).sort().join(' ↔ ');
+     return diff.path.startsWith(`connections.${pair}.`);
+    });
+    const name = connection?.id.split('__').at(-1)?.replaceAll('-', ' ') ?? 'Connection';
+    label = field === 'lengthM' ? `${name} guide` : `${name} ${field}`;
+   } else if (field === 'wavelengthM') label = 'Saved wavelength';
+   if (typeof diff.before === 'number' && typeof diff.after === 'number') {
+    const scale = field === 'wavelengthM' ? 1e9 : field === 'lengthM' ? 1e6 : 1;
+    const unit = field === 'wavelengthM' ? ' nm' : field === 'lengthM' ? ' µm' : field.endsWith('Rad') ? ' rad' : field === 'lossDbPerM' ? ' dB/m' : '';
+    summaries.push(`${label}: ${fmt(diff.before * scale, 4)} → ${fmt(diff.after * scale, 4)}${unit}`);
+   } else if (typeof diff.before === 'string' && typeof diff.after === 'string') summaries.push(`${label}: ${diff.before} → ${diff.after}`);
+   else summaries.push(`${label}: ${diff.before === null ? 'added' : diff.after === null ? 'removed' : 'changed'}`);
+  }
+  return summaries.map(text => text.length > 90 ? `${text.slice(0, 87)}…` : text);
+ }
+
  private variantContext(variant: ExperimentVariant) {
-  const differences = this.variantDifferences(variant), source = getAuthoringStatus(variant.document);
+  const summaries = this.variantSummary(variant), source = getAuthoringStatus(variant.document);
   const guide = variant.document.circuit.connections.some(link => link.waveguide) ? 'Dispersive SiEPIC guide' : 'Constant-index guides';
   const coupler = variant.document.circuit.components.some(component => component.model === 'siepic-coupler') ? 'SiEPIC coupler' : 'Analytical coupler';
-  return `<div class="comparison-variant-diff" data-testid="study-variant-diff" data-variant-id="${esc(variant.id)}">${differences.slice(0, 2).map(text => `<span>${esc(text)}</span>`).join('')}${differences.length > 2 ? `<small>+ ${differences.length - 2} changes in assumptions</small>` : ''}<small class="comparison-variant-guide">${guide} · ${coupler}</small></div>${source !== 'none' ? `<div class="comparison-recipe-status" data-testid="compare-recipe-status" data-status="${source}">Recipe source ${source === 'current' ? 'matches circuit' : 'stale · physics changed'}</div>` : ''}`;
+  return `<div class="comparison-variant-diff" data-testid="study-variant-diff" data-variant-id="${esc(variant.id)}">${summaries.slice(0, 3).map(text => `<span>${esc(text)}</span>`).join('')}${summaries.length > 3 ? `<small>+ ${summaries.length - 3} more changes in assumptions</small>` : ''}<small class="comparison-variant-guide">${guide} · ${coupler}</small></div>${source !== 'none' ? `<div class="comparison-recipe-status" data-testid="compare-recipe-status" data-status="${source}">Recipe source ${source === 'current' ? 'matches circuit' : 'stale · physics changed'}</div>` : ''}`;
  }
 
  private renderAssumptions() {
