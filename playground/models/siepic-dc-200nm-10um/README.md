@@ -27,8 +27,11 @@ From the repository root:
 ```sh
 python scripts/convert_siepic.py --check
 python scripts/verify_siepic.py --check
+python scripts/verify_siepic_mzi.py
 ```
 
 The converter uses Python's standard library. The independent verification requires NumPy and uses a separate regex/array parser without importing converter code. It compares all 1,616 complex values, checks the complete matrix norm, and records an independently interpolated 1550 nm matrix in [verification.json](verification.json). To regenerate the bundled JSON/report, omit `--check` on conversion and use `--write` on verification.
+
+The separate MZI oracle combines the zero-phase upper guide segments analytically and solves an eight-port incident-wave system using NumPy. [mzi-reference.json](mzi-reference.json) contains complete complex detector fields and power budgets at five wavelengths for the 80/100 µm imported-coupler experiment. It executes no production TypeScript evaluator or solver and validates numerical composition, not physical hardware.
 
 Licenses: [SiEPIC MIT](LICENSE-SIEPIC.txt), copyright Lukas Chrostowski and contributors; [Simphony MIT](LICENSE-SIMPHONY.txt), copyright Simphony Project Contributors and others. No upstream Python library implementation is included in the browser bundle.

@@ -1,0 +1,58 @@
+PICSetup bundled SiEPIC scattering data
+
+Dataset: siepic-dc-200nm-10um, version 1.0.0
+Source SHA-256: 945ddee41a7b46d7288a862ac9ad3c4802336810cf5c7b6d3716b848c00f1371
+Upstream: https://github.com/SiEPIC/SiEPIC_EBeam_PDK/tree/363fbb52eefa8669100499ab531d3fe7befc4867
+Redistributed through: https://github.com/BYUCamachoLab/simphony/tree/5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c
+Conversion: retain all values, conjugate exp(-i omega t) to exp(+i omega t).
+Application source and full provenance: https://github.com/bertona88/picsetup/tree/rebuild/playground-m1/playground
+
+SiEPIC EBeam PDK
+This project is licensed under the terms of the MIT license.
+
+Copyright (c) 2016-2020, Lukas Chrostowski and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
+Simphony
+MIT License
+
+Copyright (c) 2019-2020 Simphony Project Contributors and others (see AUTHORS.txt)
+
+The resources, libraries, and some source files under other terms (see NOTICE.txt).
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -5,6 +5,7 @@ import { evaluate } from '../src/model/registry';
 import { datasetMetadata, datasetSigmaMax, evaluateDataset } from '../src/model/dataset';
 import { parseDocument, serializeDocument } from '../src/io/document';
 import { createMziExample } from '../src/model/examples';
+import { createDatasetMziExperiment } from '../src/model/experiments';
 import { solveCircuit } from '../src/solver/solve';
 import type { Circuit, Complex, Component } from '../src/model/types';
 
@@ -154,6 +155,41 @@ describe('pinned SiEPIC model, independently reconstructed from source', () => {
     const netAbsorption = 1 - expected.reduce((sum, row) => sum + power(row[0]), 0);
     expect(result.budget.componentAbsorbedW - result.budget.modelSuppliedW).toBeCloseTo(netAbsorption, 11);
     expect(Math.abs(result.budget.imbalanceW)).toBeLessThan(1e-10);
+  });
+
+  test('an out-of-band scene remains portable and repairable while its solve is rejected', () => {
+    const document = createDatasetMziExperiment();
+    document.circuit.wavelengthM = 1400e-9;
+    const reopened = parseDocument(serializeDocument(document));
+    expect(reopened).toEqual(document);
+    const invalid = solveCircuit(reopened.circuit);
+    expect(invalid.ok).toBe(false);
+    expect(invalid.detectors).toEqual({});
+    expect(invalid.diagnostics.some(item => item.code === 'DATASET_OUT_OF_BAND')).toBe(true);
+    reopened.circuit.wavelengthM = 1550e-9;
+    expect(solveCircuit(reopened.circuit).ok).toBe(true);
+  });
+
+  test('composed imported MZI matches an independent NumPy incident-wave solve at five wavelengths', () => {
+    const fixture = JSON.parse(readFileSync(new URL('mzi-reference.json', folder), 'utf8'));
+    expect(fixture.sourceSha256).toBe(bundle.metadata.sourceSha256);
+    expect(fixture.samples).toHaveLength(5);
+    const document = createDatasetMziExperiment();
+    for (const sample of fixture.samples) {
+      document.circuit.wavelengthM = sample.wavelengthM;
+      const result = solveCircuit(document.circuit);
+      expect(result.ok).toBe(true);
+      for (const [id, expected] of Object.entries(sample.detectors) as Array<[string, { incoming: Complex; powerW: number }]>) {
+        const port = result.ports.find(port => port.componentId === id && port.port === 0)!;
+        expect(port.incoming.re).toBeCloseTo(expected.incoming.re, 11);
+        expect(port.incoming.im).toBeCloseTo(expected.incoming.im, 11);
+        expect(result.detectors[id].powerW).toBeCloseTo(expected.powerW, 11);
+      }
+      for (const key of Object.keys(sample.budget) as Array<keyof typeof result.budget>) {
+        expect(result.budget[key]).toBeCloseTo(sample.budget[key], 11);
+      }
+      expect(result.residual).toBeLessThan(1e-10);
+    }
   });
 
   test('portable reopen retains exact model version and solves the same mixed-model MZI', () => {

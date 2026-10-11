@@ -17,3 +17,5 @@
 .project{max-width:45%;white-space:nowrap}.project strong{overflow:hidden;text-overflow:ellipsis}.budget-supplied{color:#a17f56!important}
 .topbar{grid-row:1}.toolbar{grid-row:2}.workspace{grid-row:3}.spectrum-panel{grid-row:4}.measurement-drawer{grid-row:5}.sweep-actions [hidden]{display:none!important}
 .dataset-version{font:7px ui-monospace,monospace;letter-spacing:.4px;color:#94a088;margin-top:9px}
+/* Let the chart's flexible grid row shrink within the drawer's fixed height. */
+.spectrum-main{min-height:0;height:100%;overflow:hidden}

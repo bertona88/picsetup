@@ -1,12 +1,27 @@
-# First working slice — 11 October 2026
+# SiEPIC experiments — 11 October 2026
 
-Branch: `rebuild/playground-m1`. Implementation checkpoint: `0ddecde64e030d93f4bb854ab6dcca2157d5d722`. This is the fresh M0/M1 playground, not the full M0–M5 candidate. No production replacement was made.
+Branch: `rebuild/playground-m1`. This iteration extends the fresh M0/M1 workbench with early M2/M3 experiments; it is not full milestone completion. No production replacement was made.
 
-## What works
+## Current implementation
 
-An editable MZI opens at phase π/3. Build another from blank using palette placement/drag and port clicks. Move/rotate components, bend connections, pan/zoom, duplicate/delete, edit phase/wavelength/coupling/loss/explicit length, read detector powers/phases and the power budget, undo/redo, export/import JSON, and recover local autosave. Source and component versions are carried in the document. `examples/mzi.json` is an importable balanced-arm experiment.
+- Bundled real SiEPIC directional-coupler data: fixed 200 nm gap, 10 µm coupling length, TE mode 1; all sixteen complex S entries at 101 frequency samples, including reflection and back-coupling.
+- New `siepic-coupler` component version `1` permanently references dataset `siepic-dc-200nm-10um` version `1.0.0` and its exact source hash. It can be placed, wired and saved with the analytical parts.
+- Three experiments: single-coupler spectrum; SiEPIC MZI; ideal MZI. Both unequal-arm MZIs use explicit 80/100 µm arms and a controllable phase shifter. The previous balanced MZI remains available.
+- Spectral explorer: 2–1001 uniform wavelength samples in a worker; progress, matching-request cancellation, superseded-job isolation, stale-response filtering, invalid-sample gaps and full-precision CSV with provenance, SI circuit state, diagnostics and power budgets. Selecting the spectrum changes the current wavelength.
+- Power accounting separates imported component absorption from apparent model-supplied power. Passivity violations and the experimental status stay visible; no values are clipped to make the result passive.
+- Structurally valid scenes with out-of-band wavelengths remain importable/exportable and editable. The solver reports failure with unavailable powers until the wavelength is repaired; it never extrapolates.
 
-Fresh TypeScript model, complex network solver, document validation, immutable editor commands and SVG UI share no implementation with the old app. Analytical components: source, reciprocal four-port coupler, phase shifter, attenuator, detector and termination. One declared scalar guided mode per port, one coherent CW source, no implicit geometry-to-physics conversion.
+Existing editing supports palette placement, port connections, move/rotate, independent curve geometry, pan/zoom, duplicate/delete, undo/redo, explicit phase/wavelength/length/index/loss controls, detector powers/phases, JSON export/import and recoverable local autosave. Drawn geometry remains independent of physical path length.
+
+## Data provenance and limitations
+
+Raw Simphony revision: `5a5e826fb58b2b5ce0355189b3e3b33e2bd8828c`. Direct upstream SiEPIC revision: `363fbb52eefa8669100499ab531d3fe7befc4867`. Both contain identical source blob `2b56aff1c525be81eb1ea374f9e0107cdb59e356`, SHA-256 `945ddee41a7b46d7288a862ac9ad3c4802336810cf5c7b6d3716b848c00f1371`. Exact bytes, MIT notices and primary convention references are bundled in [the manifest and audit](models/siepic-dc-200nm-10um/README.md).
+
+Source S parameters use the documented Ansys `exp(−iωt)` convention; conversion conjugates them once to the playground's `exp(+iωt)`. Native source port planes are preserved, but their spatial coordinates and de-embedding are unknown. Added guide lengths refer to abstract source boundaries. Physical modal matching, process corner, temperature and uncertainty are unqualified.
+
+Only the original approximately 1500–1600 nm band is supported. Frequency-domain Cartesian interpolation is explicit, with no extrapolation. It can introduce apparent attenuation between rotating complex samples: at 1550 nm, interpolated single-port total output is approximately 0.9716 versus 0.9834 for weighted neighboring sampled powers. That difference is interpolation error, not measured extra loss.
+
+Raw full-matrix `σmax` ranges from 0.9852978180 to 1.0022352696; 17/101 points slightly violate passivity. Runtime uses a checked exact-symmetry Hadamard norm for this fixed matrix family. Original apparent gain remains in the circuit solve and budgets. No calibrated-device, passive-certified-network or fabrication claim is made. These comparisons evaluate declared models, not physical ground truth.
 
 ## Reproduce
 
@@ -21,26 +36,38 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-Development opens at http://localhost:4175. Static output is `dist/`; `npm run preview` serves it. Linux environments missing Chromium libraries can use `npx playwright install --with-deps chromium` when system installation is allowed. A nondeploying GitHub Actions workflow runs all checks and uploads a static review build plus browser evidence.
+Development opens at http://localhost:4175. Static output is `dist/`; `npm run preview` serves it. Linux browser dependencies may require `npx playwright install --with-deps chromium` when system installation is allowed. The GitHub Actions validation workflow uploads review artifacts without deploying production.
 
-## Evidence
+From the repository root:
 
-- Local Node v24.19.0, npm 11.9.0: **87 unit/model/editor tests passed**, no failures or skips; TypeScript and Vite build passed. Dependencies pinned: TypeScript 5.9.3, Vite 7.3.7, Vitest 4.1.11, Playwright 1.56.1. Dependency audit on 11 October: 0 reported vulnerabilities.
-- Headless assertions cover full complex coupler unitarity; MZI power/phase at 17 phase values; independent arbitrary-coupler, unequal-arm MZI fields; line attenuation and phase; zero-phase insertion preserving length; reflected-source absorption; ring closed forms; singular/near-singular diagnostics; immutable editing; roundtrip and hostile documents.
-- Complex MZI oracle is `e(t2*t1*hu − sqrt(K2*K1)*hl)` and `i*e(sqrt(K2)*t1*hu + t2*sqrt(K1)*hl)`. Equal 50/50 couplers reduce to `e(hu−hl)/2`, `i*e(hu+hl)/2`; matched lossless arm powers are sin²(φ/2), cos²(φ/2). Ring oracle is `(t−A)/(1−tA)`. These independent algebraic fixtures validate declared equations, not measured devices.
-- Browser verification: **1 Chromium journey passed**, 0 failures/skips, Chromium 141.0.7390.37 on Ubuntu 24.04 GitHub runner (Node 24.21.0 / npm 11.19.0). Builds topology through the UI, checks phase 0/π/π/2 outputs, undo/redo, drag physics invariance, portable JSON, local reload and invalid imports. No page errors or required third-party requests. At π/2 and 1 mW launch, both outputs were 0.5000000000000001 mW. Screenshot: [evidence/mzi-chromium.png](evidence/mzi-chromium.png); exact browser/commit metadata: [evidence/browser-run.json](evidence/browser-run.json).
-- Validation run: https://github.com/bertona88/picsetup/actions/runs/38134741263
+```sh
+python scripts/convert_siepic.py --check
+python scripts/verify_siepic.py --check
+python scripts/verify_siepic_mzi.py
+```
 
-The first browser run exposed pointer-target replacement during connection preview; hover now updates only the preview path, preserving port targets. No test assertion was removed to hide the failure.
+The converter is standard-library-only. Independent verification needs NumPy. `--write` on either verification script regenerates its report/fixture.
 
-## Boundaries and next work
+## Fresh evidence
 
-Next unfinished gate: **M2 spectral sweeps, cancelable worker execution and a ring editing/example journey**. Scalar wavelength editing and ring solver fixtures exist; no sweep UI/CSV, worker cancellation, or interactive ring milestone is claimed. M3 external-data ingestion and metadata qualification, M4 reusable modules, and M5 cross-browser/accessibility/performance coverage remain open. Firefox/WebKit and performance benchmarks were not run; no throughput or offline reload claims. Probe UI, source-free modules and external custom models are not accepted by this document schema yet.
+The Python conversion and independent verification commands passed. All 1,616 canonical complex values match an independent raw parser with observed maximum absolute error 0. Full SVD and reciprocity audit are in [verification.json](models/siepic-dc-200nm-10um/verification.json).
 
-Dense solver caps: 100 components, 256 optical ports, 128 links. Import limit: 1 MiB. Curve geometry never changes specified propagation. Detector phase is undefined below the documented numerical-darkness threshold. Layout edits do not enter the solve. Unconnected ports use matched boundaries.
+The independent eight-port incident-wave NumPy MZI oracle at five wavelengths has maximum equation residual `7.67e−18` and maximum power-budget imbalance `4.34e−19 W`. Full complex detector fields, component exchanges and budgets are in [mzi-reference.json](models/siepic-dc-200nm-10um/mzi-reference.json). It parses original source data independently and does not execute the production TypeScript solver.
 
-No external component implementation or dataset was copied. See `THIRD_PARTY_NOTICES.md`; MIT is proposed for new code but no repository license was changed. No hardware calibration, foundry qualification, fabrication, live bridge or OpticalSetup change.
+**Fresh TypeScript/build and browser verification remain pending at this documentation checkpoint.** Record their actual run IDs, tested commit, results and screenshots here after completion. Existing `evidence/mzi-chromium.png` and `evidence/browser-run.json` are historical M1 evidence, not validation of the new spectral interface.
 
-Preservation: `prototype/` tree remains `4d72604f67ffea9a7a7bc6b675d8b5e83306d8b5`, `app/` remains `7266a6656f54c4e72d723bace45820a42d4a5f23`; existing Pages workflow unchanged. The task branch and successive GitHub commits preserve the work without deploying `main`.
+## Historical M1 evidence
 
-Static review build and browser evidence: https://github.com/bertona88/picsetup/actions/runs/38134741263/artifacts/11700088432 (artifact retention applies; source and the screenshot are also committed here).
+Implementation checkpoint `0ddecde64e030d93f4bb854ab6dcca2157d5d722`; previous delivery checkpoint `810f537`. The historical local run passed 87 unit/model/editor tests and the TypeScript/Vite build. A real Chromium journey passed with no failures/skips, Chromium 141.0.7390.37 on Ubuntu 24.04 GitHub runner, Node 24.21.0 and npm 11.19.0. It built topology, checked phase 0/π/π/2 outputs, undo/redo, layout invariance, JSON save/reopen and invalid imports, with no page errors or required third-party requests. At π/2 and 1 mW launch, both detector outputs were 0.5000000000000001 mW.
+
+Historical [screenshot](evidence/mzi-chromium.png), [browser metadata](evidence/browser-run.json), [validation run](https://github.com/bertona88/picsetup/actions/runs/38134741263), and [review artifact](https://github.com/bertona88/picsetup/actions/runs/38134741263/artifacts/11700088432) are preserved; artifact retention applies.
+
+Analytical oracles include MZI complex fields `e(t2*t1*hu − sqrt(K2*K1)*hl)` and `i*e(sqrt(K2)*t1*hu + t2*sqrt(K1)*hl)`, equal-coupler reductions, and ring formula `(t−A)/(1−tA)`. Ring solver fixtures do not establish a complete interactive ring milestone.
+
+## Remaining boundaries
+
+M2 is not complete: the interactive ring journey and full intended spectral acceptance remain open. M3 is not complete: this is one pinned dataset, not general custom-model import or broad qualified libraries. SiPANN and SAX integrations remain unimplemented. M4 reusable modules and M5 cross-browser/accessibility/performance qualification remain open. No throughput or offline-reload claim. Probe/module/external-bridge work remains deferred.
+
+Dense solver caps remain 100 components, 256 optical ports and 128 links; JSON import limit is 1 MiB. No production deployment, DNS change, live OpticalSetup bridge or modification of the legacy applications is part of this iteration. Source licenses are preserved; no repository-wide license was selected. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Historical preserved tree identities: `prototype/` is `4d72604f67ffea9a7a7bc6b675d8b5e83306d8b5`, `app/` is `7266a6656f54c4e72d723bace45820a42d4a5f23`. The task branch preserves changes without replacing production on `main`.

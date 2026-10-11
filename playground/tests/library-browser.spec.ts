@@ -91,6 +91,21 @@ test('open-data MZI has real spectra, exact model swaps and a portable reopen', 
   await page.getByTestId(`node-${id}`).click();
   await expect(page.getByTestId('dataset-metadata')).toBeVisible();
   await expect(page.getByTestId('toast')).toBeHidden();
+  // A visible SVG can still overflow its fixed drawer and be hidden behind the footer.
+  const panelBox = await page.getByTestId('spectrum-panel').boundingBox();
+  const plotBox = await plot.boundingBox();
+  const statusBox = await page.getByTestId('spectrum-status').boundingBox();
+  if (!panelBox || !plotBox || !statusBox) throw new Error('Spectrum panel, plot or status is not visible');
+  expect(plotBox.y + plotBox.height).toBeLessThanOrEqual(panelBox.y + panelBox.height + 1);
+  expect(statusBox.y + statusBox.height).toBeLessThanOrEqual(panelBox.y + panelBox.height + 1);
+  expect(plotBox.y + plotBox.height).toBeLessThanOrEqual(statusBox.y + 1);
+  for (const label of [plot.locator('.spectrum-axis').filter({ hasText: /^0$/ }), plot.getByText('1600 nm', { exact: true })]) {
+    await expect(label).toHaveCount(1);
+    const labelBox = await label.boundingBox();
+    if (!labelBox) throw new Error('A spectrum boundary-axis label is not visible');
+    expect(labelBox.y + labelBox.height).toBeLessThanOrEqual(panelBox.y + panelBox.height + 1);
+    expect(labelBox.y + labelBox.height).toBeLessThanOrEqual(plotBox.y + plotBox.height + 1);
+  }
   const evidence = path.resolve('evidence');
   await mkdir(evidence, { recursive: true });
   const screenshot = path.join(evidence, 'library-experiments-chromium.png');
