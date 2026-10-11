@@ -1,5 +1,7 @@
 # Idea workbench — 11 October 2026
 
+Published to **https://picsetup.com/** after the owner's subsequent deployment request. See the [production release record](../docs/deployments/2026-10-11/README.md). The development checkpoints below retain their original scope.
+
 Branch: `rebuild/playground-m1`. This iteration turns the M0/M1 and early SiEPIC experiments into a sketch → change → compare workflow. It is not full M0–M5 milestone completion. No production replacement was made.
 
 ## Review-response implementation

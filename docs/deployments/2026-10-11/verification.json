@@ -1,0 +1,21 @@
+{
+  "schema": "picsetup-production-verification/1",
+  "verifiedAt": "2026-10-11T15:33:06.452Z",
+  "origin": "https://picsetup.com",
+  "release": {
+    "schema": "picsetup-release/1",
+    "commit": "91e15ea21d1690d20f14281dc5d6743abebbac8f",
+    "workflowRun": "38151649244",
+    "builtAt": "2026-10-11T15:32:56.403Z"
+  },
+  "browserVersion": "141.0.7390.37",
+  "decisions": [
+    "sampled-pass",
+    "sampled-fail",
+    "sampled-pass"
+  ],
+  "ringLinewidth": "3.1848 pm",
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": []
+}

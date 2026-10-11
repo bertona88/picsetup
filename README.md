@@ -25,6 +25,8 @@ PICSETUP_STATIC=1 npm run test:browser
 
 The Pages workflow builds `playground/dist` on `main`, verifies the built site in Chromium before publication, stamps `release.json`, and checks the public study and ring workflows after deployment. The existing Pages custom domain is retained; no DNS change is needed. A retirement worker at `/sw.js` clears legacy application caches and unregisters itself. It leaves saved browser documents intact and does not force-reload open tabs.
 
+Deployment evidence: [11 October 2026 release](docs/deployments/2026-10-11/README.md).
+
 ## Preserved earlier implementations
 
 `app/` retains the earlier workbench and Paper Figure Studio; its OpticalSetup receiver adapter remains a proposal rather than a deployment to Luca Genchi's repository. `prototype/` remains the immutable source snapshot associated with release `20260726T002235Z-478235af2650`. Neither directory is the production source for this release. Their saved-document formats are not silently converted to the new schema; legacy browser storage remains untouched.
