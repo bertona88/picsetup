@@ -1,7 +1,9 @@
 # Claims and validation — playground only
 
-Initial state: M0 contract scaffold. Implementation and verification evidence will be recorded in evidence/ and HANDOFF.md. Do not infer implementation from these requirements.
+M0/M1 implemented and verified. See [HANDOFF.md](HANDOFF.md) for exact tested commit, commands, 87 passing numerical/editor tests and the passing Chromium construction/save/reopen journey. Real UI evidence and browser metadata are committed in `evidence/`.
 
-Claim only tested analytical single-mode CW scattering-network behavior. No calibrated components, eligible external dataset, user modules, full M0–M5 completion, production deployment, offline reload or external receiver integration yet. No external implementation code or model data reused. Distinguish numerical tests, browser tests, packaging, and release acceptance.
+Supported claim: a locally running analytical single-mode CW scattering playground with editable topology, live powers/phases, explicit propagation and recoverable portable documents. Geometry does not supply optical length. Numerical validation uses independent algebraic oracles and accounting, not hardware measurements.
 
-Actual runtime versions, test counts, failures/skips, real browser screenshot and pushed commit must be recorded. Quantitative performance claims require measured named fixtures and environment.
+No calibrated components, qualified external dataset, reusable modules, full M0–M5 completion, spectral sweep worker, performance qualification, production deployment, offline reload or external receiver integration is claimed. No external implementation code or model data reused. Firefox/WebKit remain untested.
+
+Each future milestone needs its own evidence; a successful build alone does not establish browser behavior or scientific fidelity.

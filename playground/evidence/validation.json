@@ -1,0 +1,35 @@
+{
+  "commit": "0ddecde64e030d93f4bb854ab6dcca2157d5d722",
+  "runUrl": "https://github.com/bertona88/picsetup/actions/runs/38134741263",
+  "unitTests": {
+    "passed": 87,
+    "failed": 0,
+    "skipped": 0,
+    "files": 3
+  },
+  "browserTests": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "build": "passed",
+  "localRuntime": {
+    "node": "24.19.0",
+    "npm": "11.9.0"
+  },
+  "ciRuntime": {
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "os": "Ubuntu 24.04"
+  },
+  "skippedEnvironments": [
+    "Firefox",
+    "WebKit"
+  ],
+  "milestones": [
+    "M0",
+    "M1"
+  ],
+  "nextGate": "M2 spectral sweeps and cancelable worker",
+  "auditReportedVulnerabilities": 0
+}

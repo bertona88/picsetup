@@ -1,0 +1,37 @@
+{
+  "capturedAt": "2026-10-11T11:13:45.628Z",
+  "commit": "0ddecde64e030d93f4bb854ab6dcca2157d5d722",
+  "workflowRun": "38134741263",
+  "browserName": "chromium",
+  "browserVersion": "141.0.7390.37",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.7390.37 Safari/537.36",
+  "sourcePowerW": 0.001,
+  "phaseRad": 1.5707963267948966,
+  "expectedDetectorPowerW": [
+    0.0005,
+    0.0005
+  ],
+  "actualDetectorPowerW": [
+    0.0005000000000000001,
+    0.0005000000000000001
+  ],
+  "runtimeErrors": [],
+  "remoteRequests": [],
+  "journey": [
+    "blank",
+    "palette placement",
+    "drag",
+    "port connections",
+    "phase editing",
+    "undo",
+    "redo",
+    "layout independence",
+    "JSON roundtrip",
+    "autosave reload",
+    "invalid import rejection"
+  ]
+}
