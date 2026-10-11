@@ -113,7 +113,10 @@ export function validateDocument(value: unknown): asserts value is CircuitDocume
   finite(viewport.zoom, 'layout.viewport.zoom');
   if (viewport.zoom < 0.05 || viewport.zoom > 20) fail('viewport zoom must be between 0.05 and 20.');
 
-  const errors = validateCircuit(circuit as unknown as CircuitDocument['circuit']).filter(diagnostic => diagnostic.severity === 'error');
+  // A supported model outside its wavelength domain is a valid editable scene,
+  // just as a singular network is. The solver displays an explicit failure with
+  // no invented powers; retaining the scene lets users repair its wavelength.
+  const errors = validateCircuit(circuit as unknown as CircuitDocument['circuit']).filter(diagnostic => diagnostic.severity === 'error' && diagnostic.code !== 'DATASET_OUT_OF_BAND');
   if (errors.length) fail(errors.map(error => error.message).join(' '));
 }
 

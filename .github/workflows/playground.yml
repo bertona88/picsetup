@@ -1,10 +1,10 @@
 name: Validate fresh photonic playground
 on:
   pull_request:
-    paths: ['playground/**', '.github/workflows/playground.yml']
+    paths: ['playground/**', 'scripts/*siepic.py', '.github/workflows/playground.yml']
   push:
     branches: ['rebuild/playground-m1']
-    paths: ['playground/**', '.github/workflows/playground.yml']
+    paths: ['playground/**', 'scripts/*siepic.py', '.github/workflows/playground.yml']
 permissions:
   contents: read
 jobs:
@@ -21,6 +21,7 @@ jobs:
           cache: npm
           cache-dependency-path: playground/package-lock.json
       - run: npm ci
+      - run: python3 ../scripts/convert_siepic.py --check
       - run: npm test
       - run: npm run build
       - run: npx playwright install --with-deps chromium

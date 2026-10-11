@@ -1,4 +1,7 @@
 export const icons: Record<string, string> = {
+ 'siepic-coupler': '<path d="M3 8h7c7 0 5 16 12 16h7M3 24h7c7 0 5-16 12-16h7"/><path d="m24 4 2 2 4-4"/>',
+ spectrum: '<path d="M3 3v18h18M5 17c4 0 3-11 7-11s3 11 7 11"/>',
+ play: '<path d="m8 4 12 8-12 8z" fill="currentColor"/>',
  source: '<circle cx="16" cy="16" r="9"/><path d="M3 16h5m16 0h5M12 16h8m-3-3 3 3-3 3"/>',
  coupler: '<path d="M3 8h7c7 0 5 16 12 16h7M3 24h7c7 0 5-16 12-16h7"/>',
  phase: '<path d="M3 16h6m14 0h6"/><rect x="9" y="6" width="14" height="20" rx="4"/><path d="M19 11c-6-3-7 11-2 10m0-13-2 16"/>',
@@ -19,7 +22,7 @@ export const icons: Record<string, string> = {
  light: '<path d="m3 12 4-6 6 12 4-12 4 6"/>',
  arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
 };
-export function icon(name: string, size = 20) { return `<svg width="${size}" height="${size}" viewBox="0 0 ${['source','coupler','phase','attenuator','detector','termination'].includes(name)?32:24} ${['source','coupler','phase','attenuator','detector','termination'].includes(name)?32:24}" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] ?? icons.light}</svg>`; }
+export function icon(name: string, size = 20) { return `<svg width="${size}" height="${size}" viewBox="0 0 ${['source','coupler','siepic-coupler','phase','attenuator','detector','termination'].includes(name)?32:24} ${['source','coupler','siepic-coupler','phase','attenuator','detector','termination'].includes(name)?32:24}" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] ?? icons.light}</svg>`; }
 
 /** Schematic device geometry terminates exactly at the editor's optical ports. */
 export function componentShape(model: string): string {
@@ -32,5 +35,5 @@ export function componentShape(model: string): string {
   detector: `${guide('M -56 0 H -9')}<path class="detector-body" d="M -9 -17 H 5 Q 26 -17 26 0 Q 26 17 5 17 H -9 Z"/><path class="detector-stripes" d="M -3 -11 V 11 M 3 -11 V 11 M 9 -10 V 10 M 15 -7 V 7"/><path class="detector-lead" d="M 6 -17 V -23 H 25"/>`,
   termination: `${guide('M -56 0 H -7')}<path class="termination-body" d="M -7 -15 V 15 M 0 -12 V 12 M 7 -8 V 8 M 14 -4 V 4"/>`,
  };
- return `<g class="device-structure" aria-hidden="true">${shapes[model]??''}</g>`;
+ return `<g class="device-structure" aria-hidden="true">${shapes[model==='siepic-coupler'?'coupler':model]??''}${model==='siepic-coupler'?'<path class="imported-device-mark" d="M -22 -29 H 22"/>':''}</g>`;
 }

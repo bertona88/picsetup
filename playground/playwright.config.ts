@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /** Exercise the real static application; no fixture-backed UI or solver mocks. */
 export default defineConfig({
   testDir: './tests',
-  testMatch: '**/browser.spec.ts',
+  testMatch: '**/*.spec.ts',
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
