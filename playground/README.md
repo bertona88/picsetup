@@ -12,6 +12,12 @@ Sketch a guided photonic circuit, change an assumption, and compare the result. 
 
 ## Try the workflow
 
+**IQ transmitter:** the Sketch starter composes two nested MZIs with static
+I/Q arm phases and a quadrature bias. All four output powers remain visible.
+This is one ideal scalar CW channel, with no gain, RF drive or data-rate model.
+See [the Infinera-map capability assessment and recipe guide](docs/INFINERA_PIC_MAP.md)
+for the runnable example, phase conventions and path to a fuller transceiver.
+
 1. Open **Sketch** and choose a SiEPIC MZI, ideal MZI, ring, splitter tree or delay line. Edit its recipe and choose **Build this idea**.
 2. Select components or guides to change phase, coupling, length and loss. **Arrange** redraws the graph without changing any physical parameter.
 3. Open **Compare** and **Pin current circuit**. Change the live circuit and pin another variant. Each snapshot keeps its own complete circuit; compare up to six on one wavelength grid.

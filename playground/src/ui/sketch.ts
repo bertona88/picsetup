@@ -7,6 +7,7 @@ const escapeHtml=(value:unknown)=>String(value).replace(/[&<>"']/g,c=>({'&':'&am
 type SketchOptions={onApply:(text:string)=>void;onInsert:(kind:BlockId,params:Record<string,number|string>)=>void;onCompareArms:()=>void;onDesignStudy:()=>void;onResolveRing:()=>void;onCurrentRecipe:()=>string|null};
 
 function circuitGlyph(kind:string){
+ if(kind==='ideal-iq-transmitter')return '<svg viewBox="0 0 114 66" aria-hidden="true"><path d="M4 33H12L24 17H34L44 8H64L74 17H84L100 33H110M34 17L44 26H64L74 17M12 33L24 49H34L44 40H64L74 49H84L100 33M34 49L44 58H64L74 49" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
  const path=kind==='ring'?'M5 36H105 M36 25a22 22 0 1 1 44 0a22 22 0 1 1-44 0':kind==='splitter-tree'?'M5 32H27Q39 32 44 18H65M27 32Q39 32 44 46H65M65 18Q72 18 79 7H106M65 18Q72 18 79 27H106M65 46Q72 46 79 37H106M65 46Q72 46 79 57H106':kind==='delay-line'?'M5 32H19Q29 32 29 17T39 2Q49 2 49 17V47Q49 62 59 62T69 47V17Q69 2 79 2T89 17V32H108':'M5 32H20Q30 32 40 15H74Q86 15 94 32H108M20 32Q30 32 40 49H74Q86 49 94 32';
  return `<svg viewBox="0 0 114 66" aria-hidden="true"><path d="${path}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>${kind.includes('mzi')?'<rect x="48" y="9" width="18" height="12" rx="3" fill="#e6dced" stroke="#a88fbb"/>':''}</svg>`;
 }

@@ -13,6 +13,12 @@ From `playground/`: `npm ci`, `npm test`, `npm run build`, `node scripts/check-a
 
 ## Idea workbench gates
 
+- **Static IQ starter:** compare all four complex outputs to independent
+  feed-forward algebra over quadrature and nonquadrature biases; check signed
+  orthogonal I/Q control, total output power, zero input, dark-port phase and
+  the importable saved-circuit/recipe equivalence. This gate has no RF,
+  polarization, material-calibration or data-rate claim.
+
 - **Named-port recipes:** exact versioned data schema, explicit SI/defaults, unique safe IDs, exposed ports, single connection per port and deterministic block namespaces. Reject unknown keys/models/versions, expressions, nonfinite values, invalid domains, ambiguous endpoints and over-cap expansion before replacing a scene. Preserve editable out-of-band documents and exact bundled dataset identity.
 - **Compilation references:** compare full complex detector fields and all budget terms against an independently wired SiEPIC MZI at multiple phases/wavelengths. Reverse reciprocal link notation and reorder parts without changing physics. Compile and solve every starter.
 - **Source-free templates:** MZI, ring, splitter tree and delay line expose actual free native ports; insertion adds no source. Check MZI flattening equivalence, ring closed forms, splitter losses and reciprocal delay phase/loss. Repeated instances remain independent, editable and portable without hidden nested state.
