@@ -1,6 +1,13 @@
 # Claims and validation — playground only
 
-This iteration adds an **idea workbench** to the verified M0/M1 and early SiEPIC experiments: strict named-port recipes, a headless API/CLI, five starters, four source-free circuit templates, automatic arrangement, immutable variant notebooks with spectral overlays, and bounded one-parameter design goals. It does not close all M2–M5 requirements or claim full milestone completion.
+This iteration adds an **idea workbench** to the verified M0/M1 and early SiEPIC experiments: strict named-port recipes, a headless API/CLI, six starters, four source-free circuit templates, automatic arrangement, immutable variant notebooks with spectral overlays, and bounded one-parameter design goals. It does not close all M2–M5 requirements or claim full milestone completion.
+
+The 22 October IQ starter adds a static, ideal, single-channel nested-MZI
+composition using existing primitives. Independent algebra checks complex
+fields and complete output accounting. The [assessment](docs/INFINERA_PIC_MAP.md)
+separates this supported behavior from active laser/SOA, polarization, RF,
+receiver-DSP and chip-image mapping extensions. Validation details are in the
+latest section of [HANDOFF.md](HANDOFF.md).
 
 The supported scientific claim is numerical evaluation of the declared scalar-mode CW equations and the bundled table under documented interpolation. Recipe/block expansion preserves explicit primitive models and physical parameters; automatic arrangement changes drawing coordinates only. Physical mode matching, reference-plane coordinates, process variation and measured accuracy remain unqualified. Native SiEPIC **TE mode 1** is a source mode identifier, not an asserted transverse-order TE1 mode. No calibrated-device, fabrication, passive-network certification, production deployment, offline reload or external receiver integration is claimed.
 

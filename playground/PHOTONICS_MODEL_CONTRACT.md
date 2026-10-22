@@ -48,3 +48,14 @@ Numerical eligibility rejects failed/nonfinite samples, small pivots and power i
 Study targets use IL = −10 log10(Pdesired / Pinput) and XT = 10 log10(Punwanted / Pdesired), with explicit desired/unwanted output mappings. Only complete eligible sample grids receive sampled pass/fail decisions. Missing results and exact zero have distinct representations. Phase scenarios are user-declared offsets, not manufacturing distributions or yield estimates.
 
 The ring lab refines one model-seeded ideal constant-index single-bus resonance. It brackets the location and half-depth linewidth and checks an independent closed form. It does not discover unknown resonances in arbitrary networks. Q is λres / full width at half notch depth. A 120 dB extinction reporting cutoff is not a certified bound; even finite extinction remains a computed estimate and the absolute transmission agreement gate does not certify its accuracy.
+
+## Ideal static IQ example
+
+The IQ transmitter starter composes six ideal couplers, five phase elements,
+one CW source and four optical detector readouts. It uses the same version-1
+models and explicit zero-length links. Paired arm phases are independent
+parameters; there is no automatic push-pull link or electrical drive. The
+[recipe guide](docs/INFINERA_PIC_MAP.md) derives all four outputs with the
+declared phasor convention and accounts for the rejected inner-MZI power.
+This is a single scalar static functional example, not an Infinera/InP device
+model, a polarization model, a DBR/SOA simulation or a QAM/data-rate prediction.

@@ -1,0 +1,550 @@
+{
+  "schema": "picsetup-playground/1",
+  "title": "Ideal IQ transmitter — single scalar channel, static biases",
+  "circuit": {
+    "wavelengthM": 0.00000155,
+    "components": [
+      {
+        "id": "laser",
+        "model": "source",
+        "version": "1",
+        "label": "Ideal CW source",
+        "params": {
+          "powerW": 0.001,
+          "phaseRad": 0
+        }
+      },
+      {
+        "id": "split",
+        "model": "coupler",
+        "version": "1",
+        "label": "I / Q split",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "iSplit",
+        "model": "coupler",
+        "version": "1",
+        "label": "I arm splitter",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "qSplit",
+        "model": "coupler",
+        "version": "1",
+        "label": "Q arm splitter",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "iUpper",
+        "model": "phase",
+        "version": "1",
+        "label": "I upper static phase",
+        "params": {
+          "phaseRad": 1.0471975511965976
+        }
+      },
+      {
+        "id": "iLower",
+        "model": "phase",
+        "version": "1",
+        "label": "I lower static phase",
+        "params": {
+          "phaseRad": -1.0471975511965976
+        }
+      },
+      {
+        "id": "qUpper",
+        "model": "phase",
+        "version": "1",
+        "label": "Q upper static phase",
+        "params": {
+          "phaseRad": 1.0471975511965976
+        }
+      },
+      {
+        "id": "qLower",
+        "model": "phase",
+        "version": "1",
+        "label": "Q lower static phase",
+        "params": {
+          "phaseRad": -1.0471975511965976
+        }
+      },
+      {
+        "id": "iCombine",
+        "model": "coupler",
+        "version": "1",
+        "label": "I arm combiner",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "qCombine",
+        "model": "coupler",
+        "version": "1",
+        "label": "Q arm combiner",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "quadrature",
+        "model": "phase",
+        "version": "1",
+        "label": "Q quadrature bias (pi/2)",
+        "params": {
+          "phaseRad": 1.5707963267948966
+        }
+      },
+      {
+        "id": "combine",
+        "model": "coupler",
+        "version": "1",
+        "label": "IQ output combiner",
+        "params": {
+          "coupling": 0.5
+        }
+      },
+      {
+        "id": "signal",
+        "model": "detector",
+        "version": "1",
+        "label": "IQ signal (optical power)",
+        "params": {}
+      },
+      {
+        "id": "complement",
+        "model": "detector",
+        "version": "1",
+        "label": "Complementary output",
+        "params": {}
+      },
+      {
+        "id": "iDump",
+        "model": "detector",
+        "version": "1",
+        "label": "I rejected-port power",
+        "params": {}
+      },
+      {
+        "id": "qDump",
+        "model": "detector",
+        "version": "1",
+        "label": "Q rejected-port power",
+        "params": {}
+      }
+    ],
+    "connections": [
+      {
+        "id": "link_1",
+        "from": {
+          "component": "laser",
+          "port": 0
+        },
+        "to": {
+          "component": "split",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_2",
+        "from": {
+          "component": "split",
+          "port": 2
+        },
+        "to": {
+          "component": "iSplit",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_3",
+        "from": {
+          "component": "split",
+          "port": 3
+        },
+        "to": {
+          "component": "qSplit",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_4",
+        "from": {
+          "component": "iSplit",
+          "port": 2
+        },
+        "to": {
+          "component": "iUpper",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_5",
+        "from": {
+          "component": "iSplit",
+          "port": 3
+        },
+        "to": {
+          "component": "iLower",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_6",
+        "from": {
+          "component": "qSplit",
+          "port": 2
+        },
+        "to": {
+          "component": "qUpper",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_7",
+        "from": {
+          "component": "qSplit",
+          "port": 3
+        },
+        "to": {
+          "component": "qLower",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_8",
+        "from": {
+          "component": "iUpper",
+          "port": 1
+        },
+        "to": {
+          "component": "iCombine",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_9",
+        "from": {
+          "component": "iLower",
+          "port": 1
+        },
+        "to": {
+          "component": "iCombine",
+          "port": 1
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_10",
+        "from": {
+          "component": "qUpper",
+          "port": 1
+        },
+        "to": {
+          "component": "qCombine",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_11",
+        "from": {
+          "component": "qLower",
+          "port": 1
+        },
+        "to": {
+          "component": "qCombine",
+          "port": 1
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_12",
+        "from": {
+          "component": "iCombine",
+          "port": 3
+        },
+        "to": {
+          "component": "combine",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_13",
+        "from": {
+          "component": "qCombine",
+          "port": 3
+        },
+        "to": {
+          "component": "quadrature",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_14",
+        "from": {
+          "component": "quadrature",
+          "port": 1
+        },
+        "to": {
+          "component": "combine",
+          "port": 1
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_15",
+        "from": {
+          "component": "combine",
+          "port": 2
+        },
+        "to": {
+          "component": "signal",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_16",
+        "from": {
+          "component": "combine",
+          "port": 3
+        },
+        "to": {
+          "component": "complement",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_17",
+        "from": {
+          "component": "iCombine",
+          "port": 2
+        },
+        "to": {
+          "component": "iDump",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      },
+      {
+        "id": "link_18",
+        "from": {
+          "component": "qCombine",
+          "port": 2
+        },
+        "to": {
+          "component": "qDump",
+          "port": 0
+        },
+        "lengthM": 0,
+        "neff": 2.4,
+        "lossDbPerM": 0
+      }
+    ]
+  },
+  "layout": {
+    "components": {
+      "laser": {
+        "x": 150,
+        "y": 390,
+        "rotation": 0
+      },
+      "split": {
+        "x": 380,
+        "y": 390,
+        "rotation": 0
+      },
+      "iSplit": {
+        "x": 610,
+        "y": 310,
+        "rotation": 0
+      },
+      "qSplit": {
+        "x": 610,
+        "y": 470,
+        "rotation": 0
+      },
+      "iUpper": {
+        "x": 840,
+        "y": 310,
+        "rotation": 0
+      },
+      "iLower": {
+        "x": 840,
+        "y": 150,
+        "rotation": 0
+      },
+      "qUpper": {
+        "x": 840,
+        "y": 630,
+        "rotation": 0
+      },
+      "qLower": {
+        "x": 840,
+        "y": 470,
+        "rotation": 0
+      },
+      "iCombine": {
+        "x": 1070,
+        "y": 310,
+        "rotation": 0
+      },
+      "qCombine": {
+        "x": 1070,
+        "y": 470,
+        "rotation": 0
+      },
+      "quadrature": {
+        "x": 1300,
+        "y": 550,
+        "rotation": 0
+      },
+      "combine": {
+        "x": 1530,
+        "y": 390,
+        "rotation": 0
+      },
+      "signal": {
+        "x": 1760,
+        "y": 470,
+        "rotation": 0
+      },
+      "complement": {
+        "x": 1760,
+        "y": 310,
+        "rotation": 0
+      },
+      "iDump": {
+        "x": 1300,
+        "y": 230,
+        "rotation": 0
+      },
+      "qDump": {
+        "x": 1300,
+        "y": 390,
+        "rotation": 0
+      }
+    },
+    "connections": {
+      "link_1": {
+        "bend": 0
+      },
+      "link_2": {
+        "bend": 0
+      },
+      "link_3": {
+        "bend": 0
+      },
+      "link_4": {
+        "bend": 0
+      },
+      "link_5": {
+        "bend": 0
+      },
+      "link_6": {
+        "bend": 0
+      },
+      "link_7": {
+        "bend": 0
+      },
+      "link_8": {
+        "bend": 0
+      },
+      "link_9": {
+        "bend": 0
+      },
+      "link_10": {
+        "bend": 0
+      },
+      "link_11": {
+        "bend": 0
+      },
+      "link_12": {
+        "bend": 170
+      },
+      "link_13": {
+        "bend": 0
+      },
+      "link_14": {
+        "bend": 0
+      },
+      "link_15": {
+        "bend": 0
+      },
+      "link_16": {
+        "bend": 0
+      },
+      "link_17": {
+        "bend": 0
+      },
+      "link_18": {
+        "bend": 0
+      }
+    },
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "authoring": {
+    "schema": "picsetup-authoring/1",
+    "recipeJson": "{\"schema\":\"picsetup-recipe/1\",\"title\":\"Ideal IQ transmitter — single scalar channel, static biases\",\"wavelengthM\":0.00000155,\"parts\":[{\"id\":\"laser\",\"model\":\"source\",\"label\":\"Ideal CW source\",\"params\":{\"powerW\":0.001,\"phaseRad\":0}},{\"id\":\"split\",\"model\":\"coupler\",\"label\":\"I / Q split\",\"params\":{\"coupling\":0.5}},{\"id\":\"iSplit\",\"model\":\"coupler\",\"label\":\"I arm splitter\",\"params\":{\"coupling\":0.5}},{\"id\":\"qSplit\",\"model\":\"coupler\",\"label\":\"Q arm splitter\",\"params\":{\"coupling\":0.5}},{\"id\":\"iUpper\",\"model\":\"phase\",\"label\":\"I upper static phase\",\"params\":{\"phaseRad\":1.0471975511965976}},{\"id\":\"iLower\",\"model\":\"phase\",\"label\":\"I lower static phase\",\"params\":{\"phaseRad\":-1.0471975511965976}},{\"id\":\"qUpper\",\"model\":\"phase\",\"label\":\"Q upper static phase\",\"params\":{\"phaseRad\":1.0471975511965976}},{\"id\":\"qLower\",\"model\":\"phase\",\"label\":\"Q lower static phase\",\"params\":{\"phaseRad\":-1.0471975511965976}},{\"id\":\"iCombine\",\"model\":\"coupler\",\"label\":\"I arm combiner\",\"params\":{\"coupling\":0.5}},{\"id\":\"qCombine\",\"model\":\"coupler\",\"label\":\"Q arm combiner\",\"params\":{\"coupling\":0.5}},{\"id\":\"quadrature\",\"model\":\"phase\",\"label\":\"Q quadrature bias (pi/2)\",\"params\":{\"phaseRad\":1.5707963267948966}},{\"id\":\"combine\",\"model\":\"coupler\",\"label\":\"IQ output combiner\",\"params\":{\"coupling\":0.5}},{\"id\":\"signal\",\"model\":\"detector\",\"label\":\"IQ signal (optical power)\"},{\"id\":\"complement\",\"model\":\"detector\",\"label\":\"Complementary output\"},{\"id\":\"iDump\",\"model\":\"detector\",\"label\":\"I rejected-port power\"},{\"id\":\"qDump\",\"model\":\"detector\",\"label\":\"Q rejected-port power\"}],\"links\":[{\"from\":\"laser.out\",\"to\":\"split.L0\",\"lengthM\":0},{\"from\":\"split.R0\",\"to\":\"iSplit.L0\",\"lengthM\":0},{\"from\":\"split.R1\",\"to\":\"qSplit.L0\",\"lengthM\":0},{\"from\":\"iSplit.R0\",\"to\":\"iUpper.L\",\"lengthM\":0},{\"from\":\"iSplit.R1\",\"to\":\"iLower.L\",\"lengthM\":0},{\"from\":\"qSplit.R0\",\"to\":\"qUpper.L\",\"lengthM\":0},{\"from\":\"qSplit.R1\",\"to\":\"qLower.L\",\"lengthM\":0},{\"from\":\"iUpper.R\",\"to\":\"iCombine.L0\",\"lengthM\":0},{\"from\":\"iLower.R\",\"to\":\"iCombine.L1\",\"lengthM\":0},{\"from\":\"qUpper.R\",\"to\":\"qCombine.L0\",\"lengthM\":0},{\"from\":\"qLower.R\",\"to\":\"qCombine.L1\",\"lengthM\":0},{\"from\":\"iCombine.R1\",\"to\":\"combine.L0\",\"lengthM\":0},{\"from\":\"qCombine.R1\",\"to\":\"quadrature.L\",\"lengthM\":0},{\"from\":\"quadrature.R\",\"to\":\"combine.L1\",\"lengthM\":0},{\"from\":\"combine.R0\",\"to\":\"signal.in\",\"lengthM\":0},{\"from\":\"combine.R1\",\"to\":\"complement.in\",\"lengthM\":0},{\"from\":\"iCombine.R0\",\"to\":\"iDump.in\",\"lengthM\":0},{\"from\":\"qCombine.R0\",\"to\":\"qDump.in\",\"lengthM\":0}]}",
+    "semanticKey": "{\"components\":[{\"id\":\"combine\",\"model\":\"coupler\",\"params\":{\"coupling\":0.5},\"version\":\"1\"},{\"id\":\"complement\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"},{\"id\":\"iCombine\",\"model\":\"coupler\",\"params\":{\"coupling\":0.5},\"version\":\"1\"},{\"id\":\"iDump\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"},{\"id\":\"iLower\",\"model\":\"phase\",\"params\":{\"phaseRad\":-1.0471975511965976},\"version\":\"1\"},{\"id\":\"iSplit\",\"model\":\"coupler\",\"params\":{\"coupling\":0.5},\"version\":\"1\"},{\"id\":\"iUpper\",\"model\":\"phase\",\"params\":{\"phaseRad\":1.0471975511965976},\"version\":\"1\"},{\"id\":\"laser\",\"model\":\"source\",\"params\":{\"phaseRad\":0,\"powerW\":0.001},\"version\":\"1\"},{\"id\":\"qCombine\",\"model\":\"coupler\",\"params\":{\"coupling\":0.5},\"version\":\"1\"},{\"id\":\"qDump\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"},{\"id\":\"qLower\",\"model\":\"phase\",\"params\":{\"phaseRad\":-1.0471975511965976},\"version\":\"1\"},{\"id\":\"qSplit\",\"model\":\"coupler\",\"params\":{\"coupling\":0.5},\"version\":\"1\"},{\"id\":\"quadrature\",\"model\":\"phase\",\"params\":{\"phaseRad\":1.5707963267948966},\"version\":\"1\"},{\"id\":\"qUpper\",\"model\":\"phase\",\"params\":{\"phaseRad\":1.0471975511965976},\"version\":\"1\"},{\"id\":\"signal\",\"model\":\"detector\",\"params\":{},\"version\":\"1\"},{\"id\":\"split\",\"model\":\"coupler\",\"params\":{\"coupling\":0.5},\"version\":\"1\"}],\"connections\":[{\"endpoints\":[{\"component\":\"laser\",\"port\":0},{\"component\":\"split\",\"port\":0}],\"id\":\"link_1\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"qCombine\",\"port\":0},{\"component\":\"qUpper\",\"port\":1}],\"id\":\"link_10\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"qCombine\",\"port\":1},{\"component\":\"qLower\",\"port\":1}],\"id\":\"link_11\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"combine\",\"port\":0},{\"component\":\"iCombine\",\"port\":3}],\"id\":\"link_12\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"qCombine\",\"port\":3},{\"component\":\"quadrature\",\"port\":0}],\"id\":\"link_13\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"combine\",\"port\":1},{\"component\":\"quadrature\",\"port\":1}],\"id\":\"link_14\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"combine\",\"port\":2},{\"component\":\"signal\",\"port\":0}],\"id\":\"link_15\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"combine\",\"port\":3},{\"component\":\"complement\",\"port\":0}],\"id\":\"link_16\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"iCombine\",\"port\":2},{\"component\":\"iDump\",\"port\":0}],\"id\":\"link_17\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"qCombine\",\"port\":2},{\"component\":\"qDump\",\"port\":0}],\"id\":\"link_18\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"iSplit\",\"port\":0},{\"component\":\"split\",\"port\":2}],\"id\":\"link_2\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"qSplit\",\"port\":0},{\"component\":\"split\",\"port\":3}],\"id\":\"link_3\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"iSplit\",\"port\":2},{\"component\":\"iUpper\",\"port\":0}],\"id\":\"link_4\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"iLower\",\"port\":0},{\"component\":\"iSplit\",\"port\":3}],\"id\":\"link_5\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"qSplit\",\"port\":2},{\"component\":\"qUpper\",\"port\":0}],\"id\":\"link_6\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"qLower\",\"port\":0},{\"component\":\"qSplit\",\"port\":3}],\"id\":\"link_7\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"iCombine\",\"port\":0},{\"component\":\"iUpper\",\"port\":1}],\"id\":\"link_8\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4},{\"endpoints\":[{\"component\":\"iCombine\",\"port\":1},{\"component\":\"iLower\",\"port\":1}],\"id\":\"link_9\",\"lengthM\":0,\"lossDbPerM\":0,\"neff\":2.4}],\"wavelengthM\":0.00000155}"
+  }
+}

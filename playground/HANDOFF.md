@@ -1,4 +1,31 @@
-# Idea workbench — 11 October 2026
+# Idea workbench — implementation handoff
+
+## Ideal IQ starter — 22 October 2026
+
+Based on upstream `50a284af2415667f24983dd697051375dae6853d`, branch
+`codex/infinera-iq-starter`. The [Infinera map assessment](docs/INFINERA_PIC_MAP.md)
+compares the current live playground with the reference and the older attached
+Lab-10x source. The new Sketch starter, reusable JSON recipe and importable
+circuit compose an ideal static single-channel IQ transmitter with 16 editable
+components and 18 explicit zero-length links. No solver models or schemas change.
+
+Validation: **277 tests passed in 17 files**, zero failures/skips, on Node
+24.19.0. Nine new cases check complex fields against independent algebra,
+orthogonal signed control, conservation, portable replay and dark/zero states.
+TypeScript, static/API builds and distributed API/CLI checks passed. The recipe
+was also pasted into the existing public site's Sketch builder and successfully
+built there. Visible readouts were 0.125/0.125/0.375/0.375 mW for 1 mW emitted,
+with residual zero and accounting imbalance about -4.34e-19 W.
+
+[Live-site recipe screenshot](evidence/iq-transmitter-live-2026-10-22.jpg)
+was visually inspected. This proves compatibility with the already-deployed
+recipe compiler; it is not evidence that the new preset button has been
+deployed. The new preset's UI path and the full automated browser suite were
+not run locally in this session. No production release or third-party map asset
+copy is part of this branch. RF, active gain/laser physics, polarization and a
+linked die-image view remain separate extensions.
+
+## Previous release — 11 October 2026
 
 Published to **https://picsetup.com/** after the owner's subsequent deployment request. See the [production release record](../docs/deployments/2026-10-11/README.md). The development checkpoints below retain their original scope.
 
